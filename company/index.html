@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기업 분석 — 전력 데스크</title>
+<style>
+  :root{
+    --ink:#13171e; --ink-2:#1c222c; --paper:#f6f7f9; --card:#ffffff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#d9892b;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;}
+
+  /* 헤더 */
+  header{background:var(--ink);color:#fff;border-bottom:1px solid #000;}
+  .hdr{max-width:980px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:20px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .search-wrap{flex:1;min-width:180px;max-width:280px;}
+  .search-wrap input{width:100%;background:var(--ink-2);border:1px solid #2c3542;color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-family:var(--sans);}
+  .search-wrap input::placeholder{color:#6f7a89}
+  .search-wrap input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+
+  /* 필터 */
+  .filter-bar{max-width:980px;margin:0 auto;padding:18px 24px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .filter-label{font-size:12px;color:var(--muted);font-family:var(--mono);margin-right:4px;}
+  .filter-btn{background:none;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:5px 13px;border-radius:20px;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+  .filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  /* 그리드 */
+  main{max-width:980px;margin:0 auto;padding:20px 24px 80px;}
+  .section-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 12px;font-family:var(--mono);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:8px;}
+
+  /* 기업 카드 */
+  .co-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s,border-color .15s;cursor:pointer;}
+  .co-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.07);}
+  .co-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  .co-name{font-size:16px;font-weight:800;color:var(--ink);}
+  .co-ticker{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:2px 8px;font-family:var(--mono);white-space:nowrap;align-self:flex-start;}
+  .co-tags{display:flex;gap:5px;flex-wrap:wrap;}
+  .co-tag{font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:2px 7px;}
+  .co-desc{font-size:13px;color:#555;line-height:1.5;}
+  .co-meta{display:flex;gap:14px;flex-wrap:wrap;}
+  .co-meta-item{display:flex;flex-direction:column;gap:1px;}
+  .co-meta-item .k{font-size:10px;color:var(--muted);font-family:var(--mono);}
+  .co-meta-item .v{font-size:13px;font-weight:700;color:var(--ink);}
+  .co-arrow{font-size:18px;color:var(--muted);align-self:center;margin-left:auto;transition:transform .15s;}
+  .co-card:hover .co-arrow{transform:translateX(3px);color:var(--accent);}
+
+  /* 준비 중 카드 */
+  .co-card.pending{opacity:.55;pointer-events:none;}
+  .pending-badge{font-size:10px;font-weight:700;color:#fff;background:#9ca3af;border-radius:4px;padding:2px 7px;align-self:flex-start;}
+
+  .empty{display:none;text-align:center;color:var(--muted);padding:60px 20px;font-size:14px;}
+
+  footer{max-width:980px;margin:0 auto;padding:0 24px 50px;color:#9aa1ab;font-size:11px;font-family:var(--mono);}
+
+  @media(max-width:560px){.hdr{gap:10px;} .grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>기업 분석</h1>
+      <p>기저발전 투자 논지 관련 핵심 기업 리포트</p>
+    </div>
+    <div class="search-wrap">
+      <input id="q" type="search" placeholder="기업명·티커 검색">
+    </div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">섹터</span>
+  <button class="filter-btn active" data-filter="all">전체</button>
+  <button class="filter-btn" data-filter="fuelcell">연료전지</button>
+  <button class="filter-btn" data-filter="hyperscaler">하이퍼스케일러</button>
+  <button class="filter-btn" data-filter="turbine">터빈·엔진</button>
+  <button class="filter-btn" data-filter="nuclear">원자력·SMR</button>
+  <button class="filter-btn" data-filter="utility">전력회사</button>
+</div>
+
+<main>
+  <div id="log">
+
+    <!-- ── 연료전지 ── -->
+    <p class="section-title" data-group="fuelcell">연료전지</p>
+    <div class="grid" data-group="fuelcell">
+
+      <a class="co-card" href="bloom-energy.html" data-cat="fuelcell" data-name="bloom energy be sofc">
+        <div class="co-card-head">
+          <span class="co-name">Bloom Energy</span>
+          <span class="co-ticker" style="background:#1f7a4d;">NYSE: BE</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#1f7a4d;">SOFC</span>
+          <span class="co-tag" style="background:#2563a8;">BTM 발전</span>
+          <span class="co-tag" style="background:#7c3aed;">AI 데이터센터</span>
+        </div>
+        <p class="co-desc">SOFC 기반 온사이트 24/7 발전. Oracle 2.8GW 계약, FY2026E 매출 $3.4~3.8B. AI 데이터센터 전력 병목 해소의 핵심 플레이어.</p>
+        <div class="co-meta">
+          <div class="co-meta-item"><span class="k">FY2025 매출</span><span class="v">$2.02B</span></div>
+          <div class="co-meta-item"><span class="k">Product 백로그</span><span class="v">~$6B</span></div>
+          <div class="co-meta-item"><span class="k">Q1 2026 성장률</span><span class="v">+130% YoY</span></div>
+        </div>
+        <span class="co-arrow">→</span>
+      </a>
+
+    </div>
+
+    <!-- ── 하이퍼스케일러 ── -->
+    <p class="section-title" data-group="hyperscaler">하이퍼스케일러 (수요측)</p>
+    <div class="grid" data-group="hyperscaler">
+
+      <a class="co-card" href="oracle.html" data-cat="hyperscaler" data-name="oracle orcl ai data center">
+        <div class="co-card-head">
+          <span class="co-name">Oracle</span>
+          <span class="co-ticker" style="background:#c0392b;">NYSE: ORCL</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#c0392b;">하이퍼스케일러</span>
+          <span class="co-tag" style="background:#2563a8;">AI 인프라</span>
+          <span class="co-tag" style="background:#1f7a4d;">BTM 전략</span>
+        </div>
+        <p class="co-desc">그리드 없이 온사이트 발전으로 AI 데이터센터 전력 조달. Project Jupiter(뉴멕시코 2.45GW) 전량 SOFC. 수요측 핵심 플레이어.</p>
+        <div class="co-meta">
+          <div class="co-meta-item"><span class="k">Capex 2026E</span><span class="v">$16B+</span></div>
+          <div class="co-meta-item"><span class="k">수주잔고</span><span class="v">$130B+</span></div>
+          <div class="co-meta-item"><span class="k">Bloom 계약</span><span class="v">2.8GW</span></div>
+        </div>
+        <span class="co-arrow">→</span>
+      </a>
+
+      <div class="co-card pending" data-cat="hyperscaler" data-name="microsoft meta google amazon">
+        <div class="co-card-head">
+          <span class="co-name">Microsoft / Meta / Google / Amazon</span>
+          <span class="pending-badge">준비 중</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#9ca3af;">하이퍼스케일러</span>
+        </div>
+        <p class="co-desc">전력 PPA·co-location·BTM 계약 동향. 데이터센터 Capex 규모 및 전력 조달 전략.</p>
+      </div>
+
+    </div>
+
+    <!-- ── 터빈·엔진 ── -->
+    <p class="section-title" data-group="turbine">터빈·엔진 (공급측)</p>
+    <div class="grid" data-group="turbine">
+
+      <div class="co-card pending" data-cat="turbine" data-name="ge vernova gas turbine backlog">
+        <div class="co-card-head">
+          <span class="co-name">GE Vernova</span>
+          <span class="pending-badge">준비 중</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#9ca3af;">가스터빈</span>
+        </div>
+        <p class="co-desc">가스터빈 백로그 100GW+. 납기 3년+. 공급 병목의 핵심 지표.</p>
+      </div>
+
+      <div class="co-card pending" data-cat="turbine" data-name="wartsila rice engine data center">
+        <div class="co-card-head">
+          <span class="co-name">Wärtsilä</span>
+          <span class="pending-badge">준비 중</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#9ca3af;">RICE 엔진</span>
+        </div>
+        <p class="co-desc">왕복엔진(RICE). 납기 12~18개월. GE Vernova 터빈 공백 흡수. 텍사스 790MW 수주.</p>
+      </div>
+
+    </div>
+
+    <!-- ── 원자력·SMR ── -->
+    <p class="section-title" data-group="nuclear">원자력·SMR</p>
+    <div class="grid" data-group="nuclear">
+
+      <div class="co-card pending" data-cat="nuclear" data-name="constellation energy nuclear restart">
+        <div class="co-card-head">
+          <span class="co-name">Constellation Energy</span>
+          <span class="pending-badge">준비 중</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#9ca3af;">원전 재가동</span>
+        </div>
+        <p class="co-desc">TMI-1 재가동(2027, Microsoft PPA 835MW). 기존 원전 co-location 선두주자.</p>
+      </div>
+
+      <div class="co-card pending" data-cat="nuclear" data-name="oklo smr data center nuclear">
+        <div class="co-card-head">
+          <span class="co-name">Oklo</span>
+          <span class="pending-badge">준비 중</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#9ca3af;">SMR</span>
+        </div>
+        <p class="co-desc">소형모듈원전. Meta LOI 체결. 2030년대 상업화 목표.</p>
+      </div>
+
+    </div>
+
+    <!-- ── 전력회사 ── -->
+    <p class="section-title" data-group="utility">전력회사</p>
+    <div class="grid" data-group="utility">
+
+      <div class="co-card pending" data-cat="utility" data-name="aep vistra talen utility data center">
+        <div class="co-card-head">
+          <span class="co-name">AEP / Vistra / Talen</span>
+          <span class="pending-badge">준비 중</span>
+        </div>
+        <div class="co-tags">
+          <span class="co-tag" style="background:#9ca3af;">유틸리티</span>
+        </div>
+        <p class="co-desc">데이터센터向 전력 공급 계약, co-location 규제 대응, 요금 구조 변화.</p>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="empty" id="empty">검색 결과가 없습니다.</div>
+</main>
+
+<footer>기저전력 데스크 · 기업 분석 허브 · 발표 자료 인용 전 원문(IR·공시·어닝콜)으로 재확인하세요.</footer>
+
+<script>
+  const cards = () => Array.from(document.querySelectorAll('.co-card'));
+  const groups = () => Array.from(document.querySelectorAll('[data-group]'));
+  let currentFilter = 'all';
+
+  function applyFilter() {
+    const term = document.getElementById('q').value.trim().toLowerCase();
+    let shown = 0;
+
+    // 섹션 타이틀 + 그리드 표시/숨김
+    groups().forEach(el => {
+      const group = el.dataset.group;
+      const visible = currentFilter === 'all' || currentFilter === group;
+      el.style.display = visible ? '' : 'none';
+    });
+
+    // 카드 필터
+    cards().forEach(card => {
+      const catOk = currentFilter === 'all' || card.dataset.cat === currentFilter;
+      const textOk = !term || card.dataset.name.includes(term) || card.textContent.toLowerCase().includes(term);
+      const show = catOk && textOk;
+      card.style.display = show ? '' : 'none';
+      if (show) shown++;
+    });
+
+    // 빈 그리드 숨김
+    document.querySelectorAll('.grid').forEach(grid => {
+      const visibleCards = Array.from(grid.querySelectorAll('.co-card')).filter(c => c.style.display !== 'none');
+      const prev = grid.previousElementSibling;
+      const hide = visibleCards.length === 0;
+      grid.style.display = hide ? 'none' : '';
+      if (prev && prev.classList.contains('section-title')) prev.style.display = hide ? 'none' : '';
+    });
+
+    document.getElementById('empty').style.display = shown ? 'none' : 'block';
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter();
+    });
+  });
+
+  document.getElementById('q').addEventListener('input', applyFilter);
+</script>
+</body>
+</html>
