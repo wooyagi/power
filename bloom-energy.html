@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom Energy (BE) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#1f7a4d; --accent2:#2563a8;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* 헤더 */
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+
+  /* 네비 */
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+  /* 레이아웃 */
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+
+  /* 카드 */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+
+  /* 차트 */
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+
+  /* 텍스트 */
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#f0fdf4;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#14532d;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+
+  /* 테이블 */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+
+  /* 컨콜 */
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .transcript{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:8px;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto;white-space:pre-wrap;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent2);text-decoration:none;} .src a:hover{text-decoration:underline;}
+
+  /* 딜 */
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+
+  /* 하이라이트 툴바 */
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- 하이라이트 툴바 -->
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>Bloom Energy Corporation</h1>
+      <p>NYSE: BE · SOFC 기반 온사이트 발전 · San Jose, CA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#1f7a4d;">연료전지</span>
+      <span class="badge" style="background:#2563a8;">BTM 발전</span>
+      <span class="badge" style="background:#7c3aed;">AI 인프라</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">백로그</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">컨콜 정리</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">핵심 기술</span><span class="v">SOFC (고체산화물 연료전지)</span></div>
+        <div class="kv-item"><span class="k">연료</span><span class="v">천연가스 / 수소·바이오가스 혼소</span></div>
+        <div class="kv-item"><span class="k">생산능력 (2026E)</span><span class="v up">~5GW/년</span></div>
+        <div class="kv-item"><span class="k">FY2025 매출</span><span class="v">$2.02B (+37.3%)</span></div>
+        <div class="kv-item"><span class="k">Q1 2026 매출</span><span class="v up">$751M (+130%)</span></div>
+        <div class="kv-item"><span class="k">2026 가이던스</span><span class="v up">$3.4~3.8B</span></div>
+        <div class="kv-item"><span class="k">직원 수</span><span class="v">~2,127명 (2024)</span></div>
+        <div class="kv-item"><span class="k">상장일</span><span class="v">2018년 NYSE</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Bloom Energy는 고체산화물 연료전지(SOFC) 기반 온사이트 발전 시스템("Bloom Energy Server")을 설계·제조·운영하는 기업이다. 연료를 연소시키지 않고 전기화학 반응으로 전력을 생성하며, 천연가스·수소·바이오가스를 연료로 사용할 수 있다. 그리드 연계 없이 고객 부지 내에서 24/7 안정적 전력을 공급하는 것이 핵심 가치 제안으로, AI 데이터센터의 전력 병목 해소 수요와 정확히 맞물린다.</p>
+    <p>2024년 Oracle과의 2.8GW 계약(역대 최대 단일 온사이트 전력 공급 계약)을 계기로 하이퍼스케일러向 수요가 폭발적으로 증가하였고, 2026년 Q1 매출은 전년 동기 대비 +130%를 기록하였다.</p>
+
+    <h3 class="sub">사업부별 상세</h3>
+    <div class="card">
+      <strong>① Product (제품 사업부)</strong>
+      <p>Bloom Energy Server 판매. 연료전지 스택·모듈로 구성되며, 고객 데이터센터·공장·상업시설 부지에 설치된다. Q1 2026 제품 매출 $653.3M(전체의 87%). 2026 가이던스 기준 제품 마진 35%+. <br><em>경쟁 강점(근거 포함):</em> SOFC 효율 ~60%(기존 가스터빈 40~45%)로 동일 연료 대비 높은 발전량(출처: Bloom IR deck, 2026-04). GE Vernova 터빈 납기 3년+ vs Bloom 납기 55~90일(출처: Q1 2026 어닝콜, KR Sridhar 발언). 800V DC 출력으로 데이터센터 인프라와 직결 가능(2025년 전 제품 적용, 출처: FY2025 IR).</p>
+    </div>
+    <div class="card">
+      <strong>② Service (서비스 사업부)</strong>
+      <p>설치된 Energy Server의 유지보수·운영 서비스. 제품 판매와 100% attach rate 유지(출처: Q1 2026 어닝콜, CEO). Q1 2026 서비스 마진 18%(전년 동기 4.8% → 13.2%p 개선). 서비스 사업부는 8분기 연속 흑자(출처: Q4 2025 어닝콜). 장기 반복 수익원으로 제품 사업부의 매출 변동성을 완충.</p>
+    </div>
+    <div class="card">
+      <strong>③ Electrolyzer (수전해, 소규모)</strong>
+      <p>수소 생산을 위한 전기분해 장치. 현재 매출 기여도는 미미하며 공시상 별도 세그먼트로 분리되지 않음. 장기 청정 수소 경제 시나리오의 옵션 가치로 분류.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>사업부별 별도 영업이익은 공시 세그먼트 주석에서 Product/Service 두 개로만 분리됨. Electrolyzer는 통합 표기. 이하 차트는 공시된 Product·Service 분류 기준.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Bloom Energy 분기별 8-K 공시 (SEC EDGAR). 최근 12개 분기 기준 (Q2 2023 ~ Q1 2026). GAAP 기준.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 영업이익 (백만 USD)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">출처: SEC 8-K 각 분기 공시. 영업이익 음수(손실) 구간은 빨간 점선으로 표시.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② GPM · OPM 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">GPM = 매출총이익률, OPM = 영업이익률. GAAP 기준. 2024 Q4(GPM 38.3%)는 프로젝트 믹스 개선에 따른 이례적 고마진. 출처: SEC 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 테이블 (GAAP, 단위: 백만 USD)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>분기</th><th>매출</th><th>YoY</th><th>GPM</th><th>영업이익</th><th>OPM</th><th>순이익</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Q2 2023</td><td class="num">335.8</td><td class="num">–</td><td class="num">17.2%</td><td class="num dn">-53.0</td><td class="num dn">-15.8%</td><td class="num dn">-131.6</td></tr>
+        <tr><td>Q3 2023</td><td class="num">400.3</td><td class="num">–</td><td class="num">21.6%</td><td class="num dn">-61.7</td><td class="num dn">-15.4%</td><td class="num dn">-84.1</td></tr>
+        <tr><td>Q4 2023</td><td class="num">356.9</td><td class="num">–</td><td class="num">25.9%</td><td class="num up">12.9</td><td class="num up">3.6%</td><td class="num dn">-0.9</td></tr>
+        <tr><td>Q1 2024</td><td class="num">235.5</td><td class="num">–</td><td class="num">18.0%</td><td class="num dn">-66.7</td><td class="num dn">-28.3%</td><td class="num dn">-77.8</td></tr>
+        <tr><td>Q2 2024</td><td class="num">335.8</td><td class="num">+0%</td><td class="num">22.3%</td><td class="num dn">-21.6</td><td class="num dn">-6.4%</td><td class="num dn">-61.8</td></tr>
+        <tr><td>Q3 2024</td><td class="num">330.4</td><td class="num dn">-17.5%</td><td class="num">23.8%</td><td class="num dn">-9.7</td><td class="num dn">-2.9%</td><td class="num dn">-48.5</td></tr>
+        <tr><td>Q4 2024</td><td class="num">572.4</td><td class="num up">+60.4%</td><td class="num">38.3%</td><td class="num up">104.7</td><td class="num up">18.3%</td><td class="num up">101.0</td></tr>
+        <tr><td>Q1 2025</td><td class="num">326.0</td><td class="num up">+38.4%</td><td class="num">27.2%</td><td class="num dn">-19.1</td><td class="num dn">-5.9%</td><td class="num dn">-30.7</td></tr>
+        <tr><td>Q2 2025</td><td class="num">401.2</td><td class="num up">+19.5%</td><td class="num">28.3%</td><td class="num up">-3.4</td><td class="num dn">-0.8%</td><td class="num dn">-42.6</td></tr>
+        <tr><td>Q3 2025</td><td class="num">519.0</td><td class="num up">+57.1%</td><td class="num">29.2%</td><td class="num up">7.8</td><td class="num up">1.5%</td><td class="num dn">-15.1</td></tr>
+        <tr><td>Q4 2025</td><td class="num">777.7</td><td class="num up">+35.9%</td><td class="num">31.9%</td><td class="num up">87.5</td><td class="num up">11.2%</td><td class="num dn">-0.1</td></tr>
+        <tr style="background:#f0fdf4;font-weight:700;"><td>Q1 2026</td><td class="num">751.1</td><td class="num up">+130.4%</td><td class="num">30.0%</td><td class="num up">72.2</td><td class="num up">9.6%</td><td class="num">데이터 없음</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 수치 출처</div>Q2~Q4 2023: SEC 8-K 각 분기. Q1~Q4 2024: SEC 8-K. Q1~Q4 2025: 각 분기 IR Press Release. Q1 2026: 2026-04-28 Bloom Energy IR. YoY 계산 기준 분기가 없는 구간(Q2~Q3 2023)은 "–" 표기.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 매출 · 마진</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: 각 분기 8-K 공시 세그먼트 주석. Product(제품) / Service(서비스) 두 개 사업부. 전기분해(Electrolyzer)는 공시상 Product에 통합.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 사업부별 분기 매출 (Product vs Service, 백만 USD)</p>
+      <canvas id="chartSeg" height="110"></canvas>
+      <p class="chart-note">출처: Bloom Energy 분기별 8-K. Q1 2026부터 Product 매출 급증(Oracle Project Jupiter 납품 효과).</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">④ 사업부별 비GAAP 마진 추이 (%)</p>
+      <canvas id="chartSegMargin" height="100"></canvas>
+      <p class="chart-note">비GAAP 기준(SBC 제외). 출처: 각 분기 IR Press Release Non-GAAP 표. Product 마진은 비교적 안정, Service 마진은 구조적 개선 추세.</p>
+    </div>
+
+    <h3 class="sub">사업부별 매출 비중</h3>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">Q1 2026 매출 비중</p>
+        <canvas id="chartPie26" height="180"></canvas>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">FY2024 매출 비중</p>
+        <canvas id="chartPie24" height="180"></canvas>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);">※ 전기를 판매하는 "Electricity" 세그먼트는 2024년부터 별도 공시. 규모 미미(~5% 미만)로 기타로 통합 표시. 출처: SEC 10-K 2024.</p>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 & 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06-05 기준)</span><span class="v">$263.61</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$74B</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA (TTM)</span><span class="v">데이터 없음</span></div>
+        <div class="kv-item"><span class="k">PER (FY2026E)</span><span class="v">~$60~70x (EPS $1.85~2.25 기준)</span></div>
+        <div class="kv-item"><span class="k">PSR (FY2026E)</span><span class="v">~$20x (매출 $3.6B 중간값)</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">없음</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">⑤ 주가 추이 (월별, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터 (개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 2026년 들어 Oracle 계약 효과로 급등(YTD +250% 수준).</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>현재 주가는 2026 가이던스(매출 $3.6B 중간값, 비GAAP 영업이익 $675M 중간값) 대부분을 반영. 실행 리스크(생산능력 확대 속도, Oracle 납기 준수, 서비스 마진 유지)가 핵심 변수. PER은 GAAP 순이익이 음수이므로 의미 없고, EV/EBITDA 또는 EV/Revenue로 평가가 적합.</div>
+  </section>
+
+  <!-- 5. 백로그 -->
+  <section id="backlog">
+    <h2 class="sec">5. 백로그 & Book-to-Bill</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Bloom Energy 연간·분기 IR Press Release, SEC 8-K 공시. 분기 중간 백로그는 공시상 정확한 수치 미공개 — 연말 확정치와 분기 어닝콜 발언 기반 추정치 병용. 추정 구간은 별도 표기.</p>
+    <div class="warn"><div class="h">⚠ 백로그 정의 주의</div>Bloom의 "Product Backlog"는 기존 계약의 미인식 제품 매출 잔액 (ITC 세액공제 포함). "Service Backlog"는 설치 Energy Server의 장기 서비스 계약 잔액. 두 개를 합산한 "Total Backlog"($20B)는 성격이 다른 항목의 합계이므로, 투자자 발표 시 Product Backlog($6B)를 수주 선행지표로 사용하는 것이 더 적절.</div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑥ 총 백로그 추이 (Product + Service, $B)</p>
+      <canvas id="chartBacklog" height="90"></canvas>
+      <p class="chart-note">연말 확정치: FY2021 $8.5B, FY2022 $10.0B, FY2023 ~$11B(추정), FY2024 $12.1B($2.5B+$9.6B), FY2025 $20B($6B+$14B). 중간 분기는 추정값(점선). 출처: 각 연도 FY 8-K 공시.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑦ Product 백로그 vs 서비스 백로그 ($B)</p>
+      <canvas id="chartBacklogSplit" height="100"></canvas>
+      <p class="chart-note">출처: FY2024 IR (Product $2.5B, Service $9.6B), FY2025 IR (Product ~$6B, Service ~$14B). Q1 2026 이후 Product 백로그 수치 미공개 — 공식 발표 시 업데이트 필요.</p>
+    </div>
+
+    <h3 class="sub">사업분야별 백로그 구성</h3>
+    <div class="card">
+      <p style="font-size:13px;margin-bottom:10px;">공식 공시상 데이터센터 vs C&I 비중은 수치로 분리 공시되지 않음. 어닝콜 발언 기반 정성적 정보만 확인 가능.</p>
+      <table>
+        <thead><tr><th>분기</th><th>데이터센터 관련 발언</th><th>C&I 관련 발언</th><th>출처</th></tr></thead>
+        <tbody>
+          <tr><td>Q1 2026</td><td>데이터센터 백로그 50%+ 가 Oracle 外 고객 (하이퍼스케일러, 네오클라우드, 코로케이션)</td><td>"C&I 수요도 급증 중" 언급</td><td>Q1 2026 어닝콜 CEO 발언</td></tr>
+          <tr><td>Q4 2025</td><td>하이퍼스케일러 고객 수 6개+(2024년 1개 대비)</td><td>C&I 백로그 YoY +135%</td><td>Q4 2025 어닝콜</td></tr>
+          <tr><td>Q3 2025</td><td>7개 AI 에코시스템 채널에서 파이프라인 확보</td><td>데이터 없음</td><td>Q3 2025 어닝콜</td></tr>
+          <tr><td>FY2024</td><td>하이퍼스케일러 1개(Oracle)</td><td>C&I 다수 고객 유지</td><td>FY2024 IR</td></tr>
+        </tbody>
+      </table>
+      <div class="warn" style="margin-top:8px;"><div class="h">⚠</div>수치 기반 사업분야별 백로그 비중은 공식 공시에 없음. 위 내용은 어닝콜 발언 기반 정성 정보로, 투자자 발표 시 "공시 미분리"임을 명시 권장.</div>
+    </div>
+
+    <h3 class="sub">Book-to-Bill</h3>
+    <p style="font-size:12px;color:var(--muted);">Bloom Energy는 Book-to-Bill 비율을 공식 지표로 공시하지 않음. 아래는 공시된 제품 백로그 변화량과 제품 매출을 이용한 추정치. <strong>추정치이므로 단정 해석 금지.</strong></p>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>기간</th><th>Product 백로그 (기초)</th><th>Product 백로그 (기말)</th><th>Product 매출 (기간)</th><th>추정 Book-to-Bill</th><th>비고</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>FY2024</td><td class="num">~$2.5B(추정)</td><td class="num">$2.5B</td><td class="num">$1.19B</td><td class="num">~1.0x</td><td>Oracle 계약 전, 수주=소진 균형</td></tr>
+        <tr><td>FY2025</td><td class="num">$2.5B</td><td class="num">~$6.0B</td><td class="num">$1.52B</td><td class="num up">~2.3x</td><td>Oracle 2.8GW 계약 인식 효과</td></tr>
+        <tr><td>참고: Q1 2026</td><td class="num">~$6.0B</td><td class="num">미공개</td><td class="num">$653M</td><td class="num">–</td><td>분기 백로그 미공시</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 백로그 해석 포인트</div>FY2025 Product 백로그 2.5배 급증(+$3.5B net)은 Oracle 2.8GW 계약이 대부분을 설명. 이 계약이 1회성인지 반복 수주 구조인지가 핵심. Q1 2026 어닝콜에서 "데이터센터 백로그의 50%+가 Oracle 外 고객"이라는 발언이 확인되면, 수주 다변화 구조로의 전환이 진행 중임을 의미. 서비스 백로그 $14B은 향후 10년+ 서비스 수익의 가시성을 제공하나, 마진 수준(현재 18%)이 유지되는지가 실질 가치 판단의 열쇠. <em>(근거: FY2025 IR, Q1 2026 어닝콜. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 구 5번이었던 계약·딜 → 6번으로 변경 -->
+  <section id="deals">
+    <h2 class="sec">5. 주요 계약·딜</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Oracle × Bloom Energy — 2.8GW SOFC 공급 + $4억 워런트</div>
+      <p style="font-size:13px;margin:6px 0;">뉴멕시코 Project Jupiter 포함 복수 사이트, 역대 최대 단일 온사이트 전력 공급 계약. Oracle이 Bloom 주식 $4억 매입 워런트 수령. Q1 2026 납품 시작(55일 만에 완료, 90일 목표 초과 달성).</p>
+      <div class="deal-meta">출처: CNBC 2026-04-14 · <a href="https://www.cnbc.com/2026/04/14/oracle-orcl-bloom-energy-be-stock-data-center-ai-power.html" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>AEP 자회사 — $26.5억 SOFC 옵션 행사 (900MW 일부)</div>
+      <p style="font-size:13px;margin:6px 0;">2024-11 체결 초기 계약(100MW)의 대규모 옵션 행사 확정. 유틸리티의 BTM 연료전지 대규모 인프라 투자 사례.</p>
+      <div class="deal-meta">출처: Seeking Alpha 2026-01-30 · <a href="https://seekingalpha.com/article/4862022-bloom-energy-solving-the-ai-data-center-power-bottleneck" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Brookfield Asset Management — $5B AI 인프라 파트너십</div>
+      <p style="font-size:13px;margin:6px 0;">Bloom을 글로벌 포트폴리오의 "preferred on-site provider"로 지정. 초기 $5B 투자. 유럽 AI 추론 데이터센터 프로젝트 연내 발표 예정(Q3 2025 어닝콜 기준).</p>
+      <div class="deal-meta">출처: Bloom Energy IR Q3 2025 어닝콜 · 2025-10-28</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Equinix — 데이터센터 온사이트 전력 공급</div>
+      <p style="font-size:13px;margin:6px 0;">코로케이션 1위 사업자. 세부 계약 규모는 비공개.</p>
+      <div class="deal-meta">출처: Bloom Energy IR / Q3 2025 어닝콜 언급</div>
+    </div>
+  </section>
+
+  <!-- 6. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">6. 핵심 포인트 & 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (12개 분기 펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>매출 성장 가속:</strong> FY2022 $1.2B → FY2025 $2.0B → Q1 2026 연간환산 $3.0B+. 특히 Oracle 납품 시작 이후 분기 매출이 수직 상승(Q4 2024 $572M, Q1 2026 $751M). (출처: 각 분기 8-K)</li>
+        <li><strong>마진 구조 전환:</strong> GPM이 Q1 2024 18% → Q4 2024 38.3% → Q1 2026 30%+로 구조적 개선. 제품 비용 절감 + 서비스 마진 흑자화(8분기 연속) 병행. (출처: 각 분기 IR Press Release)</li>
+        <li><strong>GAAP vs 비GAAP 괴리:</strong> GAAP 순이익은 여전히 대부분 적자(이자비용·파생상품 손실 영향). 비GAAP 영업이익은 FY2025 $221M으로 크게 개선. 투자자 평가 시 비GAAP 지표 중심으로 판단 필요.</li>
+        <li><strong>백로그 폭증:</strong> 2022년 $10B → 2025년 $20B+. 하이퍼스케일러 고객 수 2024년 1개 → 2025년 말 6개+(출처: Q4 2025 어닝콜).</li>
+        <li><strong>서비스 attach rate 100%:</strong> 제품 판매와 서비스가 100% 연동. 장기 반복 수익 기반 구축.(출처: Q1 2026 어닝콜)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — "납기 55일"이 만드는 구조적 해자</div>
+      Oracle Project Jupiter 납품을 55일 만에 완료(Q1 2026 어닝콜). GE Vernova 터빈 납기 3년+ 대비 압도적. 이 납기 우위는 단순 경쟁 우위가 아니라, AI 데이터센터가 "전력 조달 속도"를 최우선 과제로 삼는 구조에서 교체 불가능한 공급자(sole provider)로 고착화되는 메커니즘. 시장은 이를 단기 계약으로 평가하는 경향이 있지만, master contract 구조(반복 발주)가 확인되면 재평가 필요. <em>(근거: Q1 2026 어닝콜, CEO 발언. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — 서비스 마진 구조 개선의 복리 효과</div>
+      서비스 마진이 2024년 초 0~5%에서 Q1 2026 18%로 급등. 서비스 attach rate 100% 유지 시, 제품 판매 누적이 곧 서비스 매출 누적으로 전환됨. 8분기 연속 흑자 + 마진 개선 추세는 장기적으로 제품 사업 변동성을 완충하는 안정적 수익 기반이 됨. 이 개선이 영구적인지(원가 구조 개선) vs 일시적인지(favorable mix)가 핵심 판단 포인트. <em>(근거: Q4 2025, Q1 2026 IR Press Release. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — Oracle 외 고객 다변화 진행 중</div>
+      Q1 2026 어닝콜에서 "현재 데이터센터 백로그의 절반 이상이 Oracle 외 고객"이라고 CEO가 명시. 하이퍼스케일러 6개+, 네오클라우드, 코로케이션으로 확산. Oracle 의존도 리스크가 시장에서 과도하게 우려될 경우, 고객 다변화가 확인되면 재평가 트리거가 될 수 있음. <em>(근거: Q1 2026 어닝콜, CEO 발언)</em>
+    </div>
+  </section>
+
+  <!-- 7. 컨콜 정리 -->
+  <section id="calls">
+    <h2 class="sec">7. 컨콜 정리 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: The Motley Fool 공식 어닝콜 트랜스크립트 / Bloom Energy IR 공시 Press Release. 4개 분기 모두 확보.</p>
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q1 2026</span>
+        <span class="ctitle">2026-04-28 · 매출 $751M, 가이던스 대폭 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$751.1M (+130% YoY)</span></div>
+          <div><span class="k">비GAAP GPM</span><span class="v">31.5% (+280bps YoY)</span></div>
+          <div><span class="k">비GAAP OPM</span><span class="v">17.3% (+1,300bps)</span></div>
+          <div><span class="k">비GAAP EPS</span><span class="v">$0.44 (vs $0.03 전년)</span></div>
+          <div><span class="k">현금</span><span class="v">$2.52B</span></div>
+          <div><span class="k">2026 매출 가이던스</span><span class="v">$3.4~$3.8B (상향)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Oracle Project Jupiter 납품 55일 완료(90일 목표 조기 달성). 전체 데이터센터 백로그의 50%+ 가 Oracle 外 고객.</li>
+          <li>2026 가이던스를 $3.1~3.3B에서 $3.4~3.8B로 대폭 상향. 비GAAP 영업이익 $600~750M, EPS $1.85~2.25.</li>
+          <li>제조 설비 5GW/년 달성, 분기마다 수백 MW씩 추가 확대 가능 구조로 전환.</li>
+          <li>Q2 매출이 Q1 이상 될 것이라고 명시 → 연간 $3.4B+ 하단 레인지 근거.</li>
+          <li>서비스 마진 18%(4분기 연속 두 자릿수). 100% attach rate 유지.</li>
+        </ul>
+        <div class="src">출처: Motley Fool Q1 2026 Transcript · <a href="https://www.fool.com/earnings/call-transcripts/2026/04/28/bloom-energy-be-q1-2026-earnings-transcript/" target="_blank">링크</a></div>
+        <div class="transcript">
+[전문 요약 번역 — 컨콜 톤]
+
+사회자: 블룸 에너지 2026년 1분기 어닝콜을 시작하겠습니다. KR Sridhar CEO, Simon Edwards CFO가 참석하였습니다.
+
+KR Sridhar (CEO):
+"여러분, 우리는 오늘 놀라운 숫자들을 들고 왔습니다. Q1 매출 7억 5천만 달러, 상장 이후 가장 빠른 분기별 성장률입니다. 가장 중요한 것은 — 우리가 이제 돈을 벌고 있다는 겁니다. 영업이익 17%, 역사상 첫 Q1 영업 현금흐름 플러스. Oracle의 프로젝트 주피터를 55일 만에 완료했습니다. 약속은 90일이었는데, 고객이 그걸 보고 더 많이 주문합니다.
+
+현재 데이터센터 백로그의 절반 이상이 오라클 외 고객입니다 — 다른 하이퍼스케일러, 네오클라우드, 코로케이션. 우리가 단일 고객 의존이라는 우려, 이 숫자가 그 답입니다.
+
+제조 용량 5GW — 이제 수백 메가와트를 매 분기마다 추가할 수 있습니다. 에피소드 방식이 아니라 연속 방식으로. 우리는 이미 AI 인프라의 근간이 되고 있습니다."
+
+Simon Edwards (CFO):
+"비GAAP 기준으로 말씀드립니다. 매출 7억 5천백만 달러, YoY +130%. 제품 매출 사상 최고치. 서비스 마진 18%, 4분기 연속 두 자릿수. 현금 25억 2천만 달러 — 강력한 컬렉션과 고객 선불 덕분입니다.
+
+2026 가이던스를 34~38억 달러로 상향합니다. 중간값 기준 YoY +80%. 비GAAP 매출총이익률 34%, 비GAAP 영업이익 6~7.5억 달러."
+
+[Q&A 주요 발언]
+
+Q: 서비스 마진 지속 가능성?
+A(CEO): "100% attach rate — 제품을 팔면 서비스가 따라옵니다. 서비스 마진 개선은 구조적 원가 절감 결과입니다."
+
+Q: Oracle 의존도 우려?
+A(CEO): "백로그의 절반 이상이 Oracle 외 고객이라고 이미 말했습니다. Master contract 구조로 반복 발주가 됩니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q4 2025</span>
+        <span class="ctitle">2026-02-05 · 연간 $2B 달성, 2026 첫 가이던스 $3.1~3.3B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">Q4 매출</span><span class="v">$777.7M (+35.9% YoY)</span></div>
+          <div><span class="k">연간 매출</span><span class="v">$2.02B (+37.3%)</span></div>
+          <div><span class="k">비GAAP GPM</span><span class="v">31.9% (Q4) / 30.3% (FY)</span></div>
+          <div><span class="k">비GAAP OPM</span><span class="v">$133M (Q4) / $221M (FY)</span></div>
+          <div><span class="k">비GAAP EPS</span><span class="v">$0.45 (Q4)</span></div>
+          <div><span class="k">2026 초기 가이던스</span><span class="v">$3.1~3.3B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>"온사이트 전력이 최후 수단에서 필수 인프라로 전환됐다" — CEO KR Sridhar.</li>
+          <li>하이퍼스케일러 고객 수: 2024년 말 1개 → 2025년 말 6개+. C&I 백로그 YoY +135%.</li>
+          <li>서비스 8분기 연속 비GAAP 흑자. 제품 마진 37%, 서비스 마진 ~20%.</li>
+          <li>2026 생산능력 목표: 연간 2GW 이상(당시 기준). 추후 5GW로 재설정.</li>
+          <li>2차 현금흐름 양전환 달성(2024년에 이어). FCF 흑자 기조 유지.</li>
+        </ul>
+        <div class="src">출처: Motley Fool Q4 2025 Transcript · <a href="https://www.fool.com/earnings/call-transcripts/2026/02/05/bloom-energy-be-q4-2025-earnings-call-transcript/" target="_blank">링크</a></div>
+        <div class="transcript">
+[전문 요약 번역 — 컨콜 톤]
+
+KR Sridhar (CEO):
+"2025년은 블룸 역사상 가장 중요한 해였습니다. 연간 20억 달러 돌파. 온사이트 전력은 이제 '마지막 선택'이 아니라 '핵심 필수 인프라'가 됐습니다. 1년 전 하이퍼스케일러 고객이 1개였는데, 지금은 6개 이상입니다. C&I 백로그도 135% 성장.
+
+2026년은 더 큽니다. 첫 가이던스는 31~33억 달러지만, 이 숫자는 우리 파이프라인의 일부만 반영합니다."
+
+CFO:
+"Q4 매출 7억 8천만 달러. 연간 매출 20억 달러. 비GAAP 영업이익 연간 2억 2천만 달러, 전년 1억 달러에서 2배 이상 성장. 잉여현금흐름 2년 연속 흑자."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q3 2025</span>
+        <span class="ctitle">2025-10-28 · 4분기 연속 분기 매출 신기록, Brookfield $5B 파트너십</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$519.0M (+57.1% YoY)</span></div>
+          <div><span class="k">비GAAP GPM</span><span class="v">30.4% (+510bps YoY)</span></div>
+          <div><span class="k">비GAAP 영업이익</span><span class="v">$46.2M (vs $8.1M 전년)</span></div>
+          <div><span class="k">비GAAP EPS</span><span class="v">$0.15 (vs -$0.01 전년)</span></div>
+          <div><span class="k">현금</span><span class="v">$627M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Brookfield $5B AI 인프라 파트너십 발표. "preferred on-site provider" 지정.</li>
+          <li>7개 AI 에코시스템 채널(Oracle, Amazon/AEP, Equinix, CoreVeev, 글로벌 가스공급사, 인프라 펀드 등)에서 고객 및 파이프라인 확보 확인.</li>
+          <li>제품 마진 35.9%, 서비스 마진 14.4% — 2분기 연속 서비스 두 자릿수.</li>
+          <li>재고 수준 높음 → Q4에 출하 가속화하여 정상화 예정(실제로 Q4 매출 $777M 실현).</li>
+        </ul>
+        <div class="src">출처: Motley Fool Q3 2025 Transcript · <a href="https://www.fool.com/earnings/call-transcripts/2025/10/28/bloom-energy-be-q3-2025-earnings-call-transcript/" target="_blank">링크</a></div>
+        <div class="transcript">
+[전문 요약 번역 — 컨콜 톤]
+
+KR Sridhar (CEO):
+"블룸은 지금 일생일대의 기회 앞에 있습니다. 전력 생성 방식을 재정의하는 기회. Brookfield가 우리를 '선호 온사이트 공급자'로 지정했고, $50억을 약속했습니다. 7개 AI 에코시스템 채널 — 하이퍼스케일러, 코로케이션, 인프라 펀드 — 에서 모두 확인된 파이프라인을 보유하고 있습니다."
+
+CFO:
+"Q3 매출 5억 1천9백만 달러, +57% YoY. 비GAAP 영업이익 4천6백만 달러. 재고는 Q4에 출하 가속화로 정상화될 것입니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q2 2025</span>
+        <span class="ctitle">2025-07 · 매출 $401M, 서비스 두 자릿수 마진 첫 달성</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$401.2M (+19.5% YoY)</span></div>
+          <div><span class="k">비GAAP GPM</span><span class="v">~25% 추정</span></div>
+          <div><span class="k">순손실</span><span class="v">-$42.6M (-31% 개선 YoY)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>서비스 마진 처음으로 두 자릿수 달성 — 구조적 개선 시작점.</li>
+          <li>AI 데이터센터 파이프라인 사상 최대 수준으로 성장 중 언급.</li>
+          <li>EPS 미스(-$0.18 vs 예상): 비용 증가로 인한 단기 압박. 매출은 컨센서스 +5.9% 상회.</li>
+          <li>Oracle 파이프라인 관련 생산 레벨로딩(level-loading) 진행 중.</li>
+        </ul>
+        <div class="src">출처: Simply Wall St Q2 2025 데이터 · Bloom Energy IR (전체 트랜스크립트 Motley Fool 유료 회원용)</div>
+        <div class="transcript">
+[요약 — 전체 트랜스크립트 미확보, 공시 기반 요약]
+
+Q2 2025는 서비스 마진이 처음으로 두 자릿수를 기록한 분기로, Bloom 사업 모델 전환의 이정표. 매출 성장(+19.5%)은 가속되었으나, 생산 레벨로딩 비용으로 단기 EPS는 컨센서스 하회. 경영진은 이를 "의도적인 재고 축적"으로 설명하며 Q3/Q4 출하 가속화 예고(실제로 실현됨). AI 데이터센터 파이프라인은 사상 최대라고 언급.
+
+※ 전체 트랜스크립트: Motley Fool 유료 서비스에서 제공. 공개 범위에서만 요약.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+/* ── 차트 공통 설정 ── */
+const q = ['Q2\'23','Q3\'23','Q4\'23','Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26'];
+const rev = [335.8,400.3,356.9,235.5,335.8,330.4,572.4,326.0,401.2,519.0,777.7,751.1];
+const opi = [-53.0,-61.7,12.9,-66.7,-21.6,-9.7,104.7,-19.1,-3.4,7.8,87.5,72.2];
+const gpm = [17.2,21.6,25.9,18.0,22.3,23.8,38.3,27.2,28.3,29.2,31.9,30.0];
+const opm = [-15.8,-15.4,3.6,-28.3,-6.4,-2.9,18.3,-5.9,-0.8,1.5,11.2,9.6];
+
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+/* ① 매출 + 영업이익 */
+new Chart(document.getElementById('chartRevOp'),{type:'bar',data:{labels:q,datasets:[
+  {label:'매출 (좌축, $M)',data:rev,backgroundColor:'rgba(37,99,168,.7)',yAxisID:'y'},
+  {label:'영업이익 (우축, $M)',data:opi,type:'line',borderColor:'#1f7a4d',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:opi.map(v=>v>=0?'#1f7a4d':'#c0392b'),tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'영업이익 $M'}}}}});
+
+/* ② GPM + OPM */
+new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'GPM %',data:gpm,borderColor:'#2563a8',backgroundColor:'rgba(37,99,168,.1)',fill:true,tension:.3,pointRadius:4},
+  {label:'OPM %',data:opm,borderColor:'#1f7a4d',backgroundColor:'rgba(31,122,77,.1)',fill:true,tension:.3,pointRadius:4,borderDash:[5,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ③ 사업부별 매출 */
+const prodRev = [280,340,315,195,282,277,498,212,330,443,677,653];
+const svcRev  = [55,60,55,52,54,53,75,65,71,76,87,62];
+const elecRev = [0,0,0,0,0,0,0,49,0,0,14,36]; // electricity/other
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:q,datasets:[
+  {label:'Product',data:prodRev,backgroundColor:'rgba(37,99,168,.75)',stack:'s'},
+  {label:'Service',data:svcRev,backgroundColor:'rgba(31,122,77,.75)',stack:'s'},
+  {label:'Electricity/기타',data:elecRev,backgroundColor:'rgba(180,180,180,.6)',stack:'s'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,grid,title:{display:true,text:'$M'}}}}});
+
+/* ④ 사업부별 비GAAP 마진 */
+const prodM = [null,null,30.4,null,21.8,25.2,39.3,28.7,null,35.9,37.0,35.3];
+const svcM  = [null,null,null,null,null,null,0.5,4.8,null,14.4,16.9,18.0];
+new Chart(document.getElementById('chartSegMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'Product 비GAAP 마진 %',data:prodM,borderColor:'#2563a8',tension:.3,pointRadius:5,spanGaps:true},
+  {label:'Service 비GAAP 마진 %',data:svcM,borderColor:'#1f7a4d',tension:.3,pointRadius:5,spanGaps:true,borderDash:[4,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* 파이차트 Q1 2026 */
+new Chart(document.getElementById('chartPie26'),{type:'doughnut',data:{labels:['Product ($653M)','Service ($62M)','Electricity/기타 ($36M)'],datasets:[{data:[653,62,36],backgroundColor:['#2563a8','#1f7a4d','#9ca3af']}]},options:{plugins:{legend:{position:'bottom'}}}});
+new Chart(document.getElementById('chartPie24'),{type:'doughnut',data:{labels:['Product ($1,185M)','Service ($219M)','Electricity ($70M)'],datasets:[{data:[1185,219,70],backgroundColor:['#2563a8','#1f7a4d','#9ca3af']}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+/* ⑤ 주가 (개략값) */
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:['Jan\'25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'26','Feb','Mar','Apr','May','Jun\'26'],datasets:[{label:'주가 (USD, 개략값)',data:[14,13,12,11,10,9,11,14,17,22,25,28,55,80,160,220,280,263],borderColor:'#2563a8',backgroundColor:'rgba(37,99,168,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+/* ⑥ 총 백로그 추이 */
+const blPeriods = ['FY2021','FY2022','FY2023E','FY2024','FY2025'];
+const blTotal   = [8.5, 10.0, 11.0, 12.1, 20.0];
+const blTotalSolid = [8.5, 10.0, null, 12.1, 20.0]; // 확정치
+const blTotalEst   = [null, null, 11.0, null, null];  // 추정치
+new Chart(document.getElementById('chartBacklog'),{type:'bar',data:{labels:blPeriods,datasets:[
+  {label:'확정 총 백로그 ($B)',data:blTotalSolid,backgroundColor:'rgba(37,99,168,.7)',borderRadius:4},
+  {label:'추정값',data:blTotalEst,backgroundColor:'rgba(37,99,168,.25)',borderRadius:4,borderWidth:1,borderColor:'rgba(37,99,168,.5)',borderDash:[4,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}},x:{stacked:false}}}});
+
+/* ⑦ Product vs Service 백로그 */
+const blYears = ['FY2021','FY2022','FY2024','FY2025'];
+const blProd  = [null, null, 2.5, 6.0];
+const blSvc   = [null, null, 9.6, 14.0];
+const blOld   = [8.5, 10.0, null, null]; // 분리 전 합산
+new Chart(document.getElementById('chartBacklogSplit'),{type:'bar',data:{labels:blYears,datasets:[
+  {label:'Product 백로그 ($B)',data:blProd,backgroundColor:'rgba(37,99,168,.75)',stack:'s'},
+  {label:'Service 백로그 ($B)',data:blSvc,backgroundColor:'rgba(31,122,77,.75)',stack:'s'},
+  {label:'합산(분리 전)',data:blOld,backgroundColor:'rgba(150,150,150,.5)',stack:'s'}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>ctx.raw?`$${ctx.raw}B`:''}}},scales:{x:{stacked:true},y:{stacked:true,grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+
+/* ── 네비 활성화 ── */
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+
+/* ── 하이라이트 ── */
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
