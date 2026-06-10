@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전력 데스크 — 데이터센터 전력 뉴스 로그</title>
+<style>
+  :root{
+    --ink:#13171e; --ink-2:#1c222c; --paper:#f6f7f9; --card:#ffffff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#d9892b;
+    --t-deal:#1f7a4d; --t-loi:#b9772a; --t-say:#2563a8; --t-rumor:#7a828c;
+    --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  header.mast{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;border-bottom:1px solid #000;}
+  .mast-inner{max-width:860px;margin:0 auto;padding:16px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .brand{display:flex;flex-direction:column;gap:2px;flex:1 1 auto;}
+  .brand .title{font-size:18px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:9px;}
+  .spark{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(217,137,43,.6);animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,137,43,.55)}70%{box-shadow:0 0 0 7px rgba(217,137,43,0)}100%{box-shadow:0 0 0 0 rgba(217,137,43,0)}}
+  .brand .sub{font-size:12px;color:#9aa6b7;font-family:var(--mono);}
+  .mast-meta{font-family:var(--mono);font-size:12px;color:#cfd6e0;text-align:right;}
+  .mast-meta b{color:var(--accent);font-size:15px;}
+  .search{flex:1 1 220px;min-width:160px;}
+  .search input{width:100%;background:var(--ink-2);border:1px solid #2c3542;color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--sans);}
+  .search input::placeholder{color:#6f7a89}
+  .search input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  main{max-width:860px;margin:0 auto;padding:26px 22px 80px;}
+  .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px;}
+  .toolbar button{background:none;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:var(--sans);}
+  .toolbar button:hover{border-color:var(--accent);color:var(--accent)}
+  details.day{position:relative;border-left:2px solid var(--line);margin-left:8px;padding:2px 0 22px 26px;}
+  details.day:last-child{padding-bottom:6px}
+  details.day::before{content:"";position:absolute;left:-7px;top:14px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--muted);}
+  details.day[open]::before,details.day:first-of-type::before{border-color:var(--accent);background:var(--accent);}
+  summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:12px;padding:6px 0;}
+  summary::-webkit-details-marker{display:none}
+  summary .date{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--ink);}
+  summary .dow{font-family:var(--mono);font-size:12px;color:var(--muted);}
+  summary .latest{font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;}
+  summary .chev{margin-left:auto;color:var(--muted);font-size:12px;transition:transform .2s;}
+  details[open] summary .chev{transform:rotate(90deg)}
+  .day-body{padding-top:4px}
+  .top3{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin:8px 0 14px;}
+  .top3 .h{font-size:12px;font-weight:800;color:var(--ink);letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px;}
+  .top3 ol{margin:0;padding-left:18px} .top3 li{font-size:14px;margin:4px 0;line-height:1.5}
+  .cat{margin:14px 0 0} .cat-h{font-size:14px;font-weight:800;color:var(--ink);margin:0 0 4px}
+  .item{border-left:3px solid var(--line);padding:7px 0 7px 12px;margin:6px 0}
+  .item.deal{border-color:var(--t-deal)} .item.loi{border-color:var(--t-loi)}
+  .item.say{border-color:var(--t-say)} .item.rumor{border-color:var(--t-rumor)}
+  .item .line{font-size:14px;font-weight:600;color:#171b22;line-height:1.45}
+  .item .meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px}
+  .item .meta a{color:var(--t-say);text-decoration:none} .item .meta a:hover{text-decoration:underline}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;vertical-align:middle;letter-spacing:.3px}
+  .tag.deal{background:var(--t-deal)} .tag.loi{background:var(--t-loi)}
+  .tag.say{background:var(--t-say)} .tag.rumor{background:var(--t-rumor)}
+  .none{font-size:12px;color:#9aa1ab;margin:10px 0 0}
+  .take{background:#f1f5fb;border-radius:9px;padding:12px 15px;margin:14px 0 0}
+  .take .h{font-size:12px;font-weight:800;color:#1a2942;margin-bottom:5px}
+  .take p{margin:0;font-size:13px;color:#33373f;line-height:1.55}
+  .legend{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+  .empty{display:none;text-align:center;color:var(--muted);padding:50px 10px;font-size:14px}
+  footer{max-width:860px;margin:0 auto;padding:0 22px 50px;color:#9aa1ab;font-size:11px;line-height:1.6;font-family:var(--mono)}
+  @media (max-width:560px){.mast-meta{text-align:left} .mast-inner{gap:10px} details.day{padding-left:20px}}
+  @media (prefers-reduced-motion:reduce){.spark{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mast-inner">
+    <div class="brand">
+      <div class="title"><span class="spark"></span>전력 데스크</div>
+      <div class="sub">AI 데이터센터 전력 추적 · 매일 09:00 KST 갱신</div>
+    </div>
+    <div class="search"><input id="q" type="search" placeholder="검색: 기업·키워드 (예: Bloom, 터빈, FERC)"></div>
+    <div class="mast-meta"><b id="dayCount">–</b>일 누적</div>
+  </div>
+</header>
+
+<main>
+  <div class="legend">
+    <span class="tag deal">계약</span><span class="tag loi">LOI/MOU</span>
+    <span class="tag say">발언</span><span class="tag rumor">루머/추정</span>
+  </div>
+  <div class="toolbar">
+    <button id="expandAll">전체 펼치기</button>
+    <button id="collapseAll">전체 접기</button>
+  </div>
+
+  <div id="log">
+  <!-- NEW_DAY_INSERT : Routine은 이 줄 바로 아래에 새 블록 삽입. 직전 최신 블록에서 open 속성과 latest 태그 제거할 것 -->
+
+    <details class="day" open>
+      <summary>
+        <span class="date">2026-06-09</span><span class="dow">TUE</span>
+        <span class="latest">최신</span><span class="chev">▶</span>
+      </summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>Bloomberg, AI 데이터센터 전력 한계 임박 경고 — 차세대 AI 팩토리, 전력 생성 한계에 직면</li>
+          <li>덴마크 Energinet, 데이터센터·배터리·P2X 과부하로 신규 그리드 연결 전면 중단</li>
+          <li>텍사스, 노던버지니아 제치고 세계 1위 데이터센터 시장으로 부상 (5월 기준)</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">A. 하이퍼스케일러 전력 발언·계약</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Bloomberg 보도: AI 데이터센터, 전력 생성의 물리적 한계에 직면. Nvidia 차세대 칩 수요로 기존 대비 수배의 전력 소비하는 신세대 AI 팩토리 필요</div>
+            <div class="meta">Bloomberg · 2026-06-01 · <a href="https://www.bloomberg.com/graphics/2026-ai-data-center-redesign/" target="_blank">링크</a></div></div>
+        </div>
+        <div class="cat"><p class="cat-h">F. 그리드·정책</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>덴마크 Energinet, 데이터센터·배터리·Power-to-X 프로젝트의 폭증하는 요청으로 대형 전력 소비자 신규 그리드 연결 협약 전면 중단</div>
+            <div class="meta">Data Center Knowledge · 2026-06-05 · <a href="https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-june-2026" target="_blank">링크</a></div></div>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>오클라호마주, "Data Center Consumer Ratepayer Protection Act" 제정 — 대형 AI 데이터센터 프로젝트가 인프라 비용을 직접 부담하도록 의무화, 주거용 고객 전기요금 전가 차단</div>
+            <div class="meta">Data Center Knowledge · 2026-06-05 · <a href="https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-june-2026" target="_blank">링크</a></div></div>
+        </div>
+        <p class="none">※ 그 외 카테고리(B·C·D·E·G) 특이사항 없음</p>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>덴마크 그리드 연결 중단은 유럽에서도 계통 포화가 가시화되고 있음을 보여주는 팩트. 오클라호마 법안은 데이터센터가 전력 인프라 비용을 내재화해야 하는 규제 방향을 제시 — 이는 BTM 온사이트 발전의 경제성 논리를 강화하는 방향.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-06-08</span><span class="dow">MON</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>하이퍼스케일러 5개사 2026년 합산 Capex $6,350억 이상 전망 — 대부분 AI 인프라 집중</li>
+          <li>Morgan Stanley, 하이퍼스케일러 2026년 차입 $4,000억 초과 전망 (2025년의 2.5배)</li>
+          <li>Amazon 단독 Capex, 미국 상장 에너지 섹터 전체 지출 규모 초과 (Morningstar)</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">A. 하이퍼스케일러 전력 발언·계약</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Microsoft·Google·Amazon·Meta·OpenAI 5개사 2026년 합산 Capex $6,350억+ 전망. 75% 이상이 AI 인프라 집중. 2025년 대비 67% 이상 증가 (Futurum Group, CreditSights, MUFG 추산)</div>
+            <div class="meta">RD World Online · 2026-03-05 · <a href="https://www.rdworldonline.com/white-house-wins-pledge-from-tech-firms-including-amazon-google-meta-and-microsoft-to-fund-power-for-ai-data-centers/" target="_blank">링크</a></div></div>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Morgan Stanley: 하이퍼스케일러 2026년 차입 $4,000억 초과 전망 — 2025년 $1,650억의 2.4배. JPMorgan은 이번 10년간 데이터센터·AI 총 투자 $5조 전망</div>
+            <div class="meta">RD World Online · 2026-03-05 · <a href="https://www.rdworldonline.com/white-house-wins-pledge-from-tech-firms-including-amazon-google-meta-and-microsoft-to-fund-power-for-ai-data-centers/" target="_blank">링크</a></div></div>
+        </div>
+        <p class="none">※ 그 외 카테고리(B·C·D·E·F·G) 특이사항 없음</p>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>하이퍼스케일러의 Capex 규모가 미국 에너지 섹터 전체를 초과하는 수준 — 이 자본이 전력 조달로 연결될 때 BTM 발전 시장의 TAM(총 유효 시장)이 얼마나 커질 수 있는지를 보여주는 숫자.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-06-05</span><span class="dow">FRI</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>Microsoft·Google·Amazon·Meta, 데이터센터 청정기술 스타트업 투자 이니셔티브(DCII) 출범</li>
+          <li>4개사 Q1 2026 합산 Capex $1,300억 — 전년 대비 71% 증가</li>
+          <li>NEMA: 향후 10년간 데이터센터 전력 소비 300% 증가 전망</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">A. 하이퍼스케일러 전력 발언·계약</p>
+          <div class="item deal"><div class="line"><span class="tag deal">계약</span>Microsoft·Google·Amazon·Meta, Elemental Impact 주도 Data Center Innovation Initiative(DCII) 참여 — 냉각·에너지저장·저탄소 건축자재 분야 스타트업에 건당 $50만~$500만 투자. 목적: 데이터센터 전력·냉각·탄소 발자국 감축 기술 실증</div>
+            <div class="meta">Bisnow · 2026-05-27 · <a href="https://www.bisnow.com/national/news/data-center-sustainability-operations/nonprofit-investor-tech-giants-environmentally-friendly-data-center-initiative-134742" target="_blank">링크</a></div></div>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Meta VP Nat Sahlstrom: "데이터센터는 청정에너지·지속가능 건축자재 혁신의 촉매 역할을 할 수 있는 독보적 위치에 있다"</div>
+            <div class="meta">Data Centre Magazine · 2026-05-27 · <a href="https://datacentremagazine.com/news/big-tech-joins-the-data-center-innovation-initiative" target="_blank">링크</a></div></div>
+        </div>
+        <p class="none">※ 그 외 카테고리(B·C·D·E·F·G) 특이사항 없음</p>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>하이퍼스케일러들이 직접 청정기술 실증 프로그램에 참여한다는 것은 온사이트 전력·냉각 기술의 수요 검증자가 되겠다는 신호. Scope 3 배출 압박과 맞물려 BTM 청정 발전 기술의 채택 속도를 높이는 요인.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-06-02</span><span class="dow">TUE</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>GE Vernova 가스터빈 백로그 100GW — 미국 2024년 전체 신규 발전 설비의 3배 이상</li>
+          <li>Wärtsilä·INNIO·Caterpillar, 가스터빈 슬롯 부족으로 GW 규모 엔진 수주 흡수 중</li>
+          <li>Oracle × Bloom Energy 2.8GW 계약 — 역대 최대 규모 온사이트 전력 공급 계약</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">C. 발전·전력 설비 (터빈·엔진)</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>GE Vernova 가스터빈 백로그 100GW 확인 — 2026~2027년 슬롯 매진, 2028년도 90% 이상 예약 완료. 신규 발주 시 납기 3년 이상 소요</div>
+            <div class="meta">Avanza Energy Substack · 2026-06-02 · <a href="https://avanzaenergy.substack.com/p/the-150-billion-private-grid-how" target="_blank">링크</a></div></div>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Wärtsilä, 텍사스 데이터센터 단일 프로젝트에서 790MW 왕복엔진(RICE) 수주. RICE 엔진: 납기 12~18개월(대형 터빈 대비 5년+ 短), 30초 내 동기화, 유닛별 단계 설치 가능</div>
+            <div class="meta">Avanza Energy Substack · 2026-06-02 · <a href="https://avanzaenergy.substack.com/p/the-150-billion-private-grid-how" target="_blank">링크</a></div></div>
+        </div>
+        <div class="cat"><p class="cat-h">D. 연료전지</p>
+          <div class="item deal"><div class="line"><span class="tag deal">계약</span>Oracle × Bloom Energy, 총 2.8GW 연료전지 공급 계약 (4월 공식 발표) — 역대 최대 규모 단일 온사이트 전력 공급 계약. 뉴멕시코 Project Jupiter(2.45GW)를 포함한 복수 사이트 대상</div>
+            <div class="meta">Yahoo Finance / CNBC · 2026-04-14 · <a href="https://www.cnbc.com/2026/04/14/oracle-orcl-bloom-energy-be-stock-data-center-ai-power.html" target="_blank">링크</a></div></div>
+        </div>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>GE Vernova 터빈 백로그 100GW는 "대형 터빈으로는 당장 해결 불가"를 수치로 증명. 이 공백을 RICE 엔진(단기)과 연료전지(중기)가 채우는 구조가 실제 시장에서 작동 중임을 확인.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-05-30</span><span class="dow">SAT</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>NuScale Q1 2026 실적: TVA와 최대 6GW SMR 배치 계획 진행, 유동성 $10억 확보</li>
+          <li>Meta × TerraPower, Natrium SMR 최대 8기 개발 협약 (첫 2기 690MW, 2032년 목표)</li>
+          <li>BESS 시장 연속 분기 신기록: Q1 2026 9.7GWh, Q2 2026 10GWh</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">E. 원자력·SMR</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>NuScale Q1 2026 실적 발표 (2026-05-07): ENTRA1과 TVA의 최대 6GW SMR 배치 프로그램 진행 중. Framatome과 공급망 파트너십 확대. Q1 말 유동성 $10억 보유</div>
+            <div class="meta">NuScale SEC 공시 · 2026-05-07 · <a href="https://www.sec.gov/Archives/edgar/data/0001822966/000182296626000052/a2026-05x07xnuscaleq1202.htm" target="_blank">링크</a></div></div>
+          <div class="item loi"><div class="line"><span class="tag loi">LOI/MOU</span>Meta × TerraPower, Natrium 용융염 저장 SMR 최대 8기 개발을 위한 협약 체결 — 첫 2기 합산 690MW, 2032년 상업 운전 목표. ※ 구속력 있는 EPC 계약 아님</div>
+            <div class="meta">iRecruit · 2026-01 · <a href="https://www.irecruit.co/insights/data-center-power-and-energy-news-2026" target="_blank">링크</a></div></div>
+        </div>
+        <p class="none">※ 그 외 카테고리(A·B·C·D·F·G) 특이사항 없음</p>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>SMR은 2030년대 상업화가 현실적 타임라인. Meta의 TerraPower 협약은 LOI 단계로 구속 계약과 구분 필요. 근거리 기저발전 수요는 실재하지만, 실제 전력 공급까지 갭이 존재 → 그 갭을 채우는 SOFC·RICE 엔진의 투자 논지 강화.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-05-25</span><span class="dow">MON</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>FERC, 2026년 6월 말까지 대형 부하 계통 연계 규칙 개정 예고 (Docket RM26-4)</li>
+          <li>PJM, FERC 명령에 따라 co-location 대형 부하 규칙 준수 이행 계획서 제출</li>
+          <li>Bloom Energy 2026 데이터센터 전력 보고서: 2030년까지 온사이트 발전이 주력으로</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">F. 그리드·정책</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>FERC, 2026년 4월 16일 Order 발표: 6월 말까지 Docket RM26-4-000(대형 부하 계통 연계)에서 "신속하고 법적으로 내구성 있는" 조치 예고. 데이터센터 등 20MW 이상 대형 부하의 송전계통 연계 절차 표준화 목적</div>
+            <div class="meta">FERC 공식 · 2026-04-16 · <a href="https://www.ferc.gov/news-events/news/ferc-act-large-load-interconnection-docket-june-2026" target="_blank">링크</a></div></div>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>PJM, FERC 명령(2025-12-18)에 따른 co-location 대형 부하 규칙 이행 계획서 2026-01-20 및 2026-02-23 두 차례 제출. co-located 고객에 대한 "Necessary Studies" 프로세스 및 BTM 발전 규칙 개정 포함</div>
+            <div class="meta">Power Mag · 2026-04-16 · <a href="https://www.powermag.com/ferc-sets-june-deadline-to-rewrite-large-load-grid-rules-for-ai-era-power-demand/" target="_blank">링크</a></div></div>
+        </div>
+        <div class="cat"><p class="cat-h">D. 연료전지</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Bloom Energy 2026 데이터센터 전력 보고서: 2030년까지 38%의 데이터센터 시설이 온사이트 발전을 주력으로 채택 예상(2025년 13%). 27%는 온사이트 발전으로 완전 독립(2025년 1%). 응답자: 하이퍼스케일러·코로케이션 사업자·유틸리티·GPU 서비스 공급사</div>
+            <div class="meta">Bloom Energy IR · 2026-01-20 · <a href="https://investor.bloomenergy.com/press-releases/press-release-details/2026/Data-Centers-Plan-to-Reduce-Reliance-on-Grid-Finds-Bloom-Energys-2026-Power-Report/default.aspx" target="_blank">링크</a></div></div>
+        </div>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>FERC의 6월 조치는 이번 달 중 나올 수 있는 핵심 카탈리스트. co-location 규칙 강화 방향은 BTM 온사이트 발전의 제도적 뒷받침을 강화. Bloom 보고서 수치(38%, 27%)는 투자자 Q&A에서 온사이트 발전 수요 근거로 활용 가능.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-05-20</span><span class="dow">WED</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>AEP 자회사, Bloom Energy SOFC 1GW 옵션 중 "상당 부분" 행사 — $26.5억 규모</li>
+          <li>Bloom Energy, 2026년 생산능력 2GW로 확대 (2년 전 100MW 대비 20배)</li>
+          <li>S&P Global: 미국 데이터센터 전력 수요 2026년 75.8GW → 2030년 134.4GW 전망</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">B. 전력회사·발전사</p>
+          <div class="item deal"><div class="line"><span class="tag deal">계약</span>AEP 자회사, 2024년 11월 체결한 Bloom Energy SOFC 100MW 구매 계약의 900MW 옵션 중 "상당 부분" 행사 확정 — 총 $26.5억 규모. 연료전지 발전소 개발·건설 계획</div>
+            <div class="meta">Seeking Alpha · 2026-01-30 · <a href="https://seekingalpha.com/article/4862022-bloom-energy-solving-the-ai-data-center-power-bottleneck" target="_blank">링크</a></div></div>
+        </div>
+        <div class="cat"><p class="cat-h">D. 연료전지</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Bloom Energy CEO: "온사이트 천연가스 발전은 고성능 AI 팩토리에 필수". 2026년 연간 생산능력 2GW 달성 목표(2024년 100MW에서 20배 확대). 2030년까지 5GW/년 로드맵</div>
+            <div class="meta">Utility Dive · 2025-10-30 · <a href="https://www.utilitydive.com/news/bloom-energy-says-its-on-track-for-2-gw-annual-production-capacity/804291/" target="_blank">링크</a></div></div>
+        </div>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>AEP의 $26.5억 옵션 행사는 유틸리티가 BTM 연료전지를 단순 파일럿이 아닌 대규모 인프라 투자로 집행하고 있음을 보여주는 구속력 있는 계약. Bloom의 생산능력 급증(100MW→2GW)은 공급 제약 해소의 전제 조건.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-05-15</span><span class="dow">FRI</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>Wärtsilä, 오하이오주 데이터센터에 15기 엔진 공급 계약 — 2026년 말~2027년 납기</li>
+          <li>Wärtsilä, 미국 내 누적 납품 용량 6,000MW 돌파 예정</li>
+          <li>데이터센터 온사이트 발전 채택률 2030년 38%로 급증 전망 (Bloom 설문)</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">C. 발전·전력 설비 (터빈·엔진)</p>
+          <div class="item deal"><div class="line"><span class="tag deal">계약</span>Wärtsilä, 오하이오주 데이터센터에 15기 엔진 공급 계약 체결 — 납기: 2026년 말~2027년 단계적. 본 계약으로 Wärtsilä 미국 내 누적 납품 6,000MW 초과 예정. 데이터센터 사업자명 비공개</div>
+            <div class="meta">Power Engineering · 2025-07-15 · <a href="https://www.power-eng.com/onsite-power/wartsila-to-deploy-15-engines-for-ohio-data-center/" target="_blank">링크</a></div></div>
+        </div>
+        <p class="none">※ 그 외 카테고리(A·B·D·E·F·G) 특이사항 없음</p>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>Wärtsilä의 오하이오 수주는 RICE 엔진이 실제 데이터센터에서 계약 단계까지 간 사례. 12~18개월 납기라는 단기 가용성이 GE Vernova 터빈 공백을 채우는 구조가 실제 거래로 확인됨.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-05-10</span><span class="dow">SUN</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>IEA: 글로벌 AI 데이터센터 연간 전력 소비 2026년 90TWh 전망 — 2022년 대비 10배</li>
+          <li>미국 데이터센터 전력 수요 2026년 75.8GW, 2030년 134.4GW 전망 (S&P Global/451 Research)</li>
+          <li>계통 연계 대기(interconnection queue) 5~7년 지연 → 운영사들 온사이트 전력 솔루션으로 전환</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">F. 그리드·정책</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>S&P Global / 451 Research: 미국 데이터센터 계통 전력 수요 2026년 75.8GW → 2028년 108GW → 2030년 134.4GW 전망. 계통 연계 대기 5~7년 지연이 온사이트 솔루션 채택을 강제</div>
+            <div class="meta">S&P Global · 2025-10-14 · <a href="https://www.spglobal.com/energy/en/news-research/latest-news/electric-power/101425-data-center-grid-power-demand-to-rise-22-in-2025-nearly-triple-by-2030" target="_blank">링크</a></div></div>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>iRecruit 2026 데이터센터 전력 뉴스: 미국 데이터센터 전력 수요 2023년 23GW → 2026년 42GW. AI 랙 전력 밀도 50~100kW(기존 서버 5~10kW 대비 10배)</div>
+            <div class="meta">iRecruit · 2026-06-06 · <a href="https://www.irecruit.co/insights/data-center-power-and-energy-news-2026" target="_blank">링크</a></div></div>
+        </div>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>IEA의 90TWh(2022년 대비 10배) 수치는 투자자 발표 오프닝 슬라이드의 핵심 데이터. 계통 연계 5~7년 지연은 BTM 발전의 "속도(speed to power)" 논거의 직접적 근거.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="date">2026-05-07</span><span class="dow">THU</span><span class="chev">▶</span></summary>
+      <div class="day-body">
+        <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div><ol>
+          <li>Oracle × Bloom Energy Project Jupiter: 뉴멕시코 2.45GW AI 캠퍼스 전량 SOFC로 공급</li>
+          <li>Bloom Energy, Oracle로부터 $4억 주식 매입 워런트 수령</li>
+          <li>텍사스 데이터센터 시장, 2028년까지 미국 전체의 30% 점유 전망 (Bloom 2026 보고서)</li>
+        </ol></div>
+        <div class="cat"><p class="cat-h">A. 하이퍼스케일러 전력 발언·계약</p>
+          <div class="item deal"><div class="line"><span class="tag deal">계약</span>Oracle, 뉴멕시코 Project Jupiter AI 데이터센터 캠퍼스(최대 2.45GW) 전력을 Bloom Energy SOFC로 100% 공급하는 계약 체결. 추가로 Oracle은 Bloom 주식 $4억 매입 워런트 수령. 전체 공급 규모 최대 2.8GW (복수 사이트)</div>
+            <div class="meta">Yahoo Finance · 2026-05-04 · <a href="https://finance.yahoo.com/sectors/energy/articles/3-energy-stocks-buy-2-181000591.html" target="_blank">링크</a></div></div>
+        </div>
+        <div class="cat"><p class="cat-h">D. 연료전지</p>
+          <div class="item say"><div class="line"><span class="tag say">발언</span>Bloom Energy 2026 데이터센터 전력 보고서: 텍사스 2028년 미국 데이터센터 시장 30% 점유 전망. 캘리포니아·오레곤은 상대적 시장점유율 50% 이상 하락 예상. 신규 데이터센터 캠퍼스 50% 이상이 2035년까지 500MW 초과 규모로 개발 전망</div>
+            <div class="meta">Bloom Energy IR · 2026-01-20 · <a href="https://investor.bloomenergy.com/press-releases/press-release-details/2026/Data-Centers-Plan-to-Reduce-Reliance-on-Grid-Finds-Bloom-Energys-2026-Power-Report/default.aspx" target="_blank">링크</a></div></div>
+        </div>
+        <div class="take"><div class="h">💡 투자 논지 함의</div>
+          <p>Oracle-Bloom 2.8GW 계약은 역대 최대 단일 온사이트 전력 공급 계약으로, BTM SOFC가 GW 스케일까지 확장 가능함을 실제 거래로 증명. 워런트 수령은 Oracle의 Bloom에 대한 전략적 신뢰를 보여주는 추가 신호.</p>
+        </div>
+      </div>
+    </details>
+
+  </div>
+  <div class="empty" id="empty"></div>
+</main>
+
+<footer>
+  자동 수집 로그입니다. 발표 자료 인용 전 원문(IR·공시·어닝콜)으로 재확인하세요.<br>
+  Generated by Claude Code · 매일 09:00 KST 갱신 | 초기 10일치 수작업 수집 (2026-06-09 기준)
+</footer>
+
+<script>
+  const days = () => Array.from(document.querySelectorAll('details.day'));
+  const empty = document.getElementById('empty');
+  function refreshCount(){ document.getElementById('dayCount').textContent = days().length; }
+  refreshCount();
+  const q = document.getElementById('q');
+  q.addEventListener('input', () => {
+    const term = q.value.trim().toLowerCase();
+    let shown = 0;
+    days().forEach(d => {
+      const hit = !term || d.textContent.toLowerCase().includes(term);
+      d.style.display = hit ? '' : 'none';
+      if (hit) { shown++; if (term) d.open = true; }
+    });
+    empty.textContent = '검색 결과가 없습니다. 다른 키워드로 시도해 보세요.';
+    empty.style.display = shown ? 'none' : 'block';
+    if(!term) refreshCount();
+  });
+  document.getElementById('expandAll').onclick = () => days().forEach(d => d.open = true);
+  document.getElementById('collapseAll').onclick = () => days().forEach(d => d.open = false);
+</script>
+</body>
+</html>
