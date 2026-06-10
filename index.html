@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전력 데스크 — 데이터센터 전력 뉴스 로그</title>
+<style>
+  :root{
+    --ink:#13171e; --ink-2:#1c222c; --paper:#f6f7f9; --card:#ffffff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#d9892b;
+    --t-deal:#1f7a4d; --t-loi:#b9772a; --t-say:#2563a8; --t-rumor:#7a828c;
+    --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  header.mast{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;border-bottom:1px solid #000;}
+  .mast-inner{max-width:860px;margin:0 auto;padding:16px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .brand{display:flex;flex-direction:column;gap:2px;flex:1 1 auto;}
+  .brand .title{font-size:18px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:9px;}
+  .spark{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(217,137,43,.6);animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,137,43,.55)}70%{box-shadow:0 0 0 7px rgba(217,137,43,0)}100%{box-shadow:0 0 0 0 rgba(217,137,43,0)}}
+  .brand .sub{font-size:12px;color:#9aa6b7;font-family:var(--mono);}
+  .mast-meta{font-family:var(--mono);font-size:12px;color:#cfd6e0;text-align:right;}
+  .mast-meta b{color:var(--accent);font-size:15px;}
+  .search{flex:1 1 220px;min-width:160px;}
+  .search input{width:100%;background:var(--ink-2);border:1px solid #2c3542;color:#fff;border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--sans);}
+  .search input::placeholder{color:#6f7a89}
+  .search input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  main{max-width:860px;margin:0 auto;padding:26px 22px 80px;}
+  .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px;}
+  .toolbar button{background:none;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:var(--sans);}
+  .toolbar button:hover{border-color:var(--accent);color:var(--accent)}
+  details.day{position:relative;border-left:2px solid var(--line);margin-left:8px;padding:2px 0 22px 26px;}
+  details.day:last-child{padding-bottom:6px}
+  details.day::before{content:"";position:absolute;left:-7px;top:14px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--muted);}
+  details.day[open]::before,details.day:first-of-type::before{border-color:var(--accent);background:var(--accent);}
+  summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:12px;padding:6px 0;}
+  summary::-webkit-details-marker{display:none}
+  summary .date{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--ink);}
+  summary .dow{font-family:var(--mono);font-size:12px;color:var(--muted);}
+  summary .latest{font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;}
+  summary .chev{margin-left:auto;color:var(--muted);font-size:12px;transition:transform .2s;}
+  details[open] summary .chev{transform:rotate(90deg)}
+  .day-body{padding-top:4px}
+  .top3{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin:8px 0 14px;}
+  .top3 .h{font-size:12px;font-weight:800;color:var(--ink);letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px;}
+  .top3 ol{margin:0;padding-left:18px} .top3 li{font-size:14px;margin:4px 0;line-height:1.5}
+  .cat{margin:14px 0 0} .cat-h{font-size:14px;font-weight:800;color:var(--ink);margin:0 0 4px}
+  .item{border-left:3px solid var(--line);padding:7px 0 7px 12px;margin:6px 0}
+  .item.deal{border-color:var(--t-deal)} .item.loi{border-color:var(--t-loi)}
+  .item.say{border-color:var(--t-say)} .item.rumor{border-color:var(--t-rumor)}
+  .item .line{font-size:14px;font-weight:600;color:#171b22;line-height:1.45}
+  .item .meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px}
+  .item .meta a{color:var(--t-say);text-decoration:none} .item .meta a:hover{text-decoration:underline}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;vertical-align:middle;letter-spacing:.3px}
+  .tag.deal{background:var(--t-deal)} .tag.loi{background:var(--t-loi)}
+  .tag.say{background:var(--t-say)} .tag.rumor{background:var(--t-rumor)}
+  .none{font-size:12px;color:#9aa1ab;margin:10px 0 0}
+  .take{background:#f1f5fb;border-radius:9px;padding:12px 15px;margin:14px 0 0}
+  .take .h{font-size:12px;font-weight:800;color:#1a2942;margin-bottom:5px}
+  .take p{margin:0;font-size:13px;color:#33373f;line-height:1.55}
+  .legend{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+  .empty{display:none;text-align:center;color:var(--muted);padding:50px 10px;font-size:14px}
+  footer{max-width:860px;margin:0 auto;padding:0 22px 50px;color:#9aa1ab;font-size:11px;line-height:1.6;font-family:var(--mono)}
+  @media (max-width:560px){.mast-meta{text-align:left} .mast-inner{gap:10px} details.day{padding-left:20px}}
+  @media (prefers-reduced-motion:reduce){.spark{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mast-inner">
+    <div class="brand">
+      <div class="title"><span class="spark"></span>전력 데스크</div>
+      <div class="sub">AI 데이터센터 전력 추적 · 매일 09:00 KST 갱신</div>
+    </div>
+    <div class="search"><input id="q" type="search" placeholder="검색: 기업·키워드 (예: Bloom, 터빈, FERC)"></div>
+    <div class="mast-meta"><b id="dayCount">–</b>일 누적</div>
+  </div>
+</header>
+
+<main>
+  <div class="legend">
+    <span class="tag deal">계약</span><span class="tag loi">LOI/MOU</span>
+    <span class="tag say">발언</span><span class="tag rumor">루머/추정</span>
+  </div>
+  <div class="toolbar">
+    <button id="expandAll">전체 펼치기</button>
+    <button id="collapseAll">전체 접기</button>
+  </div>
+
+  <div id="log">
+  <!-- NEW_DAY_INSERT : Routine은 이 줄 바로 아래에 아래 형식의 새 블록을 삽입하고,
+       직전 최신 블록에서는 ' open' 속성과 <span class="latest">최신</span> 을 제거할 것.
+
+  <details class="day" open>
+    <summary>
+      <span class="date">YYYY-MM-DD</span><span class="dow">DOW</span>
+      <span class="latest">최신</span><span class="chev">▶</span>
+    </summary>
+    <div class="day-body">
+      <div class="top3"><div class="h">오늘의 헤드라인 TOP 3</div>
+        <ol><li>...</li><li>...</li><li>...</li></ol></div>
+      <div class="cat"><p class="cat-h">A. 하이퍼스케일러 전력 발언·계약</p>
+        <div class="item deal"><div class="line"><span class="tag deal">계약</span>...</div>
+          <div class="meta">출처 · YYYY-MM-DD · <a href="URL">링크</a></div></div></div>
+      <!-- 태그 클래스: deal / loi / say / rumor (item, tag 둘 다 동일 클래스) -->
+      <p class="none">※ 그 외 카테고리(...) 특이사항 없음</p>
+      <div class="take"><div class="h">💡 투자 논지 함의</div><p>...</p></div>
+    </div>
+  </details>
+  -->
+
+  </div>
+
+  <div class="empty" id="empty"></div>
+</main>
+
+<footer>
+  자동 수집 로그입니다. 발표 자료 인용 전 원문(IR·공시·어닝콜)으로 재확인하세요.<br>
+  Generated by Claude Code · 매일 09:00 KST 갱신
+</footer>
+
+<script>
+  const days = () => Array.from(document.querySelectorAll('details.day'));
+  const empty = document.getElementById('empty');
+  function refreshCount(){
+    const n = days().length;
+    document.getElementById('dayCount').textContent = n;
+    if(n === 0){ empty.textContent = '첫 갱신을 기다리는 중입니다 — 매일 09:00 KST에 채워집니다.'; empty.style.display = 'block'; }
+  }
+  refreshCount();
+
+  const q = document.getElementById('q');
+  q.addEventListener('input', () => {
+    const term = q.value.trim().toLowerCase();
+    let shown = 0;
+    days().forEach(d => {
+      const hit = !term || d.textContent.toLowerCase().includes(term);
+      d.style.display = hit ? '' : 'none';
+      if (hit) { shown++; if (term) d.open = true; }
+    });
+    empty.textContent = '검색 결과가 없습니다. 다른 키워드로 시도해 보세요.';
+    empty.style.display = (shown || days().length === 0) ? (days().length===0 && !term ? 'block' : 'none') : 'block';
+    if(!term) refreshCount();
+  });
+
+  document.getElementById('expandAll').onclick = () => days().forEach(d => d.open = true);
+  document.getElementById('collapseAll').onclick = () => days().forEach(d => d.open = false);
+</script>
+
+</body>
+</html>
