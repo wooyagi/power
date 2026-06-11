@@ -86,6 +86,17 @@
   .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
   .hl-green{background:var(--hl-green);border-radius:2px;}
   .hl-red{background:var(--hl-red);border-radius:2px;}
+  /* 전문 모달 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:12px;width:90%;max-width:780px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h3{font-size:15px;font-weight:700;margin:0;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:20px;overflow-y:auto;font-size:13px;line-height:1.75;white-space:pre-wrap;color:#333;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
   @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -357,19 +368,7 @@
           <li>적자 확대로 발표 후 주가 하락.</li>
         </ul>
         <div class="src">출처: Oklo Q1 2026 실적·어닝콜 · 2026-05-12 · <a href="https://www.fool.com/earnings/call-transcripts/2026/05/13/oklo-oklo-q1-2026-earnings-call-transcript/" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료·트랜스크립트 기반, 컨콜 톤]
-
-Jacob DeWitte (CEO):
-"이번 분기에 우리는 '종이'에서 '건설'로 넘어갔습니다. 아이다호에서 Aurora를 착공했고, DOE 인가와 NRC의 PDC Topical Report 승인을 받았습니다. Meta와의 오하이오 1.2기가와트 프로젝트도 진척되고 있고, NVIDIA·로스앨러모스와 원자로 설계에, Centrus와는 연료에 협력합니다.
-
-우리의 강한 재무상태와 전략적 파트너십이 개발에서 실행으로의 전환을 뒷받침합니다."
-
-CFO:
-"순손실은 3천3백만 달러입니다. 현금과 증권은 약 25억 달러로, 2025년 ATM 프로그램(약 1,240만 주, 순 11.8억 달러)이 크게 기여했습니다. 2026년 영업현금 사용은 8천만~1억 달러, 자본지출은 3.5억~4.5억 달러로 봅니다 — Aurora 착공 때문입니다."
-
-※ 적자 확대 인식으로 발표 후 주가는 하락했습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/oklo-q1-2026.txt', 'Oklo Q1 2026 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -391,11 +390,7 @@ CFO:
           <li>연료제조시설 설계 승인(DOE NSDA/PDSA).</li>
         </ul>
         <div class="src">출처: Oklo Q4/FY2025 실적 · 2026-03-17 · <a href="https://www.sec.gov/Archives/edgar/data/1849056/000162828026018698/oklo-20251231.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-2025년 영업손실은 1억 3,930만 달러였고, 연말 현금·증권은 약 14억 달러였습니다. 4분기 순손실은 4,150만 달러. 연료제조시설에 대한 DOE 설계 승인(NSDA/PDSA)을 받으며 연료 수직화에 진전을 보였습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/oklo-q4-2025.txt', 'Oklo Q4 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -416,11 +411,7 @@ CFO:
           <li>파이프라인 확대.</li>
         </ul>
         <div class="src">출처: Oklo Q3 2025 실적 · ~2025-11</div>
-        <div class="transcript">
-[요약 — 보도자료 기반]
-
-3분기 순손실 2,970만 달러, 현금·증권 약 9억 2,160만 달러. 9월 아이다호에서 Aurora 착공을 달성했고, ATM 프로그램 확대로 현금이 늘었습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/oklo-q3-2025.txt', 'Oklo Q3 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -441,11 +432,7 @@ CFO:
           <li>Eielson AFB 낙찰의향.</li>
         </ul>
         <div class="src">출처: Oklo Q2 2025 실적 · ~2025-08</div>
-        <div class="transcript">
-[요약 — 보도자료 기반]
-
-2분기 순손실 2,470만 달러, 현금·증권 약 5억 3,400만 달러. Liberty Energy와 전략 파트너십을 체결했고, 미 공군 Eielson 기지 낙찰의향 통지를 받았습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/oklo-q2-2025.txt', 'Oklo Q2 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -509,6 +496,37 @@ document.body.addEventListener('click',e=>{
   let el=e.target;
   while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
 });
+
+/* ── 전문 모달 ── */
+async function openTranscript(path, title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = '불러오는 중...';
+  document.getElementById('transcriptModal').classList.add('open');
+  try {
+    const r = await fetch(path);
+    const text = await r.text();
+    document.getElementById('modalBody').textContent = text;
+  } catch(e) {
+    document.getElementById('modalBody').textContent = '전문을 불러올 수 없습니다.';
+  }
+}
+function closeModal() {
+  document.getElementById('transcriptModal').classList.remove('open');
+}
+document.getElementById('transcriptModal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
 </script>
+
+<div class="modal-overlay" id="transcriptModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">컨퍼런스 콜 전문</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 </body>
 </html>

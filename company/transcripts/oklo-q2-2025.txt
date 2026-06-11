@@ -1,0 +1,52 @@
+출처: earningscall.ai (Oklo Q2 2025 어닝콜) · 2025-08 · https://www.earningscall.ai/stock/transcript/OKLO-2025-Q2
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Jake DeWitte(공동창업·CEO) · Craig Bellmer(CFO) · Sam Doan(IR 디렉터).
+
+────────────────────────────────────────
+재무 (Q2 2025)
+────────────────────────────────────────
+- 영업손실 $28M(SBC $11.4M 포함)
+- 6월 12일 $460M 주식 발행 후 현금 약 $683M
+
+정책 순풍:
+- DeWitte — 행정명령, 'One Big Beautiful Bill', 연방 AI 액션플랜이 Oklo 전략을 직접 지원(licensing 가속·연료 접근·국가안보 부지 배치).
+
+주요 운영 업데이트:
+- 라이선싱: NRC Phase 1 준비심사 완료(중대 갭 없음), licensed operator topical report 검토 접수(반복 배치 전략), Phase 1 신청 Q4 초 제출 예정.
+- 프로젝트: Aurora INL 주계약자로 Kiewit 선정, 상업가동 2027말~2028초. Atomic Alchemy 동위원소 시설 부지 특성조사 착수.
+- 파트너십: KHNP(한국수력원자력) MOU, Vertiv 공동개발(데이터센터 냉각 통합), Liberty Energy(가스→원자력 단계 전환).
+- 고객: 미 공군이 Eielson AFB 배치 'intended awardee'로 Oklo 지명(장기 PPA).
+- 모델: build-own-operate 반복 수익 중심. 소형 확장형 설계, 검증된 액체금속 고속로, 발전·연료재활용·동위원소 수직통합.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Jeffrey Campbell (Seaport) — PWR 연료 재활용·DOE title 제약
+- DeWitte: 현행법이 유틸리티·정부와의 물질 재활용을 막지 않음. 고속로는 혼합 초우라늄을 수용해 저비용 연료 생산 가능(경수로는 고순도 필요). 재활용이 폐기물 부피·반감기를 크게 줄여 커뮤니티 기반 처분 가능. (Atlas/AVLIS 레이저 농축 효율 언급.)
+
+[Q2] Sherif Elmaghrabi (BTIG) — Liberty 파트너십이 조기 매출 가능케 하나
+- Bellmer: 상업 조건 초기 논의 중, 매출 참여 메커니즘 개발 중 — 잠재적 가속 경로.
+- (다운블렌딩 연료) DeWitte: 고속로는 다운블렌딩 물질을 고유하게 수용. 행정명령이 잉여 플루토늄 비축을 해제 → "수십만 kg HALEU 등가" 근시일 공급.
+
+[Q3] Jonathan Dorsheimer (William Blair) — behind-the-meter vs front-of-meter
+- DeWitte: behind-the-meter가 개념상 우아하나 근시일 경제성은 그리드 연계 하이브리드(특히 Liberty 가스 인프라 단계 전환)가 유리. 주별 규제 차이로 수요 프로파일 혼재. (동위원소: $30B 방사성의약품 시장, 초기 선택 단계.)
+
+[Q4] Ryan Pfingst (B. Riley) — Eielson AFB 일정·군 시설 licensing
+- DeWitte: 행정명령이 국방 부지 배치 우선. 공군은 NRC licensing + DoD 인가 옵션. 알래스카 계절 건설창·상세 부지작업은 내년 여름. 전기+증기 동시 구매(내부향 전력). (LOI→주문 전환은 장기 개발, Liberty가 가스 브리지로 cadence 가속.)
+
+[Q5] Derek Soderberg (Cantor) — TerraPower의 6개월 규제 가속, Oklo 적용성
+- DeWitte: NRC가 행정부 정책에 호응. IPO 시점 24~36개월 → 18개월로 압축. Phase 1 준비에 중대 갭 없음. DOE 인가+사후 NRC 전환 등 다중 경로. 잉여 플루토늄 가용이 "더 많은 플랜트 건설 시장을 형성."
+
+[Q6] Craig Shere (Tuohy Brothers) — INL PPA 발표 시점·연료 충분성
+- DeWitte: INL 플랜트 전력에 복수 당사자 관심 + 정부·산업·학계 방사선 활용. Vertiv 냉각 파일럿. DOE HALEU 5톤 + 정부 비축으로 충분. 후속 플랜트는 대형 캠퍼스에 클러스터.
+
+[Q7] Eric Stine (Craig-Hallum) — licensed operator topical report 효익
+- DeWitte: 부지별이 아닌 '기술별' licensing(항공 기종 등급과 유사) — 운영자가 어디서든 Aurora급 운영. 통상 검토 약 12개월, 주 효익은 2~4호기. "프리시즌 licensing".
+
+[Q8] Maxwell Hopkins (CLSA) — KHNP MOU·비핵 공급망
+- DeWitte: 70% 비핵 소싱은 의도적 비용 전략. 고유 수동 안전으로 안전등급 시스템 요건 감소. 나트륨 고속로는 압력용기 불요 → 산업용 스테인리스 합금 활용. 레거시 현대화 + 신규 진입자 모두 수용, "기회의 범위가 어떤 기술보다 넓다".
+
+[종료] DeWitte — 행정명령·IRA·ADVANCE Act가 누적된 "명확한 지원 생태계"로 원자력 상업화 가속에 기대.
+(Q2 순손실 $24.7M, 현금+증권 ~$534M — 10-Q.)

@@ -1,0 +1,60 @@
+출처: earningscall.ai (Oklo Q4/FY2025 어닝콜) · 2026-03-17 · https://www.earningscall.ai/stock/transcript/OKLO-2025-Q4
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Jake DeWitte(공동창업·CEO) · Craig Bellmer(CFO) · Sam Doan(IR 수석디렉터).
+
+────────────────────────────────────────
+재무 (FY2025)
+────────────────────────────────────────
+- 영업손실 $139.3M, 세전손실 $110.2M
+- 영업현금 사용 $82.2M(조정 $69.2M)
+- 연말 현금+증권 $1.4B, 2026년 1월 추가 조달 $1.182B
+- 2026 가이던스: 영업 $80~100M(기존 $65~80M에서 상향), 투자 $350~450M
+
+────────────────────────────────────────
+3대 사업부 & 프로젝트
+────────────────────────────────────────
+- Power: 나트륨 고속로 기저부하, Meta 등과 장기 offtake. Aurora INL — DOE OTA(Reactor Pilot Program), NSDA 승인, 부지 특성조사·발파 착수, Siemens Energy 전력변환 계약, 2028 가동 목표.
+- Aurora Ohio(Pike County): Meta 선불약정으로 1.2GW 캠퍼스 지원, 1단계 150MW ~2030, 부지 약 206에이커, "전력 선불" 구조로 연료 조달 지원.
+- A3F 연료제조시설(INL): DOE Fuel Line Pilot 최초 승인 시설, NSDA·PDSA 승인, 건설 착수.
+- Tennessee Advanced Fuel Center(재활용): 지반조사·부지개발 완료, NRC 사전협의 완료, rolling readiness review 착수, DOE 재활용 R&D 자금 선정.
+- Groves 방사성동위원소 시험로(텍사스): DOE OTA, NSDA 승인·PDSA 제출, 구조물 5개월 완공, 원자로 탱크 설치·연료 조달, 2026-07-04 임계 목표.
+- Centrus 디컨버전 JV(우라늄): Pike County Ohio에 농축과 co-location.
+- 연료 전략: DOE 물질 / 농축사 HALEU / 내부 재활용 / Los Alamos·Nevada와 고속 스펙트럼 플루토늄 임계 실험 완료.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Brian Lee (Goldman Sachs) — 고객 파이프라인·신규 구속 계약
+- DeWitte: Meta가 앵커 고객, 데이터센터·군(알래스카)·산업으로 파이프라인 성장. "Meta가 리드 고객이 되면 다른 고객들도 따라오고 싶어 한다." (capex 항목별 분해는 추정치 정련 중이라 미제공, Idaho 우선.)
+
+[Q2] Dimple Gassai (Bank of America) — COLA 시점·DOE/NRC 시퀀싱·셧다운 영향
+- DeWitte: DOE 인가 경로가 전통 licensing보다 빠른 건설·학습 가능. NRC가 DOE 인가 시설을 NRC 라이선스로 전환하는 프레임워크 발표 예상. 정부 셧다운은 동위원소 licensing 일부 지연(해소), 타 일정 영향 없음. 자산 유형별 전략 — 최초호기(Aurora INL·A3F·Groves)는 DOE 인가, 상업배치(Ohio·Tennessee)는 NRC.
+
+[Q3] George Gianakris (Canaccord Genuity) — 75MW 원자로 capex($/kW)
+- DeWitte: 건설 경험으로 진화 중, 2026 후반 추가 정보. "더 빨리 가기 위해 조금 더 지불"(Idaho) 후 Ohio에서 최적화. "경수로가 아니라는 점이 오히려 건설적"(비레거시 공급망 유연성).
+
+[Q4] Vikram Begri (Citi) — INL 2028 일정·capex·플루토늄 실험
+- Bellmer/DeWitte: 2028 전체 핵열 생산 목표("공격적 목표"), capex 세부는 2026 후반. 플루토늄 실험 — LANL·Nevada와 소형 플루토늄 금속 조립체+우라늄 반사체로 임계 벤치마크, "엄청나게 빠른 동특성"으로 고유 안전성 검증.
+
+[Q5] Jeffrey Campbell (Seaport) — 디컨버전·Centrus 농축
+- DeWitte: UF6 입력 기반 기술 유연, Ohio co-location으로 "농축→디컨버전→제조→원자로" 규모의 경제. (Tennessee는 완전 상업시설이라 NRC 경로, INL 제조시설은 기존 DOE 건물 활용.)
+
+[Q6] Sameer Joshi (HC Wainwright) — 7월 4일 Groves 임계 자신감
+- DeWitte: "그 날짜를 맞추거나 앞당길 수 있다고 꽤 자신." 베슬 설치·연료 조달·주요 장비 발주 완료. Groves는 사전 제작 재고 없는 "완전 설계-건설"로 "원자력이 빠르게 배치될 수 있음"을 입증.
+
+[Q7] Sharice Magrabi (BTIG) — Ohio 부지 확보 전략
+- DeWitte: 과거 농축시설 재활용 부지를 경제개발위로부터 확보. 전략적으로 다른 부지 기회도 있음.
+
+[Q8] Eric Stein (Craig Hallum) — Meta 선불약정 메커니즘·확정 PPA 여부
+- DeWitte: "전력 제공의 구속적 약정(binding commitment)"으로 '사전 조달'·연료 계획 지원. 의도적으로 PPA를 과도하게 확정하지 않고 "구속적 offtake 구조"로 유연성 확보. 확정 PPA는 "1년 내외" 예상.
+
+[Q9] Derek Soderberg (Cantor) — 신규 정부 프로그램
+- DeWitte: 'Nuclear Life Cycle Innovation Campus' 프로그램이 연방-주 파트너십의 핵심 enabler. NRC 현대화 행정명령 지속.
+
+[Q10] Craig Scherer (Tuohy Brothers) — 2027 capex·현금 충분성·자산금융
+- Bellmer: 2026 이후 충분히 자본화. 자산단위 프로젝트 파이낸싱이 장기 전략. 에너지부(구 LPO)·재무부와 논의 중.
+
+[종료] DeWitte — "2025년은 꽤 흥미로운 해", 1960년대 이후 부재했던 'learning by doing' 부활. Groves 7/4 임계가 핵심 마일스톤.
+(FY2025 영업손실 $139.3M — 10-K.)

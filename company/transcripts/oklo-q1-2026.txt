@@ -1,0 +1,59 @@
+출처: earningscall.ai (Oklo Q1 2026 어닝콜) · 2026-05-12 · https://www.earningscall.ai/stock/transcript/OKLO-2026-Q1
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Jake DeWitte(공동창업·CEO) · Craig Bellmer(CFO) · Sam Doan(IR 수석디렉터).
+
+────────────────────────────────────────
+재무 (Q1 2026)
+────────────────────────────────────────
+- 순손실 $33.1M, 영업손실 $51.2M
+- 현금+시장성 증권 $2.5B (ATM 프로그램 후)
+- 영업현금 사용 $17.9M, 자본지출 $32.8M
+- 2026 가이던스: 영업현금 사용 $80~100M, 자본 배치 $350~450M
+
+────────────────────────────────────────
+사업부 업데이트 (Power / Fuel / Isotopes)
+────────────────────────────────────────
+Power:
+- Aurora INL: 예비안전성분석(PDSA)을 DOE에 제출, NRC가 주설계기준(PDC) Topical Report 승인.
+- Aurora Ohio: PJM 인터커넥션 신청 제출, Meta와 1.2GW 캠퍼스 계획.
+- Aurora Eielson(알래스카 공군기지): 부지 특성조사 진행, 5MW+ 열병합(cogeneration).
+
+Fuel:
+- Aurora 연료제조시설(A3F): 건설 활동 착수, 최종 설계 완료.
+- Tennessee Advanced Fuel Center: NRC 신청 준비심사 진행.
+- NVIDIA 파트너십 — Los Alamos와 플루토늄 연료 검증.
+
+Isotopes:
+- Groves 시험로: 229일 만에 건설 완료, 2026-07-04 임계 목표.
+- Idaho Radiochemistry Lab: NRC 물질 취급 허가 취득, 첫 상업 계약 대기.
+
+전략:
+- DeWitte — "전략에서 실행으로(from strategy to execution)" 전환 강조. NRC Part 57이 '함대 기반 licensing'과 마이크로원자로 "6~12개월" 배치 일정을 가능케 함. Centrus 농축 + 정부 잉여 플루토늄으로 연료 공급 다변화.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Ryan Fingst (B. Riley) — 오하이오 시설 연료 조달
+- DeWitte: 농축사가 일정을 앞당기고 있고, 정부 물질이 '브리지 연료'로 가용해지고 있음.
+
+[Q2] Jed Dorsheimer (William Blair) — Pluto 원자로 플루토늄 전환
+- DeWitte: 잉여 정부 플루토늄을 연료 대체재로 활용 — "20톤"이 HALEU "60~200톤"에 상당.
+
+[Q3] Brian Lee (Goldman Sachs) — Part 57 일정·DOE→NRC 전환
+- DeWitte: "올해 후반" 시행, 반복적 규제 협의로 진행.
+
+[Q4] Sharif El Maghrabi (BTIG) — PJM 인터커넥션 일정
+- Bellmer: "수개월, 혹은 1년 이상" — 원자력 규제 절차와 독립적.
+
+[Q5] Jeffrey Campbell (Seaport Research) — AI 파트너십 목표
+- DeWitte: NVIDIA-LANL 협력은 플루토늄 물질 처리에, INL 파트너십은 "에이전트형 AI 원자로 설계 워크플로우"에 초점.
+
+[Q6] Sameer Joshi (HC Wainwright) — Eielson 열병합 설계 차이
+- DeWitte: "60메가와트 열출력" 사용, 대형 Aurora 모델과 공통 기술 이전.
+
+[Q7] Derek Soderberg (Cantor Fitzgerald) — NEI 조율 금융 가능성
+- Bellmer: '정부 금융'·'공급사 금융' 옵션을 의존 없이 탐색 중.
+
+[메모] 프리레비뉴(매출 ≈ $0). 적자 확대 인식으로 발표 후 주가 하락. (10-Q 기준 순손실 $33.07M, 현금+증권 ~$2,537M.)

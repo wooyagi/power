@@ -1,0 +1,44 @@
+출처: earningscall.ai (Oklo Q3 2025 어닝콜) · 2025-11 · https://www.earningscall.ai/stock/transcript/OKLO-2025-Q3
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Jake DeWitte(공동창업·CEO) · Craig Bellmer(CFO) · Sam Doan(IR 디렉터).
+
+────────────────────────────────────────
+재무 (Q3 2025)
+────────────────────────────────────────
+- 영업손실 $36.3M(SBC $9.1M 포함), 세전손실 $29.2M(순이자수익 $7.1M 반영)
+- 연초 이후 현금 소진 $48.7M(연 가이던스 $65~80M 내)
+- 현금+증권 약 $1.2B (ATM로 총 $540M 조달)
+
+────────────────────────────────────────
+주요 성과
+────────────────────────────────────────
+- Aurora INL: 2025년 9월 첫 Aurora 착공, 10/27 토목 개시, 1월 초 굴착 완료 목표, 상업가동 2027말~2028초.
+- 규제: NRC에 주설계기준(PDC) Topical Report 제출 → 15일 만에 접수(통상의 절반). 초안 평가 2026 초 예상(전통 검토의 절반 미만).
+- DOE Reactor Pilot Program(RPP): 11개 중 3개 수상(Aurora INL, Atomic Alchemy 동위원소 파일럿, Pluto 시험로). 건설·초기운영을 DOE 감독으로, NRC 상업 licensing과 병행.
+- 연료: EBR-II 회수 연료 5톤 확보, 정부 플루토늄 비축 최대 20톤(→ 약 180톤 연료 환산). "플루토늄은 고속로에서 특히 유리."
+- Tennessee Advanced Fuel Center: 재활용·제조·발전 포함 $1.68B 투자, 2030년대 초 생산 램프.
+- 국제: 유럽 Lucala·Nucleon 협력(Nucleon은 계열 vehicle 통해 최대 $2B 투자 가능).
+- 파이프라인: 14GW 백로그(주로 데이터센터·하이퍼스케일러). Equinix와 유사한 선불 구조 term sheet 교환 중.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Ryan Tinges (B. Riley) — DOE 경로가 COLA 대체
+- DeWitte: Aurora INL의 DOE 경로 전환으로 전통 NRC COLA 불요, DOE 인가로 대체. "DOE는 나트륨 고속로 규제 감독·인가의 오랜 역사."
+
+[Q2] Tyler Bissedon (Goldman Sachs) — 2027말~2028초 일정, DOE 경로가 가속하나
+- DeWitte: "2027, 2028 일정 유지", 일부 가속 여지. Atomic Alchemy 파일럿은 2026 중반으로 더 빠름.
+
+[Q3] Jed Dorsheimer (William Blair) — 14GW 백로그 구성
+- Bellmer: "주로 데이터센터·하이퍼스케일러", 미식별 잠재 고객으로 증가 가능.
+
+[Q4] Jeffrey Campbell (Seaport) — Aurora의 동위원소 조사(irradiation) 가능 여부
+- DeWitte: 발전이 주목적이나 시설·Pluto 시험로가 조사 유연성 제공. 다만 "대부분"은 발전 운영 일정 간섭 최소화에 초점.
+
+[Q5] Craig Shere (Tuohy Brothers) — 75MW Aurora INL 연료 충분성
+- DeWitte: 다양한 출처에서 충분한 HALEU 접근 자신, 필요시 플루토늄 함유 연료를 우라늄과 블렌딩 가능.
+
+[종료] DeWitte — "맨해튼 프로젝트 수준의 속도", "이론이 아니라 실행 중인 advanced nuclear".
+(Q3 순손실 $29.7M, 현금+증권 ~$921.6M — 10-Q.)
