@@ -86,6 +86,17 @@
   .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
   .hl-green{background:var(--hl-green);border-radius:2px;}
   .hl-red{background:var(--hl-red);border-radius:2px;}
+  /* 전문 모달 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:12px;width:90%;max-width:780px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h3{font-size:15px;font-weight:700;margin:0;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:20px;overflow-y:auto;font-size:13px;line-height:1.75;white-space:pre-wrap;color:#333;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
   @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -364,16 +375,7 @@
           <li>4월 412MW(Ohio)·790MW(Texas) 데이터센터 수주 발표(Q2 2026 계상).</li>
         </ul>
         <div class="src">출처: Wärtsilä Q1 2026 Interim Report · 2026-04-28 · <a href="https://www.wartsila.com/media/news/28-04-2026-wartsila-s-interim-report-january-march-2026-3744975" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — interim report 기반, 컨콜 톤]
-
-Håkan Agnevall (CEO):
-"1분기는 강한 수주로 시작했습니다. 수주잔고가 89억 유로로 사상 최대를 기록했고, 특히 Energy 사업은 분기 사상 최대 수주를 달성했습니다. 데이터센터 수요가 우리 유연발전 엔진의 강점과 정확히 맞물립니다.
-
-비교영업이익은 1억 9천9백만 유로로 전년 대비 16% 늘었고, 마진은 12.8%입니다. Marine과 Energy의 수익성이 모두 개선됐습니다. Energy Storage는 미국 관세와 FEOC 규제로 여전히 약하지만, 세그먼트를 분리해 변동성을 관리하고 있습니다.
-
-향후 12개월 수요 전망은 Energy와 Energy Storage가 개선, Marine은 유사 수준입니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/wartsila-q1-2026.txt', 'Wärtsilä Q1 2026 실적설명 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -398,11 +400,7 @@ Håkan Agnevall (CEO):
           <li>영업현금흐름 €1.6B(vs 2024 €1.2B).</li>
         </ul>
         <div class="src">출처: Wärtsilä FY2025 Financial Statements Bulletin · 2026-02-04 · <a href="https://www.wartsila.com/media/news/04-02-2026-wartsila-s-financial-statements-bulletin-january-december-2025-3713746" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — bulletin 기반]
-
-"2025년은 사상 최대의 영업이익과 영업현금흐름을 기록한 해였습니다. 순매출 69억 유로(+7%), 비교영업이익 8억 2천9백만 유로(+20%, 마진 12.0%). 4분기 비교영업이익은 2억 5천6백만 유로로 23% 늘었습니다. 영업현금흐름은 16억 유로로 전년 12억에서 크게 개선됐습니다. 수주잔고는 82억 유로이며, 이 중 2026년 인도분이 49억 9천1백만 유로입니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/wartsila-q4-2025.txt', 'Wärtsilä Q4/FY2025 실적설명 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -425,12 +423,7 @@ Håkan Agnevall (CEO):
           <li>발표 후 주가 하락(분기 순매출 감소 반응).</li>
         </ul>
         <div class="src">출처: Wärtsilä Q3 2025 Interim Report · 2025-10-28 · <a href="https://www.wartsila.com/media/news/28-10-2025-wartsila-s-interim-report-january-september-2025-3675947" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — interim 기반]
-
-Håkan Agnevall (CEO):
-"Marine과 Energy 모두 수주가 늘고 수익성이 개선됐습니다. 비교영업이익 1억 9천5백만 유로, 마진 11.9%. Energy는 인도 시점 때문에 분기 순매출이 30% 줄었지만 수주는 29% 늘어 백로그는 견조합니다. Energy Storage는 미국 관세와 FEOC 규제로 수주가 79% 감소했습니다. 대체연료 선박이 계약 용량의 48%를 차지하며 해양 시장 심리가 개선되고 있습니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/wartsila-q3-2025.txt', 'Wärtsilä Q3 2025 실적설명 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -453,11 +446,7 @@ Håkan Agnevall (CEO):
           <li>Energy Storage 순매출 -42%(관세).</li>
         </ul>
         <div class="src">출처: Wärtsilä H1 2025 Half-year Report · 2025-07-18 · <a href="https://www.wartsila.com/media/news/18-07-2025-wartsila-s-half-year-financial-report-january-june-2025-3634489" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — half-year report 기반]
-
-2분기 순매출 17억 1천9백만 유로(+11%, 유기적 +13%), 비교영업이익 2억 7백만 유로(+18%, 마진 12.0%). 수주 21억 9천만 유로(+18%)로 수주잔고가 87억 6천4백만 유로 사상 최대를 기록했습니다. Energy Storage는 미국 관세 영향으로 순매출이 42% 감소했습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/wartsila-q2-2025.txt', 'Wärtsilä H1/Q2 2025 실적설명 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -531,6 +520,37 @@ document.body.addEventListener('click',e=>{
   let el=e.target;
   while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
 });
+
+/* ── 전문 모달 ── */
+async function openTranscript(path, title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = '불러오는 중...';
+  document.getElementById('transcriptModal').classList.add('open');
+  try {
+    const r = await fetch(path);
+    const text = await r.text();
+    document.getElementById('modalBody').textContent = text;
+  } catch(e) {
+    document.getElementById('modalBody').textContent = '전문을 불러올 수 없습니다.';
+  }
+}
+function closeModal() {
+  document.getElementById('transcriptModal').classList.remove('open');
+}
+document.getElementById('transcriptModal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
 </script>
+
+<div class="modal-overlay" id="transcriptModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">컨퍼런스 콜 전문</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 </body>
 </html>
