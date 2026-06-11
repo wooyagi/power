@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vistra Corp (VST) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#0369a1; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#eff6ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#0c4a6e;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .transcript{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:8px;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto;white-space:pre-wrap;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>Vistra Corp.</h1>
+      <p>NYSE: VST · 통합 발전·소매 전력 · Irving, TX</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#0369a1;">통합 전력</span>
+      <span class="badge" style="background:#15803d;">원자력 PPA</span>
+      <span class="badge" style="background:#7c3aed;">데이터센터</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">사업</span><span class="v">발전+소매 통합</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Irving, TX</span></div>
+        <div class="kv-item"><span class="k">발전 용량</span><span class="v">~44GW</span></div>
+        <div class="kv-item"><span class="k">원자력</span><span class="v">~6.4GW (4개 발전소)</span></div>
+        <div class="kv-item"><span class="k">소매 고객</span><span class="v">~5M (16개 주+DC)</span></div>
+        <div class="kv-item"><span class="k">FY2025 조정 EBITDA</span><span class="v up">$5,912M (사상최대)</span></div>
+        <div class="kv-item"><span class="k">2026 EBITDA 가이던스</span><span class="v up">$6.8~7.6B</span></div>
+        <div class="kv-item"><span class="k">2027 기회</span><span class="v up">$7.4~7.8B</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Vistra는 경쟁 소매 전력 판매와 도매 발전을 결합한 미국 최대급 통합 전력 기업이다. 약 44GW의 발전 함대(천연가스·원자력·석탄·태양광·배터리 저장)와 약 500만 소매 고객(TXU Energy 등 브랜드)을 함께 보유해, 발전과 소매 부하를 자연 헤지함으로써 도매가 변동성에 덜 노출되는 구조이다.</p>
+    <p>2024년 3월 Energy Harbor 인수로 약 4GW 원자력(Beaver Valley·Davis-Besse·Perry)을 추가했고, 2025년 10월 Lotus(가스 7기 ~2,600MW), 2026년 1월 Cogentrix(가스 5,500MW, ~$4B, 2026 하반기 마감 예정) 등 가스 발전을 공격적으로 확대 중이다. AI 데이터센터 수요에 원자력·가스 양면으로 대응한다.</p>
+
+    <h3 class="sub">사업 구조 & 경쟁 해자 (근거 포함)</h3>
+    <div class="card">
+      <strong>① 발전-소매 통합 헤지</strong>
+      <p>미국 최대 경쟁 가정용 소매업체(TXU Energy)를 통한 자연 헤지로 마진을 안정화. 온화한 날씨의 Q1 2026에도 Retail이 +$68M 흑자 유지 — 통합 헤지 논지 검증. (근거: Q1'26 실적)</p>
+    </div>
+    <div class="card">
+      <strong>② ERCOT 유일 상업 원자력 + PJM/중서부 원자력</strong>
+      <p>ERCOT 내 유일 상업 원자력(Comanche Peak) + PJM/중서부 3개 원전(Energy Harbor). 희소한 24/7 무탄소 기저부하를 하이퍼스케일러에 프리미엄 장기 가격으로 계약. (근거: AWS·Meta PPA)</p>
+    </div>
+    <div class="card">
+      <strong>③ ~44GW 규모·지역 다변화</strong>
+      <p>ERCOT + PJM + ISO-NE + NYISO + CAISO across 다섯 시장. 지역·연료 다변화 + 용량시장 옵셔널리티. (근거: FY2025 10-K)</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>VST의 핵심 KPI는 <strong>Ongoing Operations Adjusted EBITDA</strong>이다. GAAP 순이익은 헤지 시가평가(MtM)로 분기 변동성 극심(예: Q1 2026 순이익 $1,029M에 미실현 헤지이익 +$723M 포함). 본 리포트는 분기별 GAAP 매출·순이익에 일부 미확보분("데이터 없음")이 있어 조정 EBITDA 시계열과 연간 추이를 중심으로 구성. 세그먼트는 FY2025 10-K 기준 Retail/Texas/East/West/Asset Closure 5개(별도 "Sunset" 세그먼트는 2025년 공시상 Asset Closure로 흡수).</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·EBITDA 추이</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Vistra 분기·연간 8-K·보도자료, stockanalysis.com 교차확인. ※ 2023년 매출은 FY2024 10-K에서 계속사업 기준 $14,779M로 재작성(recast). GAAP 분기 일부는 미확보.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 연간 매출 · Ongoing 조정 EBITDA (백만 USD)</p>
+      <canvas id="chartAnnual" height="100"></canvas>
+      <p class="chart-note">EBITDA: FY2023 ~$4,140M → FY2024 $5,656M(Energy Harbor) → FY2025 $5,912M(사상최대) → 2026E $6.8~7.6B(중간 $7,200M, Cogentrix 제외). 출처: 각 연도 보도자료.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 분기 Ongoing 조정 EBITDA (백만 USD)</p>
+      <canvas id="chartQEbitda" height="100"></canvas>
+      <p class="chart-note">계절성 존재(여름 Q3 강세). Q1 2026 $1,494M(+20% YoY). 출처: 각 분기 보도자료. ※ Q4'24 이전 분기 EBITDA는 미확보.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: 백만 USD)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>매출</th><th>GAAP 순이익</th><th>Ongoing 조정 EBITDA</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2024</td><td class="num">3,054</td><td class="num">데이터 없음</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q2 2024</td><td class="num">3,845</td><td class="num">467</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q3 2024</td><td class="num">데이터 없음</td><td class="num up">1,837</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q4 2024</td><td class="num">3,422</td><td class="num">데이터 없음</td><td class="num">1,983</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">17,224</td><td class="num up">2,812</td><td class="num">5,656</td></tr>
+        <tr><td>Q1 2025</td><td class="num">3,933</td><td class="num">데이터 없음</td><td class="num">1,240</td></tr>
+        <tr><td>Q2 2025</td><td class="num">데이터 없음</td><td class="num">327</td><td class="num">1,349</td></tr>
+        <tr><td>Q3 2025</td><td class="num">데이터 없음</td><td class="num up">652</td><td class="num">1,581</td></tr>
+        <tr><td>Q4 2025</td><td class="num">4,047</td><td class="num">데이터 없음 (EPS $2.13)</td><td class="num">1,742</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">17,738</td><td class="num">데이터 없음</td><td class="num up">5,912</td></tr>
+        <tr style="background:#eff6ff;font-weight:700;"><td>Q1 2026</td><td class="num">5,640</td><td class="num up">1,029*</td><td class="num up">1,494</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ MtM 주의</div>* Q1 2026 순이익 $1,029M에는 향후 정산될 미실현 헤지이익 +$723M 포함. GAAP 순이익은 분기마다 MtM로 급변(Q3'24 $1,837M 등)하므로, 분석은 Ongoing 조정 EBITDA·FCFbG 기준이 적절. 매출 YoY: Q1 2026 +43.4%. 출처: Vistra 보도자료·SEC.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 (세그먼트 조정 EBITDA)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Vistra 분기 보도자료. Q1 2025는 5개 세그먼트 전체 분리 공시 확보. Q1 2026 발표는 Generation(Texas+East+West)+Retail 단순 프레이밍 사용.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 세그먼트 조정 EBITDA — Q1 2025 (백만 USD)</p>
+      <canvas id="chartSeg" height="100"></canvas>
+      <p class="chart-note">Retail $184M, Texas $490M, East $514M, West $62M, (Corporate $(10)M, Asset Closure $(24)M). 합계 Ongoing $1,240M. 출처: Q1'26 보도자료(YoY 비교).</p>
+    </div>
+
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>Q1 2026 프레이밍(Generation+Retail):</strong> Generation(Texas+East+West) 조정 EBITDA $1,426M(+35% vs $1,056M) — Texas ~$586M, East ~$801M. Retail $68M(온화한 ERCOT 날씨로 감소). Generation이 조정 EBITDA의 약 95%, Retail은 헤지·안정성 역할. ※ 세그먼트별 매출 분할·믹스 % 및 FY2025 세그먼트 EBITDA는 보도자료에 미분리 — "데이터 없음".</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 세그먼트 구조</div>FY2025 10-K는 Retail/Texas/East/West/Asset Closure 5개 세그먼트 유지. 별도 "Sunset"(석탄 퇴역) 세그먼트는 2025년 공시상 Asset Closure/지역 발전으로 흡수됨. Q1 2026 발표 자료는 단순화한 Generation+Retail 프레이밍 사용(10-Q는 5세그먼트 GAAP 공시 유지).</div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06)</span><span class="v">~$141~146</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$49.3B</span></div>
+        <div class="kv-item"><span class="k">발행주식수</span><span class="v">~337M</span></div>
+        <div class="kv-item"><span class="k">Trailing P/E</span><span class="v">~27x</span></div>
+        <div class="kv-item"><span class="k">Forward P/E</span><span class="v">~17.5x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA</span><span class="v">~10.8x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">~0.6% ($0.229/분기)</span></div>
+        <div class="kv-item"><span class="k">자사주 잔여</span><span class="v">$1.5B</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 출처 간 주가 $141~146 차이 존재.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>EV/EBITDA ~10.8x는 동종 발전사 대비 합리적 수준. 그러나 GAAP P/E(~27x)는 MtM로 왜곡 — EV/EBITDA·FCFbG 기준 평가가 적절. 자사주($1.5B 잔여, 2025년 $1.0B 추가) + 소액 배당 + 2개 기관 투자등급(IG) 상향이 자본비용을 낮춤. Cogentrix(5.5GW)는 2026/2027 가이던스에 미포함된 업사이드.</div>
+  </section>
+
+  <!-- 5. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">5. 주요 계약·딜</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>AWS × Comanche Peak 원자력 — 1,200MW 20년 PPA</div>
+      <p style="font-size:13px;margin:6px 0;">2025-09 서명(8-K). 20년 PPA(+20년 연장 옵션), 무탄소 1,200MW. 인도 2027 4Q 시작, 2032년 풀 램프. 투자등급 거래상대방(이후 AWS 확인).</p>
+      <div class="deal-meta">출처: 8-K · World Nuclear News · 2025-09</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Meta × PJM 원자력 — &gt;2,600MW 20년 PPA</div>
+      <p style="font-size:13px;margin:6px 0;">2026-01 발표. PJM 원자력(Beaver Valley·Perry·Davis-Besse)의 에너지·용량·업레이트 20년 PPA. AWS와 합산 약 3,800MW 계약, 추가 +3.2GW 계약 기회 식별.</p>
+      <div class="deal-meta">출처: Q1'26 콜 · carboncredits.com · 2026-01</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(완료)</span>Energy Harbor 인수 — 원자력 ~4GW</div>
+      <p style="font-size:13px;margin:6px 0;">2024-03-01 완료. Beaver Valley·Davis-Besse·Perry 원전 ~4,000MW + 소매 고객 ~100만 추가.</p>
+      <div class="deal-meta">출처: World Nuclear News · FY2024 보도자료 · 2024-03-01</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(완료)</span>Lotus Infrastructure — 가스 7기 ~2,600MW</div>
+      <p style="font-size:13px;margin:6px 0;">2025-10-22 완료. PJM·ISO-NE·NYISO·CAISO across 7개 가스 발전소 ~2,600MW. (가격 비공개)</p>
+      <div class="deal-meta">출처: Vistra IR·PRN · 2025-10-22</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(서명·진행)</span>Cogentrix Energy — 가스 5,500MW (~$4B)</div>
+      <p style="font-size:13px;margin:6px 0;">2026-01 서명, 2026 하반기 마감 예정. PJM·ISO-NE·ERCOT 5,500MW. 순가격 ~$4.0B(현금 $2.3B + 주식 $0.9B + 인수부채 $1.5B − 세제혜택 ~$0.7B). FERC/HSR/주 승인 필요. <strong>가이던스에 미포함</strong>.</p>
+      <div class="deal-meta">출처: Utility Dive · PowerMag · 2026-01-06</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">승인</span>Perry 원전 운영 라이선스 연장 — 2046까지</div>
+      <p style="font-size:13px;margin:6px 0;">2025-07-07 NRC 승인. Perry 원전을 2046년까지 운영 가능.</p>
+      <div class="deal-meta">출처: Vistra IR · 2025-07-07</div>
+    </div>
+  </section>
+
+  <!-- 6. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">6. 핵심 포인트 &amp; 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>EBITDA 계단식 상승:</strong> ~$4.1B(2023) → $5,656M(2024, Energy Harbor) → $5,912M(2025, 사상최대) → $6.8~7.6B 가이던스(2026) → $7.4~7.8B 기회(2027). 2026 점프는 Lotus 풀이어 + PJM 용량가 상승 등 구조적 요인. (출처: 각 보도자료)</li>
+        <li><strong>원자력 계약화:</strong> AWS+Meta 합산 ~3,800MW 20년 PPA + 식별된 +3.2GW. 머천트 원자력을 유틸리티 같은 계약 현금흐름으로 전환. (출처: AWS·Meta PPA)</li>
+        <li><strong>Cogentrix는 가이던스 외 업사이드:</strong> 5.5GW, ~$4B(2027E ~7.25x), 2026 하반기 마감 시 별도 EBITDA 레그. (출처: Cogentrix 딜)</li>
+        <li><strong>Retail 안정화:</strong> 온화한 Q1'26에도 Retail +$68M 흑자 — 통합 헤지 검증. (출처: Q1'26)</li>
+        <li><strong>자본환원+디레버리징:</strong> 자사주 $1.5B 잔여, IG 2개 기관 상향. (출처: Q1'26)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — Cogentrix가 만드는 가이던스 외 EBITDA 레그</div>
+      2026/2027 가이던스는 Cogentrix(5.5GW)를 명시적으로 제외. 2026 하반기 마감 시 ~7.25x 2027E EBITDA 자산이 통째로 추가되어 별도 EBITDA 레그를 형성 — 승인 완료가 근접 재평가 트리거가 될 수 있음. <em>(근거: Q1'26 콜, Cogentrix 딜 공시. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — 희소 원자력의 계약 프리미엄 (멀티플 미반영)</div>
+      AWS·Meta 20년 PPA로 ~3,800MW가 이미 계약화되었고 +3.2GW 추가 식별. 머천트 원자력이 유틸리티형 계약 현금흐름으로 바뀌는데도 주가는 ~10.8x EV/EBITDA(머천트 멀티플)에 머묾 — 전통적 머천트 멀티플로 평가하면 계약화 프리미엄을 과소반영. <em>(근거: PPA 공시, 밸류에이션. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — 통합 헤지의 하방 안정성</div>
+      극단적 온화 날씨(Q1'26)에도 Retail이 +$68M 흑자를 유지. 순수 머천트 피어 대비 하방이 단단하다는 증거로, 변동성 우려가 과도하게 반영될 경우 재평가 여지. <em>(근거: Q1'26 실적. 추론: 논리적 도출)</em>
+    </div>
+    <div class="warn"><div class="h">⚠ 리스크/모니터링</div>① GAAP 순이익 MtM 노이즈(분석 시 조정 EBITDA 사용). ② Cogentrix 승인·마감 리스크(FERC/HSR/주). ③ 상품가격(전력·가스) 사이클 노출. ④ 데이터센터 PPA 인도 시점(2027~) 실행. ⑤ 인수 누적에 따른 레버리지·통합 리스크.</div>
+  </section>
+
+  <!-- 7. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">7. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Vistra 분기 8-K·보도자료·어닝콜 트랜스크립트. 어닝콜=파랑.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05-07 · EBITDA $1,494M(+20%), 가이던스 재확인, IG 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$5,640M (+43% YoY)</span></div>
+          <div><span class="k">GAAP 순이익</span><span class="v">$1,029M (+$723M MtM 포함)</span></div>
+          <div><span class="k">Ongoing 조정 EBITDA</span><span class="v">$1,494M (+20%)</span></div>
+          <div><span class="k">EPS</span><span class="v">$2.18 (vs ~$1.32 예상, 상회)</span></div>
+          <div><span class="k">2026 EBITDA</span><span class="v">$6.8~7.6B 재확인</span></div>
+          <div><span class="k">2027 기회</span><span class="v">$7.4~7.8B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Ongoing 조정 EBITDA $1,494M(+20% YoY, Q1 2024 대비 ~+85%).</li>
+          <li>2026 가이던스(EBITDA $6.8~7.6B, FCFbG $3.925~4.725B) 재확인. 2027 기회 $7.4~7.8B(Cogentrix 제외).</li>
+          <li>2번째 기관 투자등급(IG) 상향. Cogentrix + Meta PPA로 빠른 2026 출발.</li>
+          <li>CEO Jim Burke: "2026년은 빠른 출발 — 주력 시장에서 부하 성장이 현실화."</li>
+        </ul>
+        <div class="src">출처: Vistra Q1 2026 보도자료·SEC 8-K · 2026-05-07 · <a href="https://investor.vistracorp.com/2026-05-07-Vistra-Reports-First-Quarter-2026-Results" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료·트랜스크립트 기반, 컨콜 톤]
+
+Jim Burke (CEO):
+"2026년은 빠르게 출발했습니다. 1분기 Ongoing 조정 EBITDA 14억 9천4백만 달러, 전년 대비 20% 성장입니다. 주력 시장에서 부하 성장이 실제로 나타나고 있습니다. AWS, Meta와 맺은 원자력 PPA, 그리고 Cogentrix 인수가 향후 성장의 발판입니다.
+
+2026년 가이던스를 재확인합니다 — Ongoing 조정 EBITDA 68~76억 달러, 조정 FCFbG 39.25~47.25억 달러. 2027년 기회는 74~78억 달러로 봅니다. 이건 Cogentrix를 제외한 숫자입니다.
+
+두 번째 신용평가사로부터 투자등급을 받았습니다."
+
+CFO:
+"1분기 GAAP 순이익 10억 2천9백만 달러에는 향후 정산될 미실현 헤지이익 7억 2천3백만 달러가 포함됩니다. 본질은 Ongoing 조정 EBITDA로 보시는 게 맞습니다. 온화한 ERCOT 날씨에도 Retail은 6천8백만 달러 흑자를 유지했습니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4/FY 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-02-26 · FY EBITDA $5,912M(사상최대), 2026 가이던스</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">Q4 매출</span><span class="v">$4,047M</span></div>
+          <div><span class="k">Q4 조정 EBITDA</span><span class="v">$1,742M (vs $1,983M Q4'24)</span></div>
+          <div><span class="k">Q4 EPS</span><span class="v">$2.13 (예상 $2.33 하회)</span></div>
+          <div><span class="k">FY2025 매출</span><span class="v">$17,738M</span></div>
+          <div><span class="k">FY2025 EBITDA</span><span class="v up">$5,912M (사상최대)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 Ongoing 조정 EBITDA $5,912M으로 사상최대 + 좁힌 가이던스 상회.</li>
+          <li>Q4 EBITDA는 전년 동기($1,983M) 대비 감소, EPS 컨센 하회.</li>
+          <li>2026 EBITDA 가이던스 $6.8~7.6B. Cogentrix 딜(2026-01) 직전 발표.</li>
+        </ul>
+        <div class="src">출처: Vistra Q4/FY2025 보도자료·SEC 8-K · 2026-02-26 · <a href="https://investor.vistracorp.com/2026-02-26-Vistra-Reports-Fourth-Quarter-and-Full-Year-2025-Results" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+"2025년 Ongoing 조정 EBITDA는 59억 1천2백만 달러로 사상 최대치이자 좁힌 가이던스를 상회했습니다. 4분기 EBITDA는 17억 4천2백만 달러로 전년 동기(19억 8천3백만)보다 낮았고, EPS는 $2.13으로 컨센서스($2.33)를 밑돌았습니다. 2026년 EBITDA 가이던스를 68~76억 달러로 제시합니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-11-06 · EBITDA $1,581M, 2026 가이던스 개시, Lotus 완료</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">GAAP 순이익</span><span class="v">$652M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$1,581M</span></div>
+          <div><span class="k">FY2025 가이던스</span><span class="v">$5.7~5.9B (좁힘)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 EBITDA 가이던스 $5.7~5.9B로 좁힘, FCFbG 중간값 $3.3~3.5B로 상향.</li>
+          <li>2026 가이던스 개시: EBITDA $6.8~7.6B, FCFbG $3.925~4.725B.</li>
+          <li>Lotus(가스 7기) 인수 완료(2025-10-22).</li>
+        </ul>
+        <div class="src">출처: Vistra Q3 2025 보도자료·10-Q · 2025-11-06 · <a href="https://investor.vistracorp.com/2025-11-06-Vistra-Reports-Third-Quarter-2025-Results,-Narrows-2025-Guidance,-and-Initiates-2026-Guidance" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+3분기 GAAP 순이익 6억 5천2백만 달러, Ongoing 조정 EBITDA 15억 8천1백만 달러. 2025년 가이던스를 57~59억 달러로 좁히고 FCFbG 중간값을 상향했습니다. 2026년 가이던스를 처음으로 제시했습니다 — EBITDA 68~76억 달러. Lotus 가스 7기 인수를 10월 22일 완료했습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-08-07 · EBITDA $1,349M, FY 가이던스 재확인</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">GAAP 순이익</span><span class="v">$327M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$1,349M</span></div>
+          <div><span class="k">영업현금흐름</span><span class="v">$1,171M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Ongoing 조정 EBITDA $1,349M. FY2025 가이던스 $5.5~6.1B 재확인.</li>
+          <li>2026 중간값 기회 &gt;$6.8B로 상향(Lotus 제외 기준).</li>
+        </ul>
+        <div class="src">출처: Vistra Q2 2025 보도자료·SEC 8-K · 2025-08-07 · <a href="https://www.sec.gov/Archives/edgar/data/0001692819/000119312525174942/d929557dex991.htm" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+2분기 GAAP 순이익 3억 2천7백만 달러, Ongoing 조정 EBITDA 13억 4천9백만 달러, 영업현금흐름 11억 7천1백만 달러. FY2025 가이던스 55~61억 달러를 재확인하고, 2026년 중간값 기회를 68억 달러 이상(Lotus 제외)으로 상향했습니다.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+/* ① 연간 매출 + EBITDA */
+new Chart(document.getElementById('chartAnnual'),{type:'bar',data:{labels:['FY2023','FY2024','FY2025','2026E'],datasets:[
+  {label:'매출 ($M)',data:[14779,17224,17738,null],backgroundColor:'rgba(3,105,161,.7)',yAxisID:'y'},
+  {label:'Ongoing 조정 EBITDA ($M)',data:[4140,5656,5912,7200],type:'line',borderColor:'#15803d',backgroundColor:'transparent',pointRadius:5,tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'매출 $M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'EBITDA $M'}}}}});
+
+/* ② 분기 EBITDA */
+new Chart(document.getElementById('chartQEbitda'),{type:'bar',data:{labels:["Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],datasets:[
+  {label:'Ongoing 조정 EBITDA ($M)',data:[1983,1240,1349,1581,1742,1494],backgroundColor:'rgba(3,105,161,.75)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ③ 세그먼트 EBITDA Q1 2025 */
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:['Retail','Texas','East','West','Corp','Asset Closure'],datasets:[
+  {label:'Q1 2025 조정 EBITDA ($M)',data:[184,490,514,62,-10,-24],backgroundColor:['#15803d','#0369a1','#0369a1','#0369a1','#9ca3af','#c0392b']}
+]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ④ 주가 */
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jan'24","Apr'24","Jul'24","Oct'24","Jan'25","Apr'25","Jul'25","Oct'25","Jan'26","Apr'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[40,62,85,110,140,115,175,170,160,150,144],borderColor:'#0369a1',backgroundColor:'rgba(3,105,161,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
