@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>American Electric Power (AEP) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#1e40af; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#eff6ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#1e3a8a;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>American Electric Power</h1>
+      <p>NASDAQ: AEP · 미국 최대 규제 전력 유틸리티 · Columbus, OH</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#1e40af;">규제 유틸리티</span>
+      <span class="badge" style="background:#15803d;">송전 최대</span>
+      <span class="badge" style="background:#7c3aed;">데이터센터 부하</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#capex">자본계획·부하</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">사업</span><span class="v">규제 전력 유틸리티(11개 주)</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Columbus, Ohio</span></div>
+        <div class="kv-item"><span class="k">고객</span><span class="v">~5.6M</span></div>
+        <div class="kv-item"><span class="k">송전망</span><span class="v">~40,000 마일 (미국 최대)</span></div>
+        <div class="kv-item"><span class="k">FY2025 영업 EPS</span><span class="v">$5.97</span></div>
+        <div class="kv-item"><span class="k">2026 가이던스</span><span class="v up">$6.15~6.45</span></div>
+        <div class="kv-item"><span class="k">5년 자본계획</span><span class="v up">$78B</span></div>
+        <div class="kv-item"><span class="k">계약 부하(2030)</span><span class="v up">63GW</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>American Electric Power는 11개 주(AR·IN·KY·LA·MI·OH·OK·TN·TX·VA·WV)에서 약 560만 고객에게 전력을 공급하는 미국 최대급 규제 전력 유틸리티 지주사다. 약 40,000마일의 <strong>미국 최대 송전망</strong>(특히 765kV 초고압선의 약 90% 보유)을 운영하며, 발전(~31GW)·송전·배전을 아우른다. 본 데스크 관점에서 AEP는 <strong>데이터센터 부하 성장의 최대 수혜 규제 유틸리티</strong>로, AEP Ohio·AEP Texas를 중심으로 계약 부하가 2030년까지 63GW(약 90% 데이터센터)에 도달했다.</p>
+    <p>핵심 논지는 "계약된(committed) 부하 → 대규모 자본 투자(rate base) → 규제 수익(operating EPS) 성장"의 선순환이다. 5년 자본계획이 18개월 만에 $54B→$78B로 증액됐고, 장기 영업이익 성장률 목표는 6~8%→7~9%→9% 초과로 세 차례 상향됐다.</p>
+
+    <h3 class="sub">사업부별 상세 (4개 세그먼트)</h3>
+    <div class="card">
+      <strong>① Vertically Integrated Utilities (수직통합 유틸리티 — 최대 이익원)</strong>
+      <p>발전·송전·배전을 모두 보유한 주(APCo, I&M, PSO, SWEPCO 등). Q1 2026 영업이익 $464M(전사 약 52%). <em>경쟁 강점:</em> 규제 자산기반(rate base) 성장 + 발전 자원 추가로 데이터센터 부하 직접 수용.</p>
+    </div>
+    <div class="card">
+      <strong>② Transmission & Distribution Utilities (송배전 — AEP Ohio·AEP Texas)</strong>
+      <p>송배전 전담 주(오하이오·텍사스). Q1 2026 영업이익 $237M. <em>경쟁 강점:</em> 데이터센터 집중 지역(AEP Ohio), 오하이오 데이터센터 요금(85% take-or-pay)으로 자본 회수 디리스크.</p>
+    </div>
+    <div class="card">
+      <strong>③ AEP Transmission Holdco (송전 전용 — FERC 공식요금)</strong>
+      <p>FERC 규제 송전 전용 사업. Q1 2026 영업이익 $209M. <em>경쟁 강점(근거):</em> 765kV 초고압선 2,100마일+(타 유틸리티 합산보다 많음), FERC 공식요금으로 규제 lag 최소·빠른 회수. 2026 영업이익의 50%+가 이 고성장 사업에서, 송전 rate base 2030까지 $50B 초과 전망.</p>
+    </div>
+    <div class="card">
+      <strong>④ Generation & Marketing (발전·마케팅)</strong>
+      <p>경쟁 발전·도매 마케팅·재생에너지. Q1 2026 영업이익 $90M. 연료전지(Bloom)·재생 등 데이터센터 브리지 솔루션 포함.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>AEP의 핵심 지표는 <strong>영업(비GAAP) EPS</strong>이다. GAAP EPS는 일회성 항목으로 영업 EPS와 괴리될 수 있다(예: Q2 2025 GAAP $2.29 vs 영업 $1.43 — FERC NOLC 승인에 따른 $480M/$0.90 일회성 GAAP 이익). 일부 분기 GAAP 매출은 보도자료 반올림치("~")이며 SEC 직접 확인 권장.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·EPS 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: AEP 분기 8-K·보도자료(EDGAR CIK 0000004904), stockanalysis/macrotrends 교차확인. Q1 2023 ~ Q1 2026 (13개 분기). 영업(비GAAP) EPS + GAAP EPS 병기.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 영업 EPS</p>
+      <canvas id="chartRevEps" height="100"></canvas>
+      <p class="chart-note">매출($B, 좌축) + 영업 EPS($, 우축). ※ 2023~2024 일부 매출은 보도자료 반올림치. 출처: 각 분기 8-K.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 영업 EPS vs GAAP EPS ($)</p>
+      <canvas id="chartEps" height="100"></canvas>
+      <p class="chart-note">영업 EPS(실선)가 핵심 지표. GAAP EPS(점선)는 일회성으로 변동(Q2'25 GAAP $2.29는 NOLC $0.90 일회성 포함). Q1'23·Q1'24 GAAP는 미확보(공백). 출처: 각 분기 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: EPS $, 매출 $B)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>매출</th><th>영업 EPS</th><th>GAAP EPS</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2023</td><td class="num">~4.7</td><td class="num">1.11</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q2 2023</td><td class="num">~4.37</td><td class="num">1.13</td><td class="num">1.01</td></tr>
+        <tr><td>Q3 2023</td><td class="num">~5.3</td><td class="num">1.77</td><td class="num">1.83</td></tr>
+        <tr><td>Q4 2023</td><td class="num">~4.6</td><td class="num">1.23</td><td class="num">0.64</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2023</td><td class="num">19.0</td><td class="num">5.25</td><td class="num">4.26</td></tr>
+        <tr><td>Q1 2024</td><td class="num">~5.03</td><td class="num">1.27</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q2 2024</td><td class="num">~4.6</td><td class="num">1.25</td><td class="num">0.64</td></tr>
+        <tr><td>Q3 2024</td><td class="num">~5.4</td><td class="num">1.85</td><td class="num">1.80</td></tr>
+        <tr><td>Q4 2024</td><td class="num">~4.7</td><td class="num">1.24</td><td class="num">1.25</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">19.72</td><td class="num">5.62</td><td class="num">5.60</td></tr>
+        <tr><td>Q1 2025</td><td class="num">5.463</td><td class="num">1.54</td><td class="num">1.50</td></tr>
+        <tr><td>Q2 2025</td><td class="num">~4.9</td><td class="num">1.43</td><td class="num">2.29*</td></tr>
+        <tr><td>Q3 2025</td><td class="num">~6.0</td><td class="num up">1.80</td><td class="num">1.82</td></tr>
+        <tr><td>Q4 2025</td><td class="num">~5.31</td><td class="num">1.19</td><td class="num">1.09</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">21.876</td><td class="num up">5.97</td><td class="num">6.70</td></tr>
+        <tr style="background:#eff6ff;font-weight:700;"><td>Q1 2026</td><td class="num">6.020</td><td class="num up">1.64</td><td class="num">1.61</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 일회성·출처</div>* Q2 2025 GAAP EPS $2.29는 FERC NOLC 승인에 따른 $480M($0.90/주) 일회성 GAAP 이익 포함 — 영업 EPS는 $1.43. FY2025 영업 EPS $5.97은 가이던스($5.75~5.95) 상회. 2026 가이던스 $6.15~6.45. 출처: AEP 8-K·보도자료.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 (세그먼트 영업이익)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: AEP Q1 2026 8-K 세그먼트. 4개 세그먼트 영업이익(operating earnings).</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ Q1 2026 세그먼트 영업이익 (백만 USD)</p>
+      <canvas id="chartSeg" height="100"></canvas>
+      <p class="chart-note">Vertically Integrated $464M, T&D $237M, Transmission Holdco $209M, Generation & Marketing $90M (총 $891M, Corporate 차감 전). 전년 Q1'25 대비 모두 증가. 출처: Q1'26 8-K.</p>
+    </div>
+
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>세그먼트 코멘트:</strong> 수직통합 유틸리티가 최대 이익원(~52%). 송전(AEP Transmission Holdco)은 FERC 공식요금 기반 고성장으로 <strong>2026 영업이익의 50%+ 기여</strong> 전망, 2030까지 송전 rate base $50B 초과. 송배전(AEP Ohio·Texas)은 데이터센터 집중 수혜. ※ Q1 2026 세그먼트 매출(10-Q): 수직통합 $3,365M, 송배전 $1,594M, 발전·마케팅 $931M, 기타 $130M.</p>
+    </div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06-10)</span><span class="v">~$128.73</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$70B</span></div>
+        <div class="kv-item"><span class="k">P/E (TTM)</span><span class="v">~18.9x</span></div>
+        <div class="kv-item"><span class="k">P/B</span><span class="v">~2.19x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA</span><span class="v">~14.3x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v up">~3.0% ($3.80/년)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 데이터센터 부하·자본계획 상향으로 우상향.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>규제 유틸리티로 P/E ~18.9x·배당수익률 3.0%는 데이터센터 성장 프리미엄을 일부 반영. 분기배당 $0.95(2025-10 +2.2%), 115년 연속 배당, payout 50~60% 목표. GAAP P/E보다 영업 EPS 기준 평가가 적절. 가치는 계약 부하의 자본계획→rate base→영업 EPS 전환에 좌우.</div>
+  </section>
+
+  <!-- 5. 자본계획·부하 -->
+  <section id="capex">
+    <h2 class="sec">5. 자본계획 &amp; 계약 부하 (핵심 논지)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: AEP 각 분기 보도자료·콜. 계약 부하는 서명된 LOA/ESA 기반(파이프라인과 구분).</p>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">⑤ 5년 자본계획 추이 ($B)</p>
+        <canvas id="chartCapex" height="150"></canvas>
+        <p class="chart-note">$54B(2024.3Q) → $72B(2025.3Q) → $78B(2026.1Q) + 계획 외 $10B+ 가시성. 18개월 만에 +44%. 출처: 각 분기 PR.</p>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">⑥ 계약 부하 추이 (2030 목표, GW)</p>
+        <canvas id="chartLoad" height="150"></canvas>
+        <p class="chart-note">24GW(2024.3Q) → 28GW(2025.3Q) → 56GW(2025.4Q) → 63GW(2026.1Q). 약 90% 데이터센터, 서명 LOA/ESA 기반. 출처: 각 분기 콜.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">계약 부하 구성 (지역·구속력)</h3>
+    <div class="card">
+      <table>
+        <thead><tr><th>지역</th><th>부하</th><th>계약 형태</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>ERCOT</td><td class="num">41GW</td><td>LOA(SB6 기준)</td><td>텍사스 데이터센터·크립토</td></tr>
+          <tr><td>PJM</td><td class="num">~80% ESA</td><td>ESA(더 구속적)</td><td>오하이오·I&M 데이터센터</td></tr>
+          <tr><td>SPP</td><td class="num">100% LOA</td><td>LOA</td><td>루이지애나 Amazon 등</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;margin:6px 0 0;">계약 부하 63GW의 약 90%가 데이터센터. <strong>LOA/ESA 모두 재무 약정 포함</strong>이며, 오하이오 데이터센터 요금은 85% take-or-pay + 취소 시 건설비 100% 회수로 자본 디리스크. 기존 고객에 최대 $16B 비용 상쇄.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 핵심 리스크</div>경영진이 직접 지목한 최대 실행 리스크는 <strong>PJM·SPP 인터커넥션 큐 병목</strong>이다. CEO Fehrman은 "PJM이 부하-수요 연결을 신속히 하지 못한다"며 대안 구조(비규제 사업·온사이트 브리지)를 평가 중이라고 밝혔다. 계약 부하의 매출 전환 시점이 이 병목에 좌우.</div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·규제</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">규제(승인)</span>AEP Ohio 데이터센터 요금 — PUCO 승인</div>
+      <p style="font-size:13px;margin:6px 0;">2025-07-09 PUCO 승인(7-23 발효). 25MW 초과 부하는 최대 12년간 구독용량의 85%+ 지불(take-or-pay), 4년 ramp, 취소·12개월 지연 시 건설비 100% 상환. 약 4,000MW가 2030까지 연결 서명(현 중부 오하이오 전체 수요 상당).</p>
+      <div class="deal-meta">출처: PUCO · PowerMag · 2025-07</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">파트너십</span>Piketon(OH) 10GW 데이터센터 캠퍼스 — DOE·SB Energy</div>
+      <p style="font-size:13px;margin:6px 0;">DOE + SB Energy + AEP Ohio. SB Energy가 765kV 송전 $4.2B 자금 부담. 부하 7GW 추가(Q1 2026)에 기여.</p>
+      <div class="deal-meta">출처: AEP/DOE 발표 · 2026-03-20</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">정부(종결)</span>DOE 대출보증 $1.6B — 송전 5,000마일 업그레이드</div>
+      <p style="font-size:13px;margin:6px 0;">2025-10-16 종결. IN·MI·OH·OK·WV 송전 reconductor/rebuild, 고객 금융비용 약 $275M 절감.</p>
+      <div class="deal-meta">출처: AEP · 2025-10-16</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">파트너십</span>Quanta Services — 765kV·고압 장비 공급망</div>
+      <p style="font-size:13px;margin:6px 0;">2025-11-05. 장기 EPC + 국내 EHV 변압기·차단기 제조 확대 개발 서비스 계약. $78B 계획의 공급망 병목 해소.</p>
+      <div class="deal-meta">출처: AEP/Quanta · 2025-11-05</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">평가/파이프라인</span>Google(Putnam County, WV) · Amazon(NW Louisiana, SPP)</div>
+      <p style="font-size:13px;margin:6px 0;">Google 웨스트버지니아 Putnam County 데이터센터 평가 중(다단계 멀티빌리언). Amazon 루이지애나 북서부 SPP 프로젝트. 일부는 LOA, 일부는 평가 단계.</p>
+      <div class="deal-meta">출처: Q1 2026 콜</div>
+    </div>
+  </section>
+
+  <!-- 7. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">7. 핵심 포인트 &amp; 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>장기 EPS 성장률 3회 상향(9개월):</strong> 6~8% → 7~9%(Q3'25) → 9% 초과(Q1'26). 모두 서명 부하·자본 증액에 연동. (출처: 각 분기 콜)</li>
+        <li><strong>자본계획 +44%(18개월):</strong> $54B → $78B + 계획 외 $10B+. rate base CAGR ~11%. (출처: 각 분기 PR)</li>
+        <li><strong>계약 부하 63GW(서명 LOA/ESA):</strong> 약 90% 데이터센터. 오하이오 85% take-or-pay로 디리스크. (출처: Q1'26 콜)</li>
+        <li><strong>송전 우위:</strong> 765kV 약 90% 보유, FERC 공식요금으로 2026 영업이익 50%+ 기여. (출처: Q3'25 콜)</li>
+        <li><strong>배당+안정성:</strong> 115년 연속 배당, +2.2% 인상($0.95/분기), payout 50~60%. (출처: 보도자료)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — "계약된" 부하가 만드는 가이던스 상향 사이클</div>
+      AEP의 63GW는 LOI가 아니라 서명된 LOA/ESA(재무 약정 포함)이며, 오하이오 요금은 85% take-or-pay + 취소 시 건설비 100% 회수로 자본을 디리스크한다. 부하가 서명될 때마다 자본계획과 장기 성장률이 상향됐고(6~8%→9%+), $10B+ 계획 외 가시성을 감안하면 추가 상향이 구조적으로 가능. LOI에 의존하는 피어와 차별화. <em>(근거: 각 분기 콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — 송전 스케일 = 규제 lag 적은 FERC 수익</div>
+      증분 자본의 약 절반이 FERC 공식요금 송전($33B/$78B)으로, 주 규제 배전보다 회수가 빠르고 lag가 적다. 765kV의 약 90% 보유 + Quanta 파트너십·국내 EHV 장비 제조로 765kV 건설의 공급망 병목까지 선제 대응. 시장이 규제 유틸리티를 동질적으로 보면 이 송전 mix 우위를 과소평가할 수 있음. <em>(근거: Q3'25 콜, Quanta 발표. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — $16B 고객 비용 상쇄 = 규제·정치 내구성</div>
+      대형부하 계약의 최소지불 조항이 기존 고객에 최대 $16B 비용 상쇄를 제공 → 데이터센터 부하로 요금 인상 반발을 겪은 타 유틸리티와 달리 규제·정치적 내구성을 확보. 가정 요금 상승은 연 ~3.5%로 역사적 인플레 하회. <em>(근거: Q1'26·Q3'25 콜. 추론: 논리적 도출)</em>
+    </div>
+    <div class="warn"><div class="h">⚠ 리스크/모니터링</div>① PJM·SPP 인터커넥션 병목(경영진 지목 최대 리스크) — 매출 전환 지연 가능. ② 대규모 자본의 equity 조달(현 18%, 향후 30~40% 가능)에 따른 희석. ③ GAAP↔영업 EPS 괴리(일회성). ④ 가스터빈·EHV 장비 공급망. ⑤ 규제 ROE 결과(WV 등).</div>
+  </section>
+
+  <!-- 8. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">8. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: AEP 분기 8-K·보도자료·어닝콜. 각 블록 "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05 · 영업 EPS $1.64, 자본계획 $78B, 계약부하 63GW</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$6,020M (+10.2% YoY)</span></div>
+          <div><span class="k">영업 EPS</span><span class="v">$1.64 (vs $1.54, 컨센 $1.55 상회)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$1.61</span></div>
+          <div><span class="k">자본계획</span><span class="v">$78B (+$6B)</span></div>
+          <div><span class="k">계약 부하</span><span class="v">63GW (+7GW)</span></div>
+          <div><span class="k">2026 가이던스</span><span class="v">$6.15~6.45 유지</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>장기 영업 EPS 성장률 "9% 초과"로 상향(기존 7~9%). 계획 외 $10B+ 가시성.</li>
+          <li>계약 부하 63GW(~90% 데이터센터). ERCOT 41GW. Piketon 10GW(SB Energy), Google Putnam WV 평가.</li>
+          <li>송전 $33B(42%), 발전 $24B. 가스터빈 10GW+ 확보, 큐 190GW. equity 비중 18%($7B).</li>
+          <li>오하이오 9.84% ROE, 아칸소 9.65%, WV 9.75%. 기존 고객 비용 상쇄 $16B.</li>
+          <li>CEO Fehrman: PJM 인터커넥션 병목이 핵심 리스크, "모든 옵션 평가".</li>
+        </ul>
+        <div class="src">출처: AEP Q1 2026 8-K·어닝콜 · 2026-05 · <a href="https://www.sec.gov/Archives/edgar/data/0000004904/000000490426000031/a1q20268kpressreleaseex991.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/aep-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-02-12 · FY 영업 EPS $5.97, 계약부하 56GW, 배당 $0.95</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">FY2025 영업 EPS</span><span class="v">$5.97 (가이던스 상회)</span></div>
+          <div><span class="k">Q4 영업 EPS</span><span class="v">$1.19</span></div>
+          <div><span class="k">FY 매출</span><span class="v">$21.876B (+10.9%)</span></div>
+          <div><span class="k">TSR</span><span class="v up">29%</span></div>
+          <div><span class="k">자본계획</span><span class="v">$72B (+$5~8B)</span></div>
+          <div><span class="k">계약 부하</span><span class="v">~56GW (2배)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 영업 EPS $5.97(가이던스 $5.75~5.95 상회). 2026 $6.15~6.45, 장기 7~9%.</li>
+          <li>계약 부하 56GW(직전 28GW 2배). 와이오밍 $2.65B 연료전지(20년 off-take).</li>
+          <li>765kV 약 90% 보유, Quanta 파트너십. 배당 $0.95(+2.2%).</li>
+        </ul>
+        <div class="src">출처: AEP Q4/FY2025 8-K · 2026-02-12 · <a href="https://www.sec.gov/Archives/edgar/data/0000004904/000000490426000011/a4q20258kpressreleaseex991.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/aep-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-10-29 · 영업 EPS $1.80, $72B 계획·7~9% 성장률 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">영업 EPS</span><span class="v">$1.80 ($963M)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$1.82</span></div>
+          <div><span class="k">자본계획</span><span class="v">$72B (+30%)</span></div>
+          <div><span class="k">계약 부하</span><span class="v">28GW (~80% DC)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>장기 성장률 6~8% → 7~9%로 상향(9% CAGR). 2026 가이던스 $6.15~6.45 첫 제시.</li>
+          <li>$72B 계획(2/3+ 송전·발전). 2030 시스템 피크 65GW. C&I 부하 +8%.</li>
+          <li>송전 rate base 2030 $50B+, 2026 영업이익 50%+가 송전. 배당 +2%(115년 연속).</li>
+        </ul>
+        <div class="src">출처: AEP Q3 2025 8-K · 2025-10-29 · <a href="https://www.sec.gov/Archives/edgar/data/0000004904/000000490425000169/a3q20258kpressreleaseex991.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/aep-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-07-30 · 영업 EPS $1.43(사상 최강 Q2), 부하 24GW</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">영업 EPS</span><span class="v">$1.43 ($766M, +$0.18)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$2.29 (NOLC $0.90 일회성)</span></div>
+          <div><span class="k">자본계획</span><span class="v">$54B → ~$70B 예정</span></div>
+          <div><span class="k">계약 부하</span><span class="v">24GW</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>100년 역사상 "가장 강한 2분기". 2025 가이던스 상단 절반, 장기 6~8% 재확인.</li>
+          <li>계약 부하 24GW, 큐 190GW. 피크 33.5→37.6GW. 오하이오 데이터센터 요금 승인.</li>
+          <li>NOLC $480M($0.90) 일회성 GAAP 이익. $2.3B forward equity, $2.82B 소수 송전지분 매각.</li>
+        </ul>
+        <div class="src">출처: AEP Q2 2025 8-K · 2025-07-30 · <a href="https://www.sec.gov/Archives/edgar/data/0000004904/000000490425000139/a2q20258kpressreleaseex991.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/aep-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+const q = ["Q1'23","Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const rev = [4.7,4.37,5.3,4.6,5.03,4.6,5.4,4.7,5.463,4.9,6.0,5.31,6.020];
+const opEps = [1.11,1.13,1.77,1.23,1.27,1.25,1.85,1.24,1.54,1.43,1.80,1.19,1.64];
+const gaapEps = [null,1.01,1.83,0.64,null,0.64,1.80,1.25,1.50,2.29,1.82,1.09,1.61];
+
+new Chart(document.getElementById('chartRevEps'),{type:'bar',data:{labels:q,datasets:[
+  {label:'매출 (좌축, $B)',data:rev,backgroundColor:'rgba(30,64,175,.7)',yAxisID:'y'},
+  {label:'영업 EPS (우축, $)',data:opEps,type:'line',borderColor:'#15803d',backgroundColor:'transparent',pointRadius:3,tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$B'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'EPS $'},ticks:{callback:v=>'$'+v}}}}});
+
+new Chart(document.getElementById('chartEps'),{type:'line',data:{labels:q,datasets:[
+  {label:'영업 EPS $',data:opEps,borderColor:'#1e40af',backgroundColor:'rgba(30,64,175,.1)',fill:true,tension:.3,pointRadius:3},
+  {label:'GAAP EPS $',data:gaapEps,borderColor:'#c0392b',backgroundColor:'transparent',tension:.3,pointRadius:3,borderDash:[5,3],spanGaps:true}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:['수직통합','송배전','송전 Holdco','발전·마케팅'],datasets:[{label:'Q1 2026 영업이익 ($M)',data:[464,237,209,90],backgroundColor:['#1e40af','#2563a8','#15803d','#9ca3af']}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartCapex'),{type:'bar',data:{labels:["2024.3Q","2025.3Q","2026.1Q"],datasets:[{label:'5년 자본계획 ($B)',data:[54,72,78],backgroundColor:'rgba(30,64,175,.75)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+new Chart(document.getElementById('chartLoad'),{type:'line',data:{labels:["2024.3Q","2025.3Q","2025.4Q","2026.1Q"],datasets:[{label:'계약 부하 (GW)',data:[24,28,56,63],borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.12)',fill:true,tension:.3,pointRadius:5}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}GW`}}},scales:{y:{grid,title:{display:true,text:'GW'},ticks:{callback:v=>v+'GW'}}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jan'25","Mar","May","Jul","Sep","Nov","Jan'26","Mar","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[93,104,108,110,113,118,120,125,129],borderColor:'#1e40af',backgroundColor:'rgba(30,64,175,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
