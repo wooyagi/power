@@ -1,8 +1,49 @@
-[핵심 요약 — 보도자료 기반]
+출처: Oracle 공식 IR 보도자료 (investor.oracle.com) · Oracle Q1 FY2026 어닝콜 (2025-09-09) · https://investor.oracle.com/investor-news/news-details/2025/Oracle-Announces-Fiscal-Year-2026-First-Quarter-Financial-Results/default.aspx
 
-Safra Catz:
-"RPO가 4천5백5십억 달러로 359% 성장했습니다. 이번 분기에 3개 고객과 4건의 수십억 달러 규모 계약을 체결했습니다. 곧 5천억 달러를 돌파할 것으로 예상합니다.
+※ 전문 원문 접근 제한 — 확보된 공개 내용 기반 요약
 
-OCI 매출은 향후 5년간 180억 → 320억 → 730억 → 1,140억 → 1,440억 달러로 성장할 것으로 봅니다. 이 대부분은 이미 RPO에 반영되어 있습니다."
+[접근 제한 안내]
+이번 작업에서는 Oracle Q1 FY2026 어닝콜 "전문(verbatim transcript)"을 확보하지 못했습니다.
+- 1차 소스(Motley Fool) 및 폴백 소스(Seeking Alpha, stockinsights.ai, Globe and Mail, AOL, Alpha Spread, Investing.com)에 대한 웹 페이지 가져오기(WebFetch)가 모두 권한 차단(permission denied)되었고, 명령줄(curl)을 통한 직접 다운로드 역시 차단되었습니다.
+- SEC EDGAR 8-K 문서는 HTTP 403(Forbidden)으로 응답하여 접근이 불가했습니다.
+- 유일하게 접근에 성공한 자료는 Oracle 공식 IR 보도자료(investor.oracle.com)이며, 다만 이 또한 가져오기 도구가 요약본 형태로만 반환했습니다.
+- 따라서 아래 내용은 발언 전문이 아니라, 공식 보도자료 및 검색 결과에서 확인된 사실/인용을 기반으로 한국어로 정리한 요약입니다. 컨퍼런스 콜에서 실제로 오간 발언을 그대로 옮긴 것이 아니므로, 전문이 필요할 경우 별도 권한 허용 후 재수집이 필요합니다.
 
-※ 시장을 놀라게 한 RPO 점프 분기. 전체 트랜스크립트는 Motley Fool 제공.
+
+[핵심 재무 지표 — Oracle FY2026 1분기 (2025-09-09 발표), 보도자료 확인]
+
+- 총매출: 149억 달러 (USD 기준 +12%, 고정환율 기준 +11%)
+- 클라우드 매출(IaaS + SaaS 합산): 72억 달러 (USD 기준 +28%, 고정환율 기준 +27%)
+  - 클라우드 인프라(IaaS): 33억 달러 (+55%)
+  - 클라우드 애플리케이션(SaaS): 38억 달러 (+11%)
+- 소프트웨어(라이선스 등) 매출: 57억 달러 (-1%)
+- GAAP 주당순이익(EPS): $1.01 (-2%)
+- 비GAAP 주당순이익(EPS): $1.47 (+6%)
+- GAAP 순이익: 29억 달러
+- 비GAAP 순이익: 43억 달러
+- 잔여 이행 의무(RPO, 수주 잔고): 4,550억 달러 (+359%)
+- 분기 배당금: 주당 $0.50, 2025년 10월 23일 지급 예정
+
+
+[경영진 발언 — 보도자료 인용 기반]
+
+■ Safra Catz (CEO)
+- "이번 1분기에 서로 다른 3개 고객사와 수십억 달러 규모의 계약 4건을 체결했습니다." ("We signed four multi-billion-dollar contracts with three different customers in Q1.")
+- RPO(수주 잔고)의 가파른 증가를 강조하며, 향후 RPO가 5,000억 달러(half-a-trillion dollars)를 넘어설 것으로 전망.
+- 클라우드 인프라(OCI) 매출 전망(5개년 로드맵)을 제시: 올해 회계연도 180억 달러에서 시작하여 5년 내 1,440억 달러까지 성장 전망.
+  - (보도자료/검색 결과로 확인된 5개년 OCI 매출 로드맵 수치: 180억 → 320억 → 730억 → 1,140억 → 1,440억 달러)
+
+■ Larry Ellison (회장 겸 CTO)
+- "Amazon, Google, Microsoft를 통한 멀티클라우드 데이터베이스 매출이 1분기에 1,529%라는 경이적인 속도로 증가했습니다." ("MultiCloud database revenue from Amazon, Google and Microsoft grew at the incredible rate of 1,529% in Q1.")
+- Oracle AI World 행사에서 "Oracle AI Database" 서비스 출시 계획 발표 예고.
+
+
+[이번 분기의 의미]
+- 이번 분기는 RPO(수주 잔고)가 4,550억 달러로 전년 대비 +359% 급증하며 시장을 크게 놀라게 한 분기입니다.
+- Catz CEO가 향후 5년간 OCI(클라우드 인프라) 매출 로드맵(180억 → 320억 → 730억 → 1,140억 → 1,440억 달러)을 제시했으며, 이 성장의 상당 부분이 이미 RPO에 반영되어 있다는 점을 강조했습니다.
+- 멀티클라우드 데이터베이스 매출의 폭발적 증가(+1,529%)와 차세대 "Oracle AI Database" 출시 계획도 주요 포인트였습니다.
+
+
+[전문 미확보 분기 명시]
+- 위 내용은 어닝콜 전문(operator intro + 준비 발언 + Q&A 전체)이 아니라 공개 보도자료 기반 요약입니다.
+- 전문 번역본은 소스 접근 권한이 차단되어 이번에 제공하지 못했습니다.
