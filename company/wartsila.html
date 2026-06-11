@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wärtsilä (WRT1V) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#0e7490; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#ecfeff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#155e75;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .transcript{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:8px;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto;white-space:pre-wrap;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>Wärtsilä Oyj Abp</h1>
+      <p>Helsinki: WRT1V · US OTC: WRTBY · 유연발전 엔진·해양 · Helsinki, Finland</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#0e7490;">RICE 엔진</span>
+      <span class="badge" style="background:#2563a8;">수주잔고 €8.9B</span>
+      <span class="badge" style="background:#7c3aed;">데이터센터</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">수주잔고</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">본사</span><span class="v">Helsinki, Finland</span></div>
+        <div class="kv-item"><span class="k">CEO</span><span class="v">Håkan Agnevall</span></div>
+        <div class="kv-item"><span class="k">통화</span><span class="v">EUR (€)</span></div>
+        <div class="kv-item"><span class="k">FY2025 순매출</span><span class="v">~€6.9B (+7%)</span></div>
+        <div class="kv-item"><span class="k">FY2025 비교영업이익</span><span class="v up">€829M (12.0%)</span></div>
+        <div class="kv-item"><span class="k">수주잔고 (Q1'26)</span><span class="v up">€8.9B (사상최대)</span></div>
+        <div class="kv-item"><span class="k">美 데이터센터 누적</span><span class="v up">&gt;2.4GW</span></div>
+        <div class="kv-item"><span class="k">에너지 저장 누적</span><span class="v">&gt;19GWh, 130+ 사이트</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Wärtsilä는 핀란드 헬싱키 본사의 글로벌 기술 기업으로, 해양(Marine)과 에너지(Energy) 시장에 장비·라이프사이클 솔루션을 공급한다. 핵심 경쟁력은 유연성 왕복엔진(reciprocating engine, RICE) 발전이며, 가스터빈 대비 짧은 리드타임(약 12~18개월)으로 데이터센터·그리드 유연성 수요에 빠르게 대응한다.</p>
+    <p>2025년 4월 1일부로 보고 세그먼트를 기존 2개에서 <strong>3개(Marine / Energy / Energy Storage)</strong>로 분리했다. 미국 데이터센터向 엔진 누적 판매 용량이 2026년 4월 기준 2.4GW를 넘어섰고, 수주잔고는 €8.9B로 사상 최대다.</p>
+
+    <h3 class="sub">사업부별 상세 (3개 세그먼트)</h3>
+    <div class="card">
+      <strong>① Wärtsilä Marine (해양)</strong>
+      <p>선박용 엔진·추진·하이브리드 시스템 및 서비스. Q3 2025 EBIT 마진 12.4%. 대체연료 선박 수요 개선(계약용량의 48%가 대체연료). <em>경쟁 강점:</em> 대규모 설치 기반 기반 장기 서비스 매출.</p>
+    </div>
+    <div class="card">
+      <strong>② Wärtsilä Energy (에너지 — 유연발전 엔진)</strong>
+      <p>유연성 가스/멀티퓨얼 RICE 발전소(엔진 파워플랜트) + 라이프사이클 서비스. Q3 2025 EBIT 마진 15.9%. <em>경쟁 강점(근거 포함):</em> 가스터빈 대비 짧은 리드타임(주문→가동 2~3년)으로 데이터센터 off-grid 전원에 빠르게 대응, 가동 후 그리드 밸런싱 전환 가능. Q1 2026 분기 사상 최대 수주.</p>
+    </div>
+    <div class="card">
+      <strong>③ Wärtsilä Energy Storage (에너지 저장 — 역풍)</strong>
+      <p>배터리 에너지 저장(GridSolv Quantum BESS) + GEMS 에너지 관리 소프트웨어. 누적 19GWh·130+ 사이트. <em>현황:</em> 미국 관세 + FEOC 규제 + 경쟁 심화로 수주 위축(2025년 YoY -79% 수준). 세그먼트 분리로 변동성 격리, 목표 마진 3~5%로 별도 관리. Q3'25 EBIT 마진 6.9%.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>Wärtsilä의 핵심 지표는 <strong>비교영업이익(comparable operating result)</strong>·비교영업마진이다(IFRS 영업이익과 별도). 세그먼트별 개별 순매출·비교영업이익 절대값(€M)은 1차 PDF 재무제표에만 수록되어 본 조사 도구로 일부 미확보("데이터 없음"). 직원 수도 1차 출처 미확인. 모든 수치 EUR.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 순매출·비교영업이익 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Wärtsilä interim reports, stockanalysis.com 교차확인. Q1 2023 ~ Q1 2026 (13개 분기). 단위 €M.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 순매출 · 비교영업이익 (€M)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">순매출은 계절성(Q4 강세). 비교영업이익은 구조적 우상향. ※ 2023년 일부 분기 비교영업이익 미확보. 출처: interim reports.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 비교영업마진 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">6.0%(Q1'23) → 11~13%(2025~26)로 구조적 개선. Q1'26 12.8%. 그룹 목표(Marine+Energy 합산) 14%. 출처: interim reports.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: €M, EPS €)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>순매출</th><th>비교영업이익</th><th>비교영업마진</th><th>순이익</th><th>EPS</th><th>수주(intake)</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2023</td><td class="num">1,465</td><td class="num">88</td><td class="num">6.0%</td><td class="num">55</td><td class="num">€0.09</td><td class="num">1,739</td></tr>
+        <tr><td>Q2 2023</td><td class="num">1,454</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">27</td><td class="num">€0.05</td><td class="num">1,687</td></tr>
+        <tr><td>Q3 2023</td><td class="num">1,452</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">81</td><td class="num">€0.14</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q4 2023</td><td class="num">1,647</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">95</td><td class="num">€0.16</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q1 2024</td><td class="num">1,321</td><td class="num">132</td><td class="num">10.0%</td><td class="num">85</td><td class="num">€0.14</td><td class="num">1,924</td></tr>
+        <tr><td>Q2 2024</td><td class="num">1,556</td><td class="num">176</td><td class="num">11.3%</td><td class="num">116</td><td class="num">€0.20</td><td class="num">1,854</td></tr>
+        <tr><td>Q3 2024</td><td class="num">1,718</td><td class="num">177</td><td class="num">10.3%</td><td class="num">143</td><td class="num">€0.24</td><td class="num">1,803</td></tr>
+        <tr><td>Q4 2024</td><td class="num">1,856</td><td class="num">209</td><td class="num">11.3%</td><td class="num">160</td><td class="num">€0.27</td><td class="num">2,491</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">6,449</td><td class="num">694</td><td class="num">10.8%</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">8,072</td></tr>
+        <tr><td>Q1 2025</td><td class="num">1,560</td><td class="num">171</td><td class="num">11.0%</td><td class="num">122</td><td class="num">€0.21</td><td class="num">1,902</td></tr>
+        <tr><td>Q2 2025</td><td class="num">1,719</td><td class="num">207</td><td class="num">12.0%</td><td class="num">136</td><td class="num">€0.23</td><td class="num">2,190</td></tr>
+        <tr><td>Q3 2025</td><td class="num">1,632</td><td class="num">195</td><td class="num">11.9%</td><td class="num">181</td><td class="num">€0.31</td><td class="num">1,790</td></tr>
+        <tr><td>Q4 2025</td><td class="num">2,003</td><td class="num">256</td><td class="num">~12.8%</td><td class="num">186</td><td class="num">€0.32</td><td class="num">데이터 없음</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">~6,900</td><td class="num">829</td><td class="num">12.0%</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">데이터 없음</td></tr>
+        <tr style="background:#ecfeff;font-weight:700;"><td>Q1 2026</td><td class="num">1,556</td><td class="num">199</td><td class="num">12.8%</td><td class="num">146</td><td class="num">€0.25</td><td class="num">2,099</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 비교영업이익</div>비교영업이익(comparable operating result)은 일회성 제외 비IFRS 지표로 Wärtsilä가 전면에 사용. FY2025 €829M(+20%, 12.0%), 영업현금흐름 사상최대 €1.6B(vs 2024 €1.2B). Q1 2026 비교영업이익 €199M(+16% YoY, 보도자료 "+16% to €199M (171)"로 명시). 출처: interim reports.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 (세그먼트 EBIT 마진)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Wärtsilä Q3 2025 interim report. 2025-04-01부 3세그먼트 분리. 세그먼트별 절대 순매출·이익(€M)은 1차 PDF에만 수록 — 일부 "데이터 없음".</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 세그먼트 EBIT 마진 — Q3 2025 (%, 전년→당기)</p>
+      <canvas id="chartSeg" height="100"></canvas>
+      <p class="chart-note">Marine 10.4%→12.4%, Energy 13.6%→15.9%, Energy Storage 4%→6.9%. 세 세그먼트 모두 마진 개선이나 Energy Storage는 수주 위축(관세/FEOC). 출처: Q3'25 interim.</p>
+    </div>
+
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>세그먼트 코멘트:</strong> Q3 2025 기준 Marine 순매출 +18%(EBIT 12.4%), Energy 순매출 -30%(인도 시점 영향이나 수주 +29%, EBIT 15.9%), Energy Storage 순매출 -10%·수주 -79%(EBIT 6.9%, 미국 관세·FEOC). Q1 2026 Marine+Energy 합산 순매출 +3%(€1,285M), 수주 +28%(€1,997M)로 Energy가 분기 사상 최대 수주. ※ 세그먼트별 절대 €M 다수 미확보.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ Energy 인도 시점</div>Energy는 인도(delivery) 시점에 따라 분기 순매출이 -30%(Q3'25)까지 출렁이나, 같은 분기 수주는 +29%로 백로그는 증가. 분기 매출 변동을 우려한 시장 반응이 실제 수주 펀더멘털을 과소반영할 소지.</div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (WRT1V.HE, ~2026-06)</span><span class="v">~€36.12</span></div>
+        <div class="kv-item"><span class="k">52주 범위</span><span class="v">€18.18~40.75</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~€21.3B</span></div>
+        <div class="kv-item"><span class="k">P/E (TTM)</span><span class="v">~32~36x</span></div>
+        <div class="kv-item"><span class="k">Forward P/E</span><span class="v">~30.8x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">~1.5% (€0.27)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 주가 추이 (개략값, EUR) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 1년간 ~+155% 랠리(데이터센터/유연발전 테마).</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>P/E ~32~36x, 1년 +155% 랠리로 데이터센터 성장 기대가 상당부분 선반영. EV/EBIT 단일 정밀치는 출처 간 정의 불일치로 미확정. 실적 미스(특히 Energy 인도 시점·Energy Storage) 시 변동성 위험(Q3 2025 주가 하락 사례). TTM 매출 €6.69B, 순이익 ~€650M, EPS ~€1.10.</div>
+  </section>
+
+  <!-- 5. 수주잔고 -->
+  <section id="backlog">
+    <h2 class="sec">5. 수주잔고 (Order Book) &amp; Book-to-Bill</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Wärtsilä interim reports. 수주잔고(order book)는 공급 테제의 핵심 선행지표. 모든 대형 발전소 주문은 구속력 있는 확정 주문.</p>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">⑤ 분기 수주(Order intake, €M)</p>
+        <canvas id="chartIntake" height="150"></canvas>
+        <p class="chart-note">Q1'26 €2,099M(+10%, 유기적 +22%). Energy 분기 사상최대. Book-to-Bill ~1.35x. ※ 일부 분기 미확보. 출처: interim.</p>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">⑥ 수주잔고 (Order book, €B)</p>
+        <canvas id="chartBook" height="150"></canvas>
+        <p class="chart-note">FY2024 €8.37B → Q2'25 €8.764B → FY2025 €8.2B → Q1'26 €8.9B(사상최대). 2026 인도분 백로그 €4,991M. 출처: interim.</p>
+      </div>
+    </div>
+    <div class="insight"><div class="h">💡 백로그 해석 포인트</div>Book-to-Bill이 ~1.35x(Q1'26 = 2,099/1,556)로 수주가 매출을 크게 상회하며 백로그가 적층 중. 수주잔고 €8.9B 사상최대 + 2026 인도분만 €4,991M로 향후 매출 가시성 높음. 단, Energy Storage 수주는 2025년 -79%로 위축(관세/FEOC) — 세그먼트 분리로 변동성 격리. <em>(근거: interim reports. 추정 포함, 단정 금지)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜 (미국 데이터센터 엔진)</h2>
+    <p style="font-size:12px;color:var(--muted);">모두 구속력 있는 확정 주문(binding orders). 모든 엔진은 천연가스 구동, 향후 지속가능연료 전환 가능. 그리드 연결 시 재생에너지 밸런싱 활용 가능.</p>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">확정주문</span>Texas 데이터센터 (off-grid) — 790MW</div>
+      <p style="font-size:13px;margin:6px 0;">미국 5번째 DC 주문, 첫 텍사스. 42× Wärtsilä 50SG(천연가스). 인도 2028, 가동 2029말. 수주 계상 Q2 2026. 美 DC 누적 2.4GW 돌파.</p>
+      <div class="deal-meta">출처: Wärtsilä PR · 2026-04-23</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">확정주문</span>Ohio 하이퍼스케일 DC — 412MW</div>
+      <p style="font-size:13px;margin:6px 0;">미국 4번째 DC 주문, 34SG 엔진의 DC 데뷔. 40× Wärtsilä 34SG. 가동 2028초. 수주 계상 Q2 2026.</p>
+      <div class="deal-meta">출처: Wärtsilä PR · 2026-04-16</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">확정주문</span>美 대형 발전소 (utility, DC 수요) — 429MW</div>
+      <p style="font-size:13px;margin:6px 0;">24× Wärtsilä 50SG. 가동 2028말~2029초. 수주 계상 Q1 2026.</p>
+      <div class="deal-meta">출처: Wärtsilä PR · 2026-01-29</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">확정주문</span>美 DC 1차 전원 (continuous primary power) — 507MW</div>
+      <p style="font-size:13px;margin:6px 0;">27× Wärtsilä 50SG. 수주 계상 Q4 2025.</p>
+      <div class="deal-meta">출처: Wärtsilä PR · 2025-11-20</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">확정주문</span>Ohio 데이터센터 — 282MW</div>
+      <p style="font-size:13px;margin:6px 0;">15× Wärtsilä 18V50SG. 수주 계상 Q2 2025. (美 DC 엔진 수주의 초기 사례)</p>
+      <div class="deal-meta">출처: Wärtsilä PR · 2025-07-15</div>
+    </div>
+    <div class="warn"><div class="h">⚠ BESS 주문</div>대형 에너지 저장(BESS) 개별 확정 주문(2025~2026 구체 MWh/€ 단위)은 본 조사에서 미확보 — Energy Storage 수주가 관세로 위축된 기간과 일치. "데이터 없음".</div>
+  </section>
+
+  <!-- 7. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">7. 핵심 포인트 &amp; 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>데이터센터 수주 가속:</strong> 282MW(25-07) → 507MW(25-11) → 429MW(26-01) → 412+790MW(26-04). 美 DC 누적 1.6GW→2.4GW 급증. Q1'26 Energy 분기 사상최대 수주. (출처: PR)</li>
+        <li><strong>수익성 구조적 개선:</strong> 비교영업마진 6%(Q1'23) → 11~13%(2025~26). Marine·Energy EBIT 모두 두 자릿수. (출처: interim)</li>
+        <li><strong>수주잔고 사상최대 €8.9B + Book-to-Bill ~1.35x:</strong> 2026 인도분만 €4,991M로 매출 가시성 높음. (출처: Q1'26)</li>
+        <li><strong>현금흐름 강함:</strong> FY2025 영업현금흐름 사상최대 €1.6B. (출처: FY2025 bulletin)</li>
+        <li><strong>Energy Storage 역풍:</strong> 미국 관세+FEOC로 수주 -79%(2025). 세그먼트 분리로 변동성 격리. (출처: interim)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — 짧은 리드타임이 만드는 공급 측 우위</div>
+      50SG/34SG 엔진은 가스터빈 대비 빠른 인도(주문→가동 2~3년). 데이터센터가 "전력 조달 속도"를 최우선시하는 구조에서, GE Vernova 터빈 슬롯이 2030년까지 잠긴 공백을 흡수. off-grid 가동 후 그리드 밸런싱 전환까지 가능해 데이터센터+그리드 유연성 이중 수요. <em>(근거: PR, 제품 사양. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — Energy "인도 시점" 변동성의 과소반영</div>
+      Energy 분기 순매출이 인도 시점에 따라 -30%까지 출렁이나 수주는 +29%로 백로그는 증가. 분기 매출만 보고 우려하는 시장 반응(Q3'25 주가 하락)이 실제 수주 펀더멘털을 과소반영할 소지 — 백로그 €8.9B가 이를 뒷받침. <em>(근거: Q3'25 interim. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — 마진 목표 14% 근접</div>
+      Marine+Energy 합산 비교영업마진 목표 14%에 LTM 기준 13%대로 근접. 목표 상향 여지가 있으며, 데이터센터 고마진 엔진 믹스가 추가 개선 동력. <em>(근거: 신 재무목표, interim. 추론: 논리적 도출)</em>
+    </div>
+    <div class="warn"><div class="h">⚠ 리스크/모니터링</div>① 밸류에이션 부담(P/E ~32~36x, +155% 랠리). ② Energy Storage 관세·FEOC 역풍 지속. ③ Energy 인도 시점에 따른 분기 변동성. ④ 환율(EUR) 노출. ⑤ 미국 무역정책 변화.</div>
+  </section>
+
+  <!-- 8. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">8. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Wärtsilä interim/financial statements 보도자료. 단위 €. 어닝콜=파랑.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-04-28 · 비교영업이익 €199M(12.8%), 수주잔고 €8.9B 사상최대</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">순매출</span><span class="v">€1,556M (유기적 +8%)</span></div>
+          <div><span class="k">비교영업이익</span><span class="v">€199M (+16%, 12.8%)</span></div>
+          <div><span class="k">수주(intake)</span><span class="v">€2,099M (+10%, 유기적 +22%)</span></div>
+          <div><span class="k">수주잔고</span><span class="v">€8.9B (사상최대)</span></div>
+          <div><span class="k">EPS</span><span class="v">€0.25</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>수주잔고 €8.9B 사상최대. Energy 분기 사상최대 수주.</li>
+          <li>비교영업마진 12.8%로 개선 지속. Marine+Energy 합산 순매출 +3%(€1,285M).</li>
+          <li>Energy Storage 약세 지속(관세/FEOC). 향후 12개월 수요: Energy·Energy Storage 개선, Marine 유사.</li>
+          <li>4월 412MW(Ohio)·790MW(Texas) 데이터센터 수주 발표(Q2 2026 계상).</li>
+        </ul>
+        <div class="src">출처: Wärtsilä Q1 2026 Interim Report · 2026-04-28 · <a href="https://www.wartsila.com/media/news/28-04-2026-wartsila-s-interim-report-january-march-2026-3744975" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — interim report 기반, 컨콜 톤]
+
+Håkan Agnevall (CEO):
+"1분기는 강한 수주로 시작했습니다. 수주잔고가 89억 유로로 사상 최대를 기록했고, 특히 Energy 사업은 분기 사상 최대 수주를 달성했습니다. 데이터센터 수요가 우리 유연발전 엔진의 강점과 정확히 맞물립니다.
+
+비교영업이익은 1억 9천9백만 유로로 전년 대비 16% 늘었고, 마진은 12.8%입니다. Marine과 Energy의 수익성이 모두 개선됐습니다. Energy Storage는 미국 관세와 FEOC 규제로 여전히 약하지만, 세그먼트를 분리해 변동성을 관리하고 있습니다.
+
+향후 12개월 수요 전망은 Energy와 Energy Storage가 개선, Marine은 유사 수준입니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- FY2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4/FY 2025</span>
+        <span class="ctitle">2026-02-04 · FY 순매출 €6.9B, 비교영업이익 €829M, 영업현금흐름 €1.6B 사상최대</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">FY 순매출</span><span class="v">€6.9B (+7%)</span></div>
+          <div><span class="k">Q4 순매출</span><span class="v">€2.0B (+8%)</span></div>
+          <div><span class="k">FY 비교영업이익</span><span class="v">€829M (+20%, 12.0%)</span></div>
+          <div><span class="k">Q4 비교영업이익</span><span class="v">€256M (+23%)</span></div>
+          <div><span class="k">영업현금흐름</span><span class="v">€1.6B (사상최대)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 비교영업이익 €829M(+20%, 마진 12.0%), 사상최대 영업이익·영업현금흐름.</li>
+          <li>수주잔고 €8.2B. 2026 인도분 백로그 €4,991M.</li>
+          <li>영업현금흐름 €1.6B(vs 2024 €1.2B).</li>
+        </ul>
+        <div class="src">출처: Wärtsilä FY2025 Financial Statements Bulletin · 2026-02-04 · <a href="https://www.wartsila.com/media/news/04-02-2026-wartsila-s-financial-statements-bulletin-january-december-2025-3713746" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — bulletin 기반]
+
+"2025년은 사상 최대의 영업이익과 영업현금흐름을 기록한 해였습니다. 순매출 69억 유로(+7%), 비교영업이익 8억 2천9백만 유로(+20%, 마진 12.0%). 4분기 비교영업이익은 2억 5천6백만 유로로 23% 늘었습니다. 영업현금흐름은 16억 유로로 전년 12억에서 크게 개선됐습니다. 수주잔고는 82억 유로이며, 이 중 2026년 인도분이 49억 9천1백만 유로입니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-10-28 · 비교영업이익 €195M(11.9%), Energy Storage 수주 -79%</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">순매출</span><span class="v">€1,632M (-5%)</span></div>
+          <div><span class="k">비교영업이익</span><span class="v">€195M (+10%, 11.9%)</span></div>
+          <div><span class="k">수주(intake)</span><span class="v">€1,790M (유기적 +6%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Marine·Energy 수주 증가 + 수익성 개선(Agnevall). 대체연료 선박 = 계약용량 48%.</li>
+          <li>Energy 순매출 -30%(인도 시점)이나 수주 +29%. Energy Storage 수주 -79%.</li>
+          <li>발표 후 주가 하락(분기 순매출 감소 반응).</li>
+        </ul>
+        <div class="src">출처: Wärtsilä Q3 2025 Interim Report · 2025-10-28 · <a href="https://www.wartsila.com/media/news/28-10-2025-wartsila-s-interim-report-january-september-2025-3675947" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — interim 기반]
+
+Håkan Agnevall (CEO):
+"Marine과 Energy 모두 수주가 늘고 수익성이 개선됐습니다. 비교영업이익 1억 9천5백만 유로, 마진 11.9%. Energy는 인도 시점 때문에 분기 순매출이 30% 줄었지만 수주는 29% 늘어 백로그는 견조합니다. Energy Storage는 미국 관세와 FEOC 규제로 수주가 79% 감소했습니다. 대체연료 선박이 계약 용량의 48%를 차지하며 해양 시장 심리가 개선되고 있습니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- H1/Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-07-18 · 비교영업이익 €207M(12.0%), 수주잔고 €8,764M 사상최대</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">순매출</span><span class="v">€1,719M (+11%, 유기적 +13%)</span></div>
+          <div><span class="k">비교영업이익</span><span class="v">€207M (+18%, 12.0%)</span></div>
+          <div><span class="k">수주(intake)</span><span class="v">€2,190M (+18%)</span></div>
+          <div><span class="k">수주잔고</span><span class="v">€8,764M (사상최대)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>비교영업이익 €207M(+18%, 마진 12.0%). 수주잔고 €8,764M 사상최대.</li>
+          <li>Energy Storage 순매출 -42%(관세).</li>
+        </ul>
+        <div class="src">출처: Wärtsilä H1 2025 Half-year Report · 2025-07-18 · <a href="https://www.wartsila.com/media/news/18-07-2025-wartsila-s-half-year-financial-report-january-june-2025-3634489" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — half-year report 기반]
+
+2분기 순매출 17억 1천9백만 유로(+11%, 유기적 +13%), 비교영업이익 2억 7백만 유로(+18%, 마진 12.0%). 수주 21억 9천만 유로(+18%)로 수주잔고가 87억 6천4백만 유로 사상 최대를 기록했습니다. Energy Storage는 미국 관세 영향으로 순매출이 42% 감소했습니다.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+const q = ["Q1'23","Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const netSales = [1465,1454,1452,1647,1321,1556,1718,1856,1560,1719,1632,2003,1556];
+const compOp = [88,null,null,null,132,176,177,209,171,207,195,256,199];
+const compMargin = [6.0,null,null,null,10.0,11.3,10.3,11.3,11.0,12.0,11.9,12.8,12.8];
+const intake = [1739,1687,null,null,1924,1854,1803,2491,1902,2190,1790,null,2099];
+
+new Chart(document.getElementById('chartRevOp'),{type:'bar',data:{labels:q,datasets:[
+  {label:'순매출 (좌축, €M)',data:netSales,backgroundColor:'rgba(14,116,144,.7)',yAxisID:'y'},
+  {label:'비교영업이익 (우축, €M)',data:compOp,type:'line',borderColor:'#15803d',backgroundColor:'transparent',pointRadius:4,tension:.3,yAxisID:'y2',spanGaps:true}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'€M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'영업이익 €M'}}}}});
+
+new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'비교영업마진 %',data:compMargin,borderColor:'#0e7490',backgroundColor:'rgba(14,116,144,.1)',fill:true,tension:.3,pointRadius:4,spanGaps:true}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:['Marine','Energy','Energy Storage'],datasets:[
+  {label:'전년 EBIT 마진 %',data:[10.4,13.6,4.0],backgroundColor:'rgba(180,180,180,.6)'},
+  {label:'Q3 2025 EBIT 마진 %',data:[12.4,15.9,6.9],backgroundColor:'rgba(14,116,144,.8)'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+new Chart(document.getElementById('chartIntake'),{type:'bar',data:{labels:["Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q1'26"],datasets:[
+  {label:'수주 (€M)',data:[1924,1854,1803,2491,1902,2190,1790,2099],backgroundColor:'rgba(14,116,144,.75)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'€M'}}}}});
+
+new Chart(document.getElementById('chartBook'),{type:'line',data:{labels:['FY2024','Q2 2025','FY2025','Q1 2026'],datasets:[
+  {label:'수주잔고 (€B)',data:[8.37,8.764,8.2,8.9],borderColor:'#15803d',backgroundColor:'rgba(21,128,61,.1)',fill:true,tension:.3,pointRadius:5}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`€${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'€B'},ticks:{callback:v=>'€'+v+'B'}}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jun'25","Jul'25","Aug'25","Sep'25","Oct'25","Nov'25","Dec'25","Jan'26","Feb'26","Mar'26","Apr'26","Jun'26"],datasets:[{label:'주가 (EUR, 개략값)',data:[20,22,24,26,24,28,30,33,35,34,37,36],borderColor:'#0e7490',backgroundColor:'rgba(14,116,144,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'€'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
