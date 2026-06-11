@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRG Energy (NRG) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#b91c1c; --accent2:#2563a8;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#fef2f2;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#7f1d1d;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .transcript{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:8px;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto;white-space:pre-wrap;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent2);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>NRG Energy, Inc.</h1>
+      <p>NYSE: NRG · 통합 소매 전력·발전 · Houston, TX</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#b91c1c;">통합 전력</span>
+      <span class="badge" style="background:#2563a8;">LS Power 13GW</span>
+      <span class="badge" style="background:#7c3aed;">데이터센터</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">사업</span><span class="v">소매+발전+홈서비스</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Houston, TX</span></div>
+        <div class="kv-item"><span class="k">소매 고객</span><span class="v">7M+ (미국·캐나다)</span></div>
+        <div class="kv-item"><span class="k">발전 (LS Power 후)</span><span class="v up">~25GW (2배)</span></div>
+        <div class="kv-item"><span class="k">FY2025 조정 EBITDA</span><span class="v">$4,100M</span></div>
+        <div class="kv-item"><span class="k">FY2025 조정 EPS</span><span class="v">$8.24</span></div>
+        <div class="kv-item"><span class="k">2026 조정 EBITDA</span><span class="v up">$5.33~5.83B</span></div>
+        <div class="kv-item"><span class="k">장기 EPS 목표</span><span class="v up">14%+ CAGR (~2030)</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>NRG Energy는 경쟁 소매 전력 판매와 가스 발전을 결합한 통합 전력 기업이다. 미국 24개 주+워싱턴DC+캐나다에 7백만 이상 소매 고객을 보유하며, 2023년 인수한 Vivint Smart Home(홈서비스 ~2백만 고객)로 교차판매 채널을 확장했다. 소매 부하와 발전을 자연 헤지하는 통합 모델이 핵심이다.</p>
+    <p>2026년 1월 30일 LS Power로부터 가스 발전 ~13GW + CPower VPP(수요측 6GW)를 EV ~$12B에 인수 완료하여 발전 풋프린트를 약 25GW로 두 배 확대했다. ERCOT/PJM 용량시장과 데이터센터 대형부하 수요에 동시 노출된다.</p>
+
+    <h3 class="sub">사업 구조 & 경쟁 해자 (근거 포함)</h3>
+    <div class="card">
+      <strong>① 통합 소매-발전 자연 헤지</strong>
+      <p>소매 고객 부하와 발전을 매칭해 도매가 변동성 노출 완화. 7백만+ 소매 기반의 낮은 고객유치비용 교차판매 채널(Vivint 결합). (근거: 통합 모델·고객 규모)</p>
+    </div>
+    <div class="card">
+      <strong>② LS Power 후 발전 규모 우위</strong>
+      <p>ERCOT/PJM 내 ~25GW 발전으로 대형부하(데이터센터) 공급 경쟁우위. CEO Larry Coben이 "발전 2배 + 1.5GW 신규(TEF 3개 프로젝트)"를 강조. (근거: LS Power 보도자료)</p>
+    </div>
+    <div class="card">
+      <strong>③ GE Vernova 슬롯 선확보</strong>
+      <p>GE Vernova+Kiewit JV로 5.4GW 가스 슬롯 선확보 — 업계 가스터빈 슬롯이 2029~2030까지 타이트한 가운데 공급망 우위. (근거: Utility Dive)</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>NRG의 핵심 지표는 <strong>조정 EBITDA</strong>와 <strong>Free Cash Flow before Growth(FCFbG)</strong>이다. GAAP 순이익은 파생상품 시가평가(MtM)로 분기 변동성이 극심(예: Q1'23 -$13억, Q3'24 -$7.84억 순손실은 대부분 비현금 미실현 손익). 본 리포트는 일부 분기 GAAP 매출·순이익·세그먼트 분할에 미확보분("데이터 없음")이 있어, 조정 EBITDA/EPS와 연간 추이를 중심으로 구성.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·EBITDA·EPS 추이</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: NRG 분기 8-K·보도자료, macrotrends/stockanalysis 교차확인. ※ 일부 분기 GAAP·조정 지표 미확보.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 연간 조정 EBITDA · 조정 EPS</p>
+      <canvas id="chartAnnual" height="100"></canvas>
+      <p class="chart-note">조정 EBITDA: FY2024 $4,107M → FY2025 $4,100M(보합) → 2026E $5,575M(가이던스 중간, LS Power 효과). 조정 EPS: FY2025 $8.24 → 2026E ~$8.90(중간). 출처: 각 연도 보도자료.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 분기 조정 EBITDA (백만 USD)</p>
+      <canvas id="chartQEbitda" height="100"></canvas>
+      <p class="chart-note">Q1'25 $1,126M → Q1'26 $1,080M(YoY -$46M). 텍사스 온화한 날씨 + East Winter Storm Fern 공급비가 신규 포트폴리오 기여를 상쇄. ※ Q4'25 미확보. 출처: 각 분기 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: 백만 USD, EPS는 $)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>GAAP 매출</th><th>GAAP 순이익</th><th>조정 EBITDA</th><th>조정 EPS</th></tr></thead>
+      <tbody>
+        <tr><td>Q3 2024</td><td class="num">7,220</td><td class="num dn">-784</td><td class="num">데이터 없음</td><td class="num">$2.10</td></tr>
+        <tr><td>Q4 2024</td><td class="num">6,860</td><td class="num up">627</td><td class="num">데이터 없음</td><td class="num">$1.52</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">28,130</td><td class="num up">1,058</td><td class="num">4,107</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q1 2025</td><td class="num">8,590</td><td class="num up">(EPS $3.70)</td><td class="num">1,126</td><td class="num">$2.68</td></tr>
+        <tr><td>Q2 2025</td><td class="num">데이터 없음</td><td class="num dn">-104</td><td class="num">909</td><td class="num">$1.73</td></tr>
+        <tr><td>Q3 2025</td><td class="num">데이터 없음</td><td class="num up">152</td><td class="num">1,205</td><td class="num">$2.78</td></tr>
+        <tr><td>Q4 2025</td><td class="num">6,860</td><td class="num up">66</td><td class="num">데이터 없음</td><td class="num">데이터 없음</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">데이터 없음</td><td class="num up">900 (EPS $4.09)</td><td class="num">4,100</td><td class="num up">$8.24</td></tr>
+        <tr style="background:#fef2f2;font-weight:700;"><td>Q1 2026</td><td class="num">10,256</td><td class="num up">125</td><td class="num">1,080</td><td class="num">$1.49</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ MtM·FCFbG</div>Q1 2026 FCFbG -$66M(계절성), 조정 순이익 $308M. GAAP 순이익은 경제적 헤지의 비현금 MtM으로 출렁(Q1'23 -$13억, Q3'24 -$7.84억) — 분석은 조정 EBITDA·FCFbG 기준. 2026 가이던스: 조정 EBITDA $5,325~5,825M, 조정 EPS $7.90~9.90, FCFbG $2,800~3,300M. 출처: NRG 8-K.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 (세그먼트 조정 EBITDA)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: NRG FY2025 보도자료. 세그먼트: Texas, East, West/Services/Other, Vivint Smart Home, Corporate.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ FY2025 세그먼트 조정 EBITDA (백만 USD)</p>
+      <canvas id="chartSeg" height="100"></canvas>
+      <p class="chart-note">Texas $1,877M(+$295M), East $981M(-$25M), 기타(Smart Home·West·Other) ~$1,242M(역산). 합계 $4,100M. ※ Smart Home·West 개별 FY 분할 일부 미확보(Q3'25 Smart Home 단독 $272M). 출처: FY2025 보도자료.</p>
+    </div>
+
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>세그먼트 코멘트:</strong> Texas는 마진 개선·공급비 최적화로 +$295M(계획 정비비 증가 일부 상쇄). East는 경제적 헤지 미실현 MtM 손실(2024년은 이익) + Airtron 매각·Cottonwood 리스 종료 영향으로 -$25M. Vivint(Smart Home)는 강한 실적 언급(Q3'25 단독 $272M). ※ 세그먼트 매출·믹스 % 별도 분할은 보도자료에 미분리 — "데이터 없음".</p>
+    </div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06)</span><span class="v">~$130 (출처 상이 $121~130)</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$25.5B</span></div>
+        <div class="kv-item"><span class="k">P/E (TTM, GAAP)</span><span class="v">~155x (MtM 왜곡)</span></div>
+        <div class="kv-item"><span class="k">Forward P/E</span><span class="v">~13.1x</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">$1.90/년 (~1.46%)</span></div>
+        <div class="kv-item"><span class="k">자사주 (2026)</span><span class="v">$1.0B 목표 (4/30 $817M)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 출처 간 $121~130 차이 존재.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>GAAP P/E ~155x는 MtM로 왜곡 — Forward P/E ~13x가 더 유의미. LS Power로 2026 조정 EBITDA가 ~$4.1B→~$5.6B로 점프하면서 Forward 멀티플은 추가 하락 여지. 2026년 $1.0B 자사주 + 연 $1.90 배당으로 환원 지속. 14%+ EPS CAGR 목표는 대형부하(데이터센터) 업사이드 제외 기준.</div>
+  </section>
+
+  <!-- 5. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">5. 주요 계약·딜</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(완료)</span>LS Power — 가스 13GW + CPower VPP 6GW (EV ~$12B)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-05 발표 → FERC 승인 2025-11-14 → <strong>2026-01-30 완료</strong>. 가스 18개·13GW + CPower VPP(수요측 6GW). EV ~$12B(현금 $6.4B + NRG 주식 $2.8B + 순부채 인수 $3.2B). 총 발전 ~25GW로 2배.</p>
+      <div class="deal-meta">출처: LS Power 보도자료 · PowerMag · NRG IR · 2026-01-30</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">개발계약</span>GE Vernova × Kiewit JV — 가스 5.4GW</div>
+      <p style="font-size:13px;margin:6px 0;">ERCOT/PJM용 가스 4개 프로젝트 ~5.4GW. GE Vernova 터빈 + Kiewit EPC. 일정: 2029년 1.2GW, 2030년 +1.2GW, 2030~2032년 +3GW. 가스 슬롯 선확보.</p>
+      <div class="deal-meta">출처: Utility Dive · ENR · PowerMag · 2025</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>텍사스 데이터센터 295MW 공급 (1GW 확대옵션)</div>
+      <p style="font-size:13px;margin:6px 0;">텍사스 자사 부지 2곳 295MW 장기 공급계약(2026 하반기 초기 가동→2030 완전 가동). 500MW로 확대 작업 중, 장기 1GW 경로. 현재 ~445MW 계약 + 5.4GW 파이프라인.</p>
+      <div class="deal-meta">출처: DCD · Power-Eng · Utility Dive</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">미체결(기대)</span>하이퍼스케일러 1GW+ CCGT</div>
+      <p style="font-size:13px;margin:6px 0;">2026 상반기 1GW+ CCGT 하이퍼스케일러 계약 발표 기대(애널리스트 전망, Jefferies). <strong>아직 미체결 — LOI도 아닌 발표 예상 단계</strong>.</p>
+      <div class="deal-meta">출처: Jefferies/Investing.com (전망)</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(완료)</span>Vivint Smart Home (2023, $2.8B)</div>
+      <p style="font-size:13px;margin:6px 0;">2023년 $2.8B 현금 인수. 홈서비스 ~2백만 고객, 교차판매 채널.</p>
+      <div class="deal-meta">출처: 회사 프로필 · 2023</div>
+    </div>
+  </section>
+
+  <!-- 6. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">6. 핵심 포인트 &amp; 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>LS Power로 발전 2배(2026-01-30 완료):</strong> 13GW 가스 + 6GW VPP. 조정 EBITDA가 ~$4.1B(2025)→가이던스 중간 ~$5.6B(2026)로 점프. (출처: LS Power, Q1'26 가이던스)</li>
+        <li><strong>장기 14%+ EPS CAGR (~2030):</strong> 2025년 21% 성장 후에도 14% CAGR 유지 목표 — 단, 대형부하(데이터센터) 업사이드 제외. (출처: FY2025 슬라이드)</li>
+        <li><strong>GAAP↔조정 괴리:</strong> Q1'23 -$13억, Q3'24 -$7.84억 순손실은 대부분 비현금 MtM. 조정 EBITDA는 같은 분기 견조 → Forward P/E ~13이 유의미. (출처: 8-K)</li>
+        <li><strong>데이터센터 옵셔널리티:</strong> 295MW 계약(1GW 확대옵션) + 5.4GW 파이프라인은 가이던스 미반영 업사이드. (출처: DCD, Q1'26)</li>
+        <li><strong>Q1'26 단기 역풍:</strong> 텍사스 온화 날씨 + East Winter Storm Fern 공급비로 조정 EBITDA YoY -$46M, EPS 컨센 하회. (출처: Q1'26 8-K)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — 데이터센터 업사이드가 가이던스 외</div>
+      14% EPS CAGR 목표는 "대형부하 업사이드 제외"를 명시. 295MW→1GW 확대 경로와 5.4GW 파이프라인, 그리고 2026 상반기 기대되는 1GW+ CCGT 하이퍼스케일러 계약은 모두 가이던스에 미반영 — 체결 확인 시 재평가 트리거. <em>(근거: FY2025 슬라이드, DCD, Jefferies. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — GE Vernova 슬롯 희소성의 선점 가치</div>
+      가스터빈 슬롯이 2029~2030까지 타이트한 가운데(GE Vernova 백로그 100GW+), NRG는 5.4GW JV 슬롯을 선확보. 신규 진입자가 슬롯을 못 구하는 환경에서 이는 공급망 해자 — 시장이 단순 capex로만 볼 경우 과소평가. <em>(근거: Utility Dive. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — Forward 멀티플 디레이팅 여지</div>
+      GAAP P/E ~155x 착시가 표면 밸류에이션을 비싸 보이게 함. LS Power로 EBITDA가 ~$5.6B로 점프하면 Forward P/E ~13x가 더 내려갈 여지 — GAAP 앵커링 투자자의 미스프라이싱. <em>(근거: 밸류에이션, 가이던스. 추론: 논리적 도출)</em>
+    </div>
+    <div class="warn"><div class="h">⚠ 리스크/모니터링</div>① GAAP MtM 노이즈(조정 지표 사용). ② East 공급비 관리(Winter Storm Fern). ③ LS Power 통합 + 레버리지(인수부채 $3.2B). ④ 하이퍼스케일러 계약 체결 지연 리스크(아직 미체결). ⑤ 상품가격·용량시장 사이클.</div>
+  </section>
+
+  <!-- 7. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">7. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: NRG 분기 8-K·보도자료. 어닝콜=파랑.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05-06 · 조정 EBITDA $1,080M, 2026 가이던스 재확인</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">GAAP 매출</span><span class="v">$10,256M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$1,080M (YoY -$46M)</span></div>
+          <div><span class="k">조정 EPS</span><span class="v">$1.49 (컨센 하회)</span></div>
+          <div><span class="k">FCFbG</span><span class="v">-$66M (계절성)</span></div>
+          <div><span class="k">2026 조정 EBITDA</span><span class="v">$5,325~5,825M 재확인</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>조정 EBITDA $1,080M(YoY -$46M) — 텍사스 온화 날씨 + East Winter Storm Fern 공급비.</li>
+          <li>2026 가이던스 재확인: 조정 EBITDA $5,325~5,825M(중간 $5,575M), 조정 EPS $7.90~9.90(중간 $8.90), FCFbG $2,800~3,300M.</li>
+          <li>LS Power 통합 진행. 자사주 4/30까지 $817M 집행($1.0B 목표).</li>
+          <li>EPS 컨센 하회로 주가 하락.</li>
+        </ul>
+        <div class="src">출처: NRG Q1 2026 8-K · 2026-05-06 · <a href="https://www.sec.gov/Archives/edgar/data/0001013871/000101387126000010/nrgq12026ex991.htm" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반, 컨콜 톤]
+
+Larry Coben (CEO):
+"1분기 조정 EBITDA는 10억 8천만 달러로 전년 대비 4천6백만 달러 줄었습니다. 텍사스의 온화한 날씨와 동부 Winter Storm Fern에 따른 공급비 증가가 신규 인수 포트폴리오 기여분을 상쇄했습니다. 일시적 요인입니다.
+
+2026년 가이던스를 재확인합니다 — 조정 EBITDA 53억 2천5백만~58억 2천5백만 달러, 조정 EPS $7.90~9.90, FCFbG 28억~33억 달러. LS Power 통합은 순조롭고, 발전 풋프린트는 두 배가 됐습니다. 데이터센터 대형부하 기회는 이 가이던스에 포함되지 않은 업사이드입니다."
+
+CFO:
+"1분기 FCFbG는 계절성으로 -6천6백만 달러입니다. 자사주는 4월 30일까지 8억 1천7백만 달러를 집행했고, 2026년 10억 달러 목표를 향해 갑니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4/FY 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-02-24 · FY 조정 EBITDA $4.1B, EPS $8.24, 14% CAGR 2030 연장</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">FY 조정 EBITDA</span><span class="v">$4,100M</span></div>
+          <div><span class="k">FY 조정 EPS</span><span class="v">$8.24</span></div>
+          <div><span class="k">FY GAAP 순이익</span><span class="v">$900M (EPS $4.09)</span></div>
+          <div><span class="k">2025 EPS 성장</span><span class="v up">21%</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 조정 EBITDA $4.1B, 조정 EPS $8.24(2025년 21% 성장).</li>
+          <li>발전 2배 + 1.5GW 신규(TEF 3개 프로젝트) 추진.</li>
+          <li>14% 조정 EPS CAGR을 2030년까지 연장.</li>
+        </ul>
+        <div class="src">출처: NRG FY2025 보도자료·SEC 8-K · 2026-02-24 · <a href="https://investors.nrg.com/news-releases/news-release-details/nrg-energy-inc-reports-full-year-2025-financial-results" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+"2025년 조정 EBITDA는 41억 달러, 조정 EPS는 $8.24로 21% 성장했습니다. GAAP 순이익은 9억 달러(EPS $4.09)입니다. 발전 풋프린트를 두 배로 늘리고 1.5GW 신규 발전(Texas Energy Fund 3개 프로젝트)을 추진합니다. 14% 조정 EPS 연복리 성장 목표를 2030년까지 연장합니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-11-05 · 조정 EBITDA $1,205M, 2026 가이던스 개시</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">조정 EBITDA</span><span class="v">$1,205M</span></div>
+          <div><span class="k">조정 EPS</span><span class="v">$2.78 (+$0.68 YoY)</span></div>
+          <div><span class="k">GAAP 순이익</span><span class="v">$152M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>조정 EBITDA $1,205M, 조정 EPS $2.78(+$0.68 YoY).</li>
+          <li>2025 가이던스 재확인(조정 EBITDA $3,875~4,025M, EPS $7.55~8.15) + 2026 standalone 가이던스 개시.</li>
+          <li>Vivint(Smart Home) 강세(단독 EBITDA $272M).</li>
+        </ul>
+        <div class="src">출처: NRG Q3 2025 8-K·IR · 2025-11-05 · <a href="https://investors.nrg.com/news-releases/news-release-details/nrg-energy-inc-reports-third-quarter-results-reaffirms-2025" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+3분기 조정 EBITDA 12억 5백만 달러, 조정 EPS $2.78(+$0.68 YoY). 2025년 가이던스를 재확인하고 2026년 standalone 가이던스를 처음 제시했습니다. Vivint Smart Home 세그먼트가 단독 EBITDA 2억 7천2백만 달러로 강했습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-08-06 · 조정 EBITDA $909M, GAAP 순손실(MtM)</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">조정 EBITDA</span><span class="v">$909M</span></div>
+          <div><span class="k">조정 EPS</span><span class="v">$1.73</span></div>
+          <div><span class="k">GAAP 순손실</span><span class="v">-$104M (MtM)</span></div>
+          <div><span class="k">FCFbG</span><span class="v">$914M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>조정 EBITDA $909M, 조정 EPS $1.73. GAAP 순손실 -$104M은 비현금 MtM.</li>
+          <li>2025 가이던스 재확인.</li>
+        </ul>
+        <div class="src">출처: NRG Q2 2025 8-K · 2025-08-06 · <a href="https://www.sec.gov/Archives/edgar/data/0001013871/000101387125000018/nrgq22025ex991.htm" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+2분기 조정 EBITDA 9억 9백만 달러, 조정 EPS $1.73, FCFbG 9억 1천4백만 달러. GAAP 순손실 -1억 4백만 달러는 경제적 헤지의 비현금 시가평가 영향입니다. 2025년 가이던스를 재확인했습니다.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+new Chart(document.getElementById('chartAnnual'),{type:'bar',data:{labels:['FY2024','FY2025','2026E'],datasets:[
+  {label:'조정 EBITDA ($M)',data:[4107,4100,5575],backgroundColor:'rgba(185,28,28,.7)',yAxisID:'y'},
+  {label:'조정 EPS ($)',data:[null,8.24,8.90],type:'line',borderColor:'#2563a8',backgroundColor:'transparent',pointRadius:5,tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'EBITDA $M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'EPS $'},ticks:{callback:v=>'$'+v}}}}});
+
+new Chart(document.getElementById('chartQEbitda'),{type:'bar',data:{labels:["Q1'25","Q2'25","Q3'25","Q1'26"],datasets:[
+  {label:'조정 EBITDA ($M)',data:[1126,909,1205,1080],backgroundColor:'rgba(185,28,28,.75)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartSeg'),{type:'doughnut',data:{labels:['Texas $1,877M','East $981M','기타(Smart Home·West) ~$1,242M'],datasets:[{data:[1877,981,1242],backgroundColor:['#b91c1c','#2563a8','#9ca3af']}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jan'24","Apr'24","Jul'24","Oct'24","Jan'25","Apr'25","Jul'25","Oct'25","Jan'26","Apr'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[50,75,80,95,105,95,160,165,150,135,130],borderColor:'#b91c1c',backgroundColor:'rgba(185,28,28,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
