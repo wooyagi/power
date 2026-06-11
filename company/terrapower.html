@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TerraPower — 기업 분석 리포트 (비상장)</title>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#0d9488; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  .pvt-banner{background:#fef3c7;border-bottom:1px solid #fde68a;color:#78350f;font-size:13px;font-weight:600;text-align:center;padding:9px 24px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#f0fdfa;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#134e4a;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);vertical-align:top;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;} .tag.gov{background:#1e40af;}
+  .timeline{list-style:none;padding:0;margin:0;}
+  .timeline li{position:relative;padding:0 0 16px 22px;border-left:2px solid var(--line);margin-left:6px;}
+  .timeline li:before{content:'';position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--accent);}
+  .timeline .date{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono);}
+  .timeline .ev{font-size:13px;margin-top:2px;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:#7c3aed;border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-pts{margin:12px 0 0;} .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>TerraPower</h1>
+      <p>비상장 · Natrium 소듐냉각 고속로 + 용융염 저장 · Bellevue, WA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#0d9488;">Natrium SFR</span>
+      <span class="badge" style="background:#1e40af;">Bill Gates</span>
+      <span class="badge" style="background:#7c3aed;">Meta 최대 8기</span>
+    </div>
+  </div>
+</header>
+<div class="pvt-banner">⚠ 재무 데이터 없음 — 비상장사. 본 리포트는 공개 뉴스·계약·규제 동향 중심이며 정량 재무제표는 제공하지 않습니다.</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">회사개요</a>
+    <a href="#partnerships">계약·파트너십</a>
+    <a href="#news">뉴스·동향</a>
+    <a href="#thesis">핵심·논지</a>
+    <a href="#calls">IR이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 회사개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 회사 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">기술</span><span class="v">Natrium (소듐냉각 고속로 + 용융염 저장)</span></div>
+        <div class="kv-item"><span class="k">출력</span><span class="v">345MWe (저장 시 피킹 500MWe)</span></div>
+        <div class="kv-item"><span class="k">본사 / 설립</span><span class="v">Bellevue, WA / 2006</span></div>
+        <div class="kv-item"><span class="k">회장 / CEO</span><span class="v">Bill Gates / Chris Levesque</span></div>
+        <div class="kv-item"><span class="k">1호기</span><span class="v">Kemmerer, Wyoming</span></div>
+        <div class="kv-item"><span class="k">누적 조달</span><span class="v">~$1.66B (2025-06)</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">기술 방식</h3>
+    <p><strong>Natrium 원자로</strong>는 345MWe 소듐냉각 고속로(SFR)에 <strong>용융염 열에너지 저장</strong>을 결합한 4세대 비경수로다. 저장 시스템으로 피크 시 출력을 <strong>약 500MWe까지 부스트</strong>할 수 있어, 재생에너지 변동성 보완·데이터센터 가변 수요 대응에 적합하다. 연료는 HALEU(고순도 저농축 우라늄). 2026-03-04 NRC가 발급한 <strong>미국 최초의 상업용 비경수로 건설허가</strong> 대상이다. (출처: TerraPower, NRC 26-028)</p>
+
+    <h3 class="sub">전략적 포지션 & 경쟁 강점</h3>
+    <p>밸류체인 내 위치는 <strong>원자로 설계·개발사(IPP/기술 공급)</strong>. 차별점은 ① 용융염 저장을 통한 <strong>유연 출력(345→500MWe)</strong> — 타 SMR 대비 데이터센터 가변 부하·재생 보완에 유리, ② Bill Gates 후광과 강력한 투자자·파트너 기반(자본 접근성), ③ Bechtel(EPC)·GE Hitachi 등 검증된 파트너. 단 첫 호기(first-of-a-kind) 실행 리스크가 크다. (근거: 회사 자료, 단정 금지)</p>
+
+    <h3 class="sub">주요 투자자·파트너 (근거 포함)</h3>
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>투자자:</strong> Bill Gates(Cascade Investment), SK그룹(SK Inc.+SK Innovation, 2022 $250M), HD현대, NVIDIA NVentures(2025), KHNP(한국수력원자력, 2026 지분 참여), Khosla Ventures 등. <strong>파트너:</strong> DOE(ARDP 비용분담), PacifiCorp(Kemmerer 연계), Bechtel(EPC). <strong>기타 사업:</strong> TerraPower Isotopes(의료용 Actinium-225, 필라델피아 $450M 신규시설 2029 목표). ※ Direct Air Capture 상업 사업은 검증 가능한 1차 출처 없음(데이터 없음).</p>
+    </div>
+  </section>
+
+  <!-- 2. 계약·파트너십 -->
+  <section id="partnerships">
+    <h2 class="sec">2. 주요 계약·파트너십</h2>
+    <div class="warn"><div class="h">⚠ 구속력 구분</div>아래 계약은 구속(binding)과 LOI/MOU/공동연구를 태그로 구분했습니다. 비구속 협약을 구속 발주로 오인하지 않도록 주의.</div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag gov">정부(구속)</span>DOE ARDP 비용분담 — 최대 ~$2B</div>
+      <p style="font-size:13px;margin:6px 0;">첨단원자로실증프로그램(ARDP). Kemmerer 1호기 총사업비 약 $4B 중 DOE가 절반(최대 ~$2B) 분담, Gates 약 $1B 기여.</p>
+      <div class="deal-meta">출처: DOE · 2020~</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">상업 협약</span>Meta — 최대 8기 Natrium</div>
+      <p style="font-size:13px;margin:6px 0;">2026-01-09. 미국 내 최대 8기 개발 합의. 우선 <strong>2기 신규 유닛(합산 690MWe firm)</strong> 조기 개발 자금 Meta 지원(2032 인도 목표), 추가 <strong>6기(2.1GW, 2035 목표)</strong> 에너지 권리. 총 최대 2.8GW(저장 시 최대 4GW). <em>단 8기 중 2기만 실질 개발 자금 지원, 6기는 권리/옵션 — 전량 구속 EPC 발주 아님.</em></p>
+      <div class="deal-meta">출처: TerraPower/PRNewswire · World Nuclear News · 2026-01-09</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">공급계약(조건부 구속)</span>ASP Isotopes — HALEU 공급</div>
+      <p style="font-size:13px;margin:6px 0;">2025-05. ① 초기 노심(Kemmerer-1 첫 코어, 약 $375M/18개월), ② 장기공급 최대 150톤 HALEU/10년(2028~2037), + ASP 남아공 농축시설에 최대 $22M 조건부 텀론. 시설 2027 생산 개시 목표(허가 조건).</p>
+      <div class="deal-meta">출처: ANS · ASP 8-K(SEC) · 2025-05</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">공동연구/MOU(비구속)</span>PacifiCorp · Sabey Data Centers · Utah</div>
+      <p style="font-size:13px;margin:6px 0;">PacifiCorp 추가 최대 5기 타당성 공동연구(2035까지, 비구속). Sabey Data Centers MOU(2025-01, 데이터센터용 Natrium 광범위 배치). Utah OED+Flagship MOU(2025-08, 2호 부지 탐색). Centrus HALEU MOU.</p>
+      <div class="deal-meta">출처: Utility Dive · TerraPower · 2022~2025</div>
+    </div>
+  </section>
+
+  <!-- 3. 뉴스·동향 -->
+  <section id="news">
+    <h2 class="sec">3. 뉴스·동향 (최근순)</h2>
+    <ul class="timeline">
+      <li><div class="date">2026-06-04</div><div class="ev">Levesque, "SK 투자는 선견지명, 반도체 공장 1곳 ≈ Natrium 1기 출력", KHNP 합류 강조. (UPI/Korea Herald)</div></li>
+      <li><div class="date">2026-04-23</div><div class="ev">Kemmerer Unit 1 공식 핵 관련 건설 개시. (TerraPower/ANS)</div></li>
+      <li><div class="date">2026-03-04</div><div class="ev">NRC, Kemmerer Unit 1 건설허가 승인 — 미국 최초 상업용 비경수로 건설허가. (NRC 26-028)</div></li>
+      <li><div class="date">2026-01-09</div><div class="ev">Meta와 최대 8기 Natrium 협약(최대 2.8GW, 저장 시 4GW). (TerraPower/WNN)</div></li>
+      <li><div class="date">2025-12</div><div class="ev">NRC 안전성 심사 완료(일정 선행, 예산 11% 절감). (ANS)</div></li>
+      <li><div class="date">2025-08-25</div><div class="ev">유타주 2호기 부지 탐색 MOU. (TerraPower)</div></li>
+      <li><div class="date">2025-06-18</div><div class="ev">$650M 펀드레이즈(NVIDIA NVentures, Gates, HD현대). 누적 ~$1.66B. (GeekWire)</div></li>
+      <li><div class="date">2025-05</div><div class="ev">ASP Isotopes HALEU 공급계약(초기 노심 ~$375M + 10년 150톤 + $22M 텀론). (ANS/SEC)</div></li>
+      <li><div class="date">2025-01-21</div><div class="ev">Sabey Data Centers MOU(데이터센터용 Natrium). (TerraPower)</div></li>
+      <li><div class="date">2024-06-10</div><div class="ev">Kemmerer 비핵 부지 착공(groundbreaking) — 서반구 최초 첨단원자로 건설 진입. (TerraPower)</div></li>
+      <li><div class="date">2024-05</div><div class="ev">러시아산 우라늄 수입금지법 발효 → Tenex HALEU 공급 차질, 가동 일정 압박. (Wikipedia/WyoFile)</div></li>
+      <li><div class="date">2024-03</div><div class="ev">NRC 건설허가 신청 제출. (DOE/NRC)</div></li>
+      <li><div class="date">2022-08-15</div><div class="ev">$750M 펀드레이즈(SK $250M 포함). (BusinessWire)</div></li>
+    </ul>
+  </section>
+
+  <!-- 4. 핵심·논지 -->
+  <section id="thesis">
+    <h2 class="sec">4. 핵심 포인트 &amp; 투자 논지 함의</h2>
+
+    <h3 class="sub">상용화 타임라인 (증거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 평가</div>
+      회사 공식 일정은 <strong>2027 첫 핵 콘크리트 → 2030 연료 장전 → 2031 상업운전</strong>. 2026-03 NRC 건설허가 승인·2026-04 핵 관련 건설 개시로 <strong>1차 규제 리스크는 상당히 해소</strong>됐다. 단 당초 2028 가동에서 러시아산 HALEU 차단으로 최소 2년 지연된 이력이 있고, <strong>운영허가(operating license)는 별도 미취득</strong>이다. (근거: ANS·NRC·WyoFile. 단정 금지)
+    </div>
+
+    <h3 class="sub">BTM 기저발전 논지에서의 역할</h3>
+    <div class="insight">
+      <div class="h">💡 데이터센터 베이스로드</div>
+      Meta(최대 8기)·Sabey 등 데이터센터/하이퍼스케일러 수요가 Natrium 배치의 1차 동인으로 부상. 용융염 저장의 가변 출력(345→500MWe)이 AI/반도체 가변 부하 매칭에 부합 — 정적 출력 SMR 대비 차별점. 단 데이터센터 직접 BTM이라기보다 그리드 연계(PacifiCorp) 구조에 가깝다. (근거: PowerMag·UPI)
+    </div>
+
+    <div class="warn"><div class="h">⚠ 리스크</div>① <strong>HALEU 연료 공급</strong> — 러시아 의존 종료 후 남아공 ASP(2027 목표, 허가 조건부)·Centrus·DOE 배분 의존. 공급 지연 시 가동 일정 직격. ② <strong>규제</strong> — 운영허가 미취득, 비경수로 최초라 선례 부족. ③ <strong>비용/FOAK</strong> — 약 $4B 1호기, 첫 호기 실행 리스크. ④ <strong>계약 구속력 편차</strong> — Meta 8기 중 2기만 실질 자금, PacifiCorp·Sabey·Utah는 비구속. 구속적 다수기 발주 전환이 검증 포인트.</div>
+  </section>
+
+  <!-- 5. IR이벤트 -->
+  <section id="calls">
+    <h2 class="sec">5. IR 이벤트 (공개 발언·인터뷰)</h2>
+    <p style="font-size:12px;color:var(--muted);">비상장사로 어닝콜이 없습니다. 공개 인터뷰·발언을 정리했습니다. "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">공개 발언</span>
+        <span class="ctitle">2025~2026 · CEO Chris Levesque 인터뷰·발언 모음</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <ul class="call-pts">
+          <li>2026-06 UPI: "SK하이닉스 반도체 공장 1곳 ≈ Natrium 1기 출력", KHNP 합류 강조.</li>
+          <li>2026-02 POWER: "엔지니어링에서 산업 실행으로" — Kemmerer first-mover, 원자로 2~10호기 추진.</li>
+          <li>2025-09 Axios: 하이퍼스케일러가 원전 거래 주도.</li>
+        </ul>
+        <div class="src">출처: UPI · POWER Magazine · Axios · NRC · 2025~2026</div>
+        <a class="transcript-btn" href="transcripts/terrapower-levesque-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#9ca3af">자료 미확보</span>
+        <span class="ctitle">정기 어닝콜 — 해당 없음 (비상장)</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <ul class="call-pts">
+          <li>TerraPower는 비상장사로 분기 어닝콜·정량 재무 공시가 없습니다. Bill Gates·Levesque의 컨퍼런스 강연(Aspen Ideas Festival 등)·DOE 팟캐스트 출연이 있으나 구체 일자·전문은 추가 확인 필요.</li>
+        </ul>
+        <div class="src">출처: 자료 미확보 (비상장)</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

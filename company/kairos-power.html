@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kairos Power — 기업 분석 리포트 (비상장)</title>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#6d28d9; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  .pvt-banner{background:#fef3c7;border-bottom:1px solid #fde68a;color:#78350f;font-size:13px;font-weight:600;text-align:center;padding:9px 24px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#f5f3ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#5b21b6;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;} .tag.gov{background:#1e40af;}
+  .timeline{list-style:none;padding:0;margin:0;}
+  .timeline li{position:relative;padding:0 0 16px 22px;border-left:2px solid var(--line);margin-left:6px;}
+  .timeline li:before{content:'';position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--accent);}
+  .timeline .date{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono);}
+  .timeline .ev{font-size:13px;margin-top:2px;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:#7c3aed;border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-pts{margin:12px 0 0;} .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>Kairos Power</h1>
+      <p>비상장 · KP-FHR 불화염냉각 고온로(TRISO) · Alameda, CA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#6d28d9;">KP-FHR</span>
+      <span class="badge" style="background:#1e40af;">Google PPA</span>
+      <span class="badge" style="background:#0d9488;">Hermes (NRC 허가)</span>
+    </div>
+  </div>
+</header>
+<div class="pvt-banner">⚠ 재무 데이터 없음 — 비상장사. 본 리포트는 공개 뉴스·계약·규제 동향 중심이며 정량 재무제표는 제공하지 않습니다.</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">회사개요</a>
+    <a href="#partnerships">계약·파트너십</a>
+    <a href="#news">뉴스·동향</a>
+    <a href="#thesis">핵심·논지</a>
+    <a href="#calls">IR이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 회사개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 회사 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">기술</span><span class="v">KP-FHR (불화염냉각 고온로, TRISO)</span></div>
+        <div class="kv-item"><span class="k">상업 출력</span><span class="v">~75MWe (Hermes 시험로 35MWth)</span></div>
+        <div class="kv-item"><span class="k">본사 / 설립</span><span class="v">Alameda, CA / 2016</span></div>
+        <div class="kv-item"><span class="k">CEO</span><span class="v">Mike Laufer (공동창업)</span></div>
+        <div class="kv-item"><span class="k">시험로</span><span class="v">Hermes 1·2 (Oak Ridge, TN)</span></div>
+        <div class="kv-item"><span class="k">앵커 고객</span><span class="v">Google (최대 500MW/2035)</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">기술 방식</h3>
+    <p><strong>KP-FHR</strong>은 불화염냉각 고온로(Fluoride salt-cooled, High-temperature Reactor)다. <strong>TRISO 펠릿(페블) 연료</strong>(HALEU)와 <strong>용융 불화염(FLiBe) 냉각재</strong>를 사용하며, <strong>저압 운전</strong>(고압 수냉 대비 안전 차별점)이 특징. 상업 단위는 약 75MWe, 시험로 Hermes는 35MWth(열). 차별점은 반복적 <strong>"build-test"(제작-시험) 개발</strong>과 자체 염·연료 제조의 <strong>수직 통합</strong>. (출처: Kairos Power, NRC)</p>
+
+    <h3 class="sub">전략적 포지션 & 경쟁 강점</h3>
+    <p>밸류체인 내 위치는 <strong>원자로 설계·개발사(IPP)</strong>. ① <strong>규제 선례</strong> — Hermes 1이 2023-12 미국 50년 만의 비경수로 최초 건설허가, Hermes 2가 2024-11 미국 최초 전력생산 Gen IV 건설허가. ② <strong>Google 앵커</strong> — 단일 설계 다수 배치 최초 기업 협약. ③ <strong>TVA PPA</strong> — 미 유틸리티 최초 Gen IV PPA(구속). 단 모두 시험로·FOAK 단계로 상업 운전 실적은 아직 없다. (근거: NRC·Kairos. 단정 금지)</p>
+
+    <h3 class="sub">주요 투자자·파트너</h3>
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>창업:</strong> Mike Laufer·Edward Blandford·Per Peterson(UC버클리). <strong>파트너:</strong> Google(앵커 고객), TVA(PPA), DOE(ARDP $303M·HALEU 공급), Los Alamos 국립연구소(TRISO 연료 제조). 제조: Alameda(본사)·Albuquerque NM(염 제조)·Oak Ridge TN(Hermes). ※ 비상장으로 구체 cap-table·밸류에이션·펀딩 총액은 신뢰 가능한 출처에서 확인 불가(데이터 없음). DoD ANPI는 적격 8개사 중 하나이나 <strong>초기 배치 3개사에 미선정</strong>(수주 아님).</p>
+    </div>
+  </section>
+
+  <!-- 2. 계약·파트너십 -->
+  <section id="partnerships">
+    <h2 class="sec">2. 주요 계약·파트너십</h2>
+    <div class="warn"><div class="h">⚠ Google 딜 명확화</div>2024-10 Google "500MW by 2035"는 <strong>마스터 플랜 개발 협약(프레임워크)</strong>이지 단일 구속 오프테이크가 아닙니다. <strong>유일한 구속 오프테이크는 2025-08 Kairos↔TVA PPA(~50MW, Hermes 2)</strong>입니다. 둘을 혼동하지 마십시오.</div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속 PPA</span>TVA + Google + Kairos — Hermes 2 최대 50MW</div>
+      <p style="font-size:13px;margin:6px 0;">2025-08-18. Kairos↔TVA 전력구매계약(PPA). Hermes 2가 TVA 그리드에 "최대 50MW 24/7 전력" 공급, Google의 테네시·앨라배마 데이터센터 지원. <strong>미국 유틸리티 최초의 Gen IV 원자로 PPA</strong>. Google 협약 하 첫 배치. Hermes 2 가동 목표 ~2030.</p>
+      <div class="deal-meta">출처: Kairos/PR Newswire · POWER · DCD · 2025-08-18</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Google — 마스터 플랜 개발 협약 (최대 500MW)</div>
+      <p style="font-size:13px;margin:6px 0;">2024-10-14. 미국 첨단원자로 함대 "최대 500MW를 2035년까지" 배치 경로 + "첫 배치 2030". 세계 최초 단일 첨단로 설계 다수 배치 기업 협약. 구조: 2030 FOAK 50MWe + 이후 75MWe×2 모듈 3개 플랜트. <em>실제 전력 판매는 후속 PPA로 집행(프레임워크).</em></p>
+      <div class="deal-meta">출처: Kairos/blog.google · Utility Dive · 2024-10-14</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag gov">정부(구속)</span>DOE — ARDP 비용분담 + HALEU 공급</div>
+      <p style="font-size:13px;margin:6px 0;">ARDP 마일스톤 고정가 협약 최대 <strong>$303M</strong>(2024-02, 총 Hermes 사업 ~$629M, DOE ~48%). 2026-01-20 <strong>DOE와 HALEU 공급계약</strong> 체결(Hermes 1 첫 연료 장전, Los Alamos가 TRISO 펠릿 제조).</p>
+      <div class="deal-meta">출처: Kairos · POWER · ANS · 2024-02 / 2026-01</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">적격(수주 아님)</span>DoD ANPI · EPC</div>
+      <p style="font-size:13px;margin:6px 0;">국방부 ANPI(설치용 첨단원자력) 적격 8개사 중 하나이나 <strong>초기 배치 3개사에 미선정</strong>. 명명된 EPC/건설 파트너는 신뢰 가능한 출처에서 미확인(데이터 없음).</p>
+      <div class="deal-meta">출처: ANS · WNN · 2025~2026</div>
+    </div>
+  </section>
+
+  <!-- 3. 뉴스·동향 -->
+  <section id="news">
+    <h2 class="sec">3. 뉴스·동향 (최근순)</h2>
+    <ul class="timeline">
+      <li><div class="date">2026-05-13</div><div class="ev">NRC, Hermes 1 건설완료 기한 28개월 연장(2026-12-31 → 2029-04-30). Kairos 건설완료 ~2028 예상. FOAK 지연 가시화. (WNN/Federal Register)</div></li>
+      <li><div class="date">2026-03-19</div><div class="ev">CEO Mike Laufer, 미 상원 에너지위 증언(트럼프 원자력 행정명령 DOE 이행). (Senate ENR)</div></li>
+      <li><div class="date">2026-01-20</div><div class="ev">DOE와 HALEU 공급계약 체결(Hermes 1 첫 연료 장전). (Kairos/ANS/WNN)</div></li>
+      <li><div class="date">2025-08-18</div><div class="ev">TVA-Google-Kairos PPA — 미 유틸리티 최초 Gen IV PPA(Hermes 2 최대 50MW). (Kairos/POWER/DCD)</div></li>
+      <li><div class="date">2025-05-01</div><div class="ev">Hermes 1 첫 핵 관련 콘크리트 타설(안전 관련 건설 개시). (Kairos/WNN)</div></li>
+      <li><div class="date">2024-11-21</div><div class="ev">NRC, Hermes 2 건설허가 발급 — 미국 최초 전력생산 Gen IV 플랜트 건설 승인. (NRC/Kairos)</div></li>
+      <li><div class="date">2024-10-14</div><div class="ev">Google 마스터 플랜 개발 협약(최대 500MW/2035, 첫 ~2030). (Kairos/Utility Dive)</div></li>
+      <li><div class="date">2024-07</div><div class="ev">Hermes 1 부지 착공(groundbreaking), Oak Ridge. (Kairos)</div></li>
+      <li><div class="date">2024-02-21</div><div class="ev">DOE 기술투자협약($303M 마일스톤 비용분담, ~$629M 총사업). (Kairos/POWER)</div></li>
+      <li><div class="date">2023-12-14</div><div class="ev">NRC, Hermes 1 건설허가 발급 — 미국 50년 만의 비경수로 최초. (Kairos/NRC/DOE)</div></li>
+      <li><div class="date">2020-12</div><div class="ev">DOE ARDP 리스크 저감 award 선정. (Kairos)</div></li>
+    </ul>
+  </section>
+
+  <!-- 4. 핵심·논지 -->
+  <section id="thesis">
+    <h2 class="sec">4. 핵심 포인트 &amp; 투자 논지 함의</h2>
+
+    <h3 class="sub">상용화 타임라인 (증거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 평가</div>
+      Hermes 1(시험·비전력): 완료 ~<strong>2028</strong>, NRC 기한 2029-04-30(원 2027 목표에서 슬립). Hermes 2(첫 전력, 50MWe): 상업 운전 <strong>목표 2030</strong>(Google 첫 배치). 전체 <strong>500MW 함대 목표 2035</strong>. <strong>2026-05 Hermes 1 기한 28개월 연장은 FOAK 실행 리스크가 실제로 나타난 구체 증거.</strong> (근거: WNN·Federal Register. 단정 금지)
+    </div>
+
+    <h3 class="sub">BTM/데이터센터 베이스로드 논지에서의 역할</h3>
+    <div class="insight">
+      <div class="h">💡 하이퍼스케일러 검증</div>
+      Google 프레임워크(500MW)를 구속 TVA PPA가 뒷받침 — Hermes 2의 24/7 출력을 Google의 TN/AL 데이터센터에 그리드 경유로 공급. 엄밀히는 BTM이 아닌 그리드 연계(TVA 오프테이커, Google 수요 견인). 단일 설계 직렬 배치로 비용을 낮추는 전략(Google·Laufer)이 핵심. <strong>최초 기업 다수 배치 협약 + 최초 유틸리티 Gen IV PPA</strong>는 강한 검증 신호. (근거: Kairos·blog.google·Utility Dive)
+    </div>
+
+    <div class="warn"><div class="h">⚠ 리스크</div>① <strong>FOAK</strong> — Hermes 1 기한 28개월 연장으로 이미 가시화된 엔지니어링·건설 리스크. ② <strong>연료</strong> — HALEU(Hermes 1은 DOE 공급)·TRISO 펠릿(Los Alamos) 의존, 도메스틱 HALEU 공급 병목은 업계 공통. ③ <strong>비용/자본</strong> — 비상장, DOE 비용분담($303M)+비공개 사모 의존, 밸류에이션·펀딩 총액 미공개. ④ <strong>타임라인</strong> — 상업 75MWe·2035 함대는 Hermes 2 성공+공급망 성숙에 좌우. ⑤ <strong>DoD 배치 수주 없음</strong>(적격만).</div>
+  </section>
+
+  <!-- 5. IR이벤트 -->
+  <section id="calls">
+    <h2 class="sec">5. IR 이벤트 (공개 발언·증언)</h2>
+    <p style="font-size:12px;color:var(--muted);">비상장사로 어닝콜이 없습니다. 공개 증언·발언을 정리했습니다. "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">상원 증언</span>
+        <span class="ctitle">2026-03-19 · CEO Mike Laufer 미 상원 에너지위 증언</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <ul class="call-pts">
+          <li>트럼프 원자력 행정명령 DOE 이행 청문. "원자력이 제공할 모든 것이 필요하며, 전달을 증명할 책임은 우리에게."</li>
+          <li>상업 배치 75MWe, Hermes 2로 표준 설계 정련·공급망 구축 전략.</li>
+          <li>(Google 측) "SMR 직렬 배치가 비용을 낮추는 길" — 다수 배치 협약 근거.</li>
+        </ul>
+        <div class="src">출처: 미 상원 ENR · ANS · NucNet · 2026-03</div>
+        <a class="transcript-btn" href="transcripts/kairos-senate-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#9ca3af">자료 미확보</span>
+        <span class="ctitle">정기 어닝콜 — 해당 없음 (비상장)</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <ul class="call-pts">
+          <li>Kairos Power는 비상장사로 분기 어닝콜·정량 재무 공시가 없습니다. 공개 채널은 NRC 문서·DOE 발표·언론 인터뷰·상원 증언에 한정됩니다.</li>
+        </ul>
+        <div class="src">출처: 자료 미확보 (비상장)</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-energy (XE) — 기업 분석 리포트</title>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#be123c; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  .pvt-banner{background:#dbeafe;border-bottom:1px solid #bfdbfe;color:#1e3a8a;font-size:13px;font-weight:600;text-align:center;padding:9px 24px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#fff1f2;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#9f1239;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;} .tag.gov{background:#1e40af;}
+  .timeline{list-style:none;padding:0;margin:0;}
+  .timeline li{position:relative;padding:0 0 16px 22px;border-left:2px solid var(--line);margin-left:6px;}
+  .timeline li:before{content:'';position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--accent);}
+  .timeline .date{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono);}
+  .timeline .ev{font-size:13px;margin-top:2px;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:#2563a8;border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;} .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>X-energy (X-Energy, Inc.)</h1>
+      <p>Nasdaq: XE · Xe-100 고온가스로(HTGR) + TRISO-X 연료 · Rockville, MD</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#be123c;">Xe-100 HTGR</span>
+      <span class="badge" style="background:#ff9900;">Amazon 투자·고객</span>
+      <span class="badge" style="background:#1e40af;">Dow 공정열</span>
+    </div>
+  </div>
+</header>
+<div class="pvt-banner">ℹ 정정: 의뢰 시 비상장으로 분류됐으나 X-energy는 <strong>2026-04-24 나스닥 상장(티커 XE, ~$1.02B 조달)</strong>을 완료했습니다. 본 리포트는 뉴스·계약 중심이되 공개된 Q1 2026 실적 일부를 포함합니다.</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">회사개요</a>
+    <a href="#partnerships">계약·파트너십</a>
+    <a href="#news">뉴스·동향</a>
+    <a href="#thesis">핵심·논지</a>
+    <a href="#calls">IR이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 회사개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 회사 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">기술</span><span class="v">Xe-100 (HTGR, 페블베드)</span></div>
+        <div class="kv-item"><span class="k">출력</span><span class="v">80MWe / 4-pack 320MWe</span></div>
+        <div class="kv-item"><span class="k">본사 / CEO</span><span class="v">Rockville, MD / J. Clay Sell</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">2026-04-24 Nasdaq (XE)</span></div>
+        <div class="kv-item"><span class="k">IPO 조달</span><span class="v up">~$1.02B (사상 최대 원자력 IPO)</span></div>
+        <div class="kv-item"><span class="k">유동성 (Q1'26)</span><span class="v">~$2.0B</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">기술 방식</h3>
+    <p><strong>Xe-100</strong>은 80MWe 고온가스로(HTGR, 헬륨 냉각, 페블베드)다. <strong>TRISO-X 연료</strong>(HALEU를 세라믹·탄소로 캡슐화한 pebble)를 사용하며, 모듈당 80MW 전력 또는 200MW 고온 스팀(산업 공정열)을 공급한다. 표준 배치는 <strong>4-pack = 320MWe</strong>. 자체 연료 사업 <strong>TRISO-X</strong>(TX-1, Oak Ridge)를 보유 — 2026-02-13 NRC 미국 최초 Category II 연료제조 라이선스(SNM-7007) 취득. 차별점은 <strong>전력 + 산업 공정열</strong> + <strong>연료 수직통합</strong>. (출처: X-energy, NRC, DOE)</p>
+
+    <h3 class="sub">전략적 포지션 & 경쟁 강점</h3>
+    <p>밸류체인 내 위치는 <strong>원자로 + 연료(TRISO-X) 수직통합 사업자</strong>. ① <strong>Amazon 앵커</strong>(투자자+고객), ② <strong>Dow 산업 공정열 검증</strong>(고온 스팀 차별점), ③ <strong>TRISO-X 연료 라이선스</strong>(업계 HALEU/TRISO 병목 헤지 + 외판 잠재). 단 Xe-100은 FOAK 단계로 상업 운전 실적이 없다. (근거: X-energy·NRC. 단정 금지)</p>
+
+    <h3 class="sub">재무 스냅샷 (Q1 FY2026, 상장 첫 분기)</h3>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">매출+보조금</span><span class="v">$43.4M (+109% YoY)</span></div>
+        <div class="kv-item"><span class="k">순손실</span><span class="v dn">-$166.2M*</span></div>
+        <div class="kv-item"><span class="k">유동성</span><span class="v">~$2.0B</span></div>
+        <div class="kv-item"><span class="k">시가총액 함의</span><span class="v">~$9~12B</span></div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0;">* 순손실 -$166.2M의 대부분은 워런트 부채 시가평가손 -$108.9M(비현금). 매출은 사실상 DOE ARDP 보조금 중심. 출처: 10-Q Q1 2026.</p>
+    </div>
+  </section>
+
+  <!-- 2. 계약·파트너십 -->
+  <section id="partnerships">
+    <h2 class="sec">2. 주요 계약·파트너십</h2>
+    <div class="warn"><div class="h">⚠ Amazon "5GW" 명확화</div>Amazon "2039년까지 5GW+"는 <strong>구속 PPA가 아니라 배치 목표/프레임워크</strong>입니다. 구속적인 것은 (a) 2024-10 ~$500M 자본투자와 (b) Energy Northwest 초기 320MW 지원 약정입니다.</div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">자본거래(완료)</span>Amazon 앵커 투자 — ~$500M (Series C-1)</div>
+      <p style="font-size:13px;margin:6px 0;">2024-10-16. Amazon Climate Pledge Fund 주도(Ken Griffin·Ares·NGP·U.Michigan 참여). 앵커 투자자+고객.</p>
+      <div class="deal-meta">출처: Businesswire/X-energy · 2024-10-16</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Amazon — 2039년까지 미국 5GW+ 배치 목표</div>
+      <p style="font-size:13px;margin:6px 0;">"SMR 사상 최대 상업 배치 목표". 초기 320MW(Energy Northwest) 지원 약정 포함. <em>구속 전력판매계약 아님 — 단계적·조건부 목표.</em></p>
+      <div class="deal-meta">출처: Utility Dive/X-energy · 2024-10</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">공동개발+엔지니어링</span>Dow / Long Mott — Seadrift TX (4기, 320MWe)</div>
+      <p style="font-size:13px;margin:6px 0;">DOE ARDP 하 첫 산업현장 데모. 2025-03-31 NRC 건설허가신청(미국 최초 산업현장 첨단로), 2025-05 도켓. 2026-04-06 Fluor FEL-2 계약(구속). 가동 "다음 10년 초" 목표.</p>
+      <div class="deal-meta">출처: X-energy/Fluor · 2025~2026</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">공동개발(JDA)</span>Energy Northwest — Cascade (최대 12기, ~960MWe)</div>
+      <p style="font-size:13px;margin:6px 0;">2023-07 JDA(초기 4기→옵션 2기→최대 12기). 2025-10 "Cascade Advanced Energy Facility" 명명, Cascade Nuclear Partners(Kiewit/Black & Veatch/Aecon) 시공 JV. 착공 ~2030 목표.</p>
+      <div class="deal-meta">출처: X-energy/Aecon · 2023~2025</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag gov">정부(구속)</span>DOE ARDP ~$1.2B + TRISO-X NRC 라이선스</div>
+      <p style="font-size:13px;margin:6px 0;">2020 ARDP 선정(최대 $1.2B 비용분담). 2026-02-13 TRISO-X TX-1 NRC Category II 라이선스(SNM-7007, 미국 최초). ※ 2022 Ares Acquisition Corp(AAC) SPAC은 2023-10-31 상호 해지(Ares II 아님), 이후 2026-04 정식 IPO.</p>
+      <div class="deal-meta">출처: DOE/NEI/SpacInsider · 2020~2026</div>
+    </div>
+  </section>
+
+  <!-- 3. 뉴스·동향 -->
+  <section id="news">
+    <h2 class="sec">3. 뉴스·동향 (최근순)</h2>
+    <ul class="timeline">
+      <li><div class="date">2026-06</div><div class="ev">Q1 FY2026(상장 첫 분기): 매출+보조금 $43.4M(+109%), 순손실 -$166.2M(워런트 평가손 -$108.9M 포함), 유동성 ~$2.0B. (10-Q)</div></li>
+      <li><div class="date">2026-04-24</div><div class="ev">Nasdaq IPO 완료(XE), ~$1.02B 조달, 첫날 +31%. 사상 최대 원자력 IPO. (TechCrunch)</div></li>
+      <li><div class="date">2026-04-06</div><div class="ev">Fluor FEL-2 계약 체결(Seadrift). (Fluor/Businesswire)</div></li>
+      <li><div class="date">2026-02-13</div><div class="ev">TRISO-X, NRC Category II 연료제조 라이선스(SNM-7007) 취득 — 미국 최초. (DOE/NEI)</div></li>
+      <li><div class="date">2025-11</div><div class="ev">TX-1 시설 vertical 건설 착공(Oak Ridge). (ANS)</div></li>
+      <li><div class="date">2025-10</div><div class="ev">Energy Northwest "Cascade" 명명·설계 공개, 시공 JV(Cascade Nuclear Partners) 선정. (Amazon/Aecon)</div></li>
+      <li><div class="date">2025-05</div><div class="ev">NRC, Dow/Seadrift 건설허가신청 접수·도켓. (NRC/ANS)</div></li>
+      <li><div class="date">2025-03-31</div><div class="ev">Dow·X-energy, NRC 건설허가신청 제출(Long Mott/Seadrift). (X-energy)</div></li>
+      <li><div class="date">2024-10-16</div><div class="ev">Amazon 주도 ~$500M Series C-1; 2039년까지 5GW+ 목표 발표. (Businesswire)</div></li>
+      <li><div class="date">2023-10-31</div><div class="ev">Ares Acquisition Corp(AAC) SPAC 합병 상호 해지(AAC 청산). (SpacInsider)</div></li>
+      <li><div class="date">2023-07-19</div><div class="ev">Energy Northwest JDA(최대 12기/960MWe). (X-energy)</div></li>
+      <li><div class="date">2020</div><div class="ev">DOE ARDP 선정(최대 $1.2B 비용분담). (DOE)</div></li>
+    </ul>
+  </section>
+
+  <!-- 4. 핵심·논지 -->
+  <section id="thesis">
+    <h2 class="sec">4. 핵심 포인트 &amp; 투자 논지 함의</h2>
+
+    <h3 class="sub">상용화 타임라인 (증거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 평가</div>
+      <strong>연료(TRISO-X)가 가장 앞섬</strong> — NRC 라이선스 확보(2026-02), TX-1 양산 2026말~2027(매출 가시성 최고). <strong>원자로(Xe-100)는 FOAK 단계</strong> — Dow/Seadrift 건허 심사 중, FEL-2(초기 엔지니어링), 가동 "다음 10년 초(~2030년대 초)". 즉 운영 매출은 아직 수 년 후이고 현재 매출은 DOE ARDP 보조금 중심. (근거: X-energy·NRC·10-Q. 단정 금지)
+    </div>
+
+    <h3 class="sub">데이터센터 + 산업 공정열 베이스로드 논지</h3>
+    <div class="insight">
+      <div class="h">💡 Amazon + Dow 이중 검증</div>
+      Amazon이 전략 투자자+앵커 고객(AI 데이터센터 전력 수요가 IPO 흥행 15배 초과청약·+31%의 핵심 동인). Dow가 산업 공정열(200MW 고온 스팀) 검증 첫 고객. 연료 수직통합(TRISO-X)이 HALEU 병목 헤지. <strong>전력 + 공정열</strong> 동시 공급은 타 SMR 대비 차별점. (근거: X-energy·TechCrunch)
+    </div>
+
+    <div class="warn"><div class="h">⚠ 리스크</div>① <strong>FOAK</strong> — Xe-100 상업 운전 실적 0. 건설 비용·일정 초과 위험. ② <strong>타임라인</strong> — 운영 매출 ~2030 전후, 현재 매출은 ARDP 보조금 중심. ③ <strong>재무</strong> — 분기 순손실 $166M(워런트 평가손 포함), 영업비용 급증. 현금 ~$2.0B 버퍼는 두텁다. ④ <strong>HALEU/연료</strong> — TX-1 양산 지연 가능성, HALEU 원료 의존. ⑤ <strong>"5GW"는 구속 계약이 아닌 목표</strong>. ⑥ 규제(NRC 건허·운영허가 일정).</div>
+  </section>
+
+  <!-- 5. IR이벤트 -->
+  <section id="calls">
+    <h2 class="sec">5. IR 이벤트</h2>
+    <p style="font-size:12px;color:var(--muted);">2026-04 상장 후 첫 공개 분기. "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q1 FY2026</span>
+        <span class="ctitle">2026-06 · 상장 첫 분기, 매출+보조금 $43.4M(+109%), 유동성 ~$2.0B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출+보조금</span><span class="v">$43.4M (+109%)</span></div>
+          <div><span class="k">순손실</span><span class="v">-$166.2M (워런트 -$108.9M)</span></div>
+          <div><span class="k">유동성</span><span class="v">~$2.0B</span></div>
+          <div><span class="k">IPO</span><span class="v">~$1.02B (2026-04-24)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>DOE ARDP 활동 증가로 매출 +109%. 순손실 대부분은 비현금 워런트 평가손.</li>
+          <li>TRISO-X TX-1 NRC 라이선스(2026-02), Dow/Seadrift Fluor FEL-2(2026-04).</li>
+          <li>Energy Northwest Cascade(최대 12기), Amazon 5GW 목표(프레임워크).</li>
+        </ul>
+        <div class="src">출처: X-energy 10-Q Q1 2026 · 2026-06 · <a href="https://www.stocktitan.net/sec-filings/XE/10-q-x-energy-inc-quarterly-earnings-report-7e4e8919c7e5.html" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/xe-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
