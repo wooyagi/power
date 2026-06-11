@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전력 데스크 — 기저발전 투자 리서치</title>
+<style>
+  :root{
+    --ink:#13171e; --ink-2:#1c222c; --paper:#f6f7f9; --card:#ffffff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#d9892b;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;}
+
+  /* 히어로 */
+  .hero{background:var(--ink);color:#fff;padding:56px 24px 48px;}
+  .hero-inner{max-width:860px;margin:0 auto;}
+  .hero-eyebrow{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+  .hero h1{font-size:32px;font-weight:800;margin:0 0 12px;letter-spacing:-.5px;line-height:1.2;}
+  .hero p{font-size:15px;color:#9aa6b7;margin:0;max-width:560px;line-height:1.6;}
+  .spark{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-right:8px;animation:pulse 2.4s infinite;vertical-align:middle;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,137,43,.55)}70%{box-shadow:0 0 0 8px rgba(217,137,43,0)}100%{box-shadow:0 0 0 0 rgba(217,137,43,0)}}
+
+  /* 메인 카드 그리드 */
+  main{max-width:860px;margin:0 auto;padding:36px 24px 80px;}
+  .section-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-family:var(--mono);margin:0 0 14px;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:40px;}
+
+  .main-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;transition:box-shadow .15s,border-color .15s,transform .15s;}
+  .main-card:hover{border-color:var(--accent);box-shadow:0 6px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
+  .card-icon{font-size:28px;line-height:1;}
+  .card-title{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.3px;}
+  .card-desc{font-size:13px;color:#555;line-height:1.6;}
+  .card-meta{display:flex;gap:8px;flex-wrap:wrap;}
+  .card-tag{font-size:11px;font-weight:700;color:#fff;border-radius:4px;padding:2px 8px;}
+  .card-arrow{font-size:20px;color:var(--muted);margin-top:auto;transition:transform .15s,color .15s;}
+  .main-card:hover .card-arrow{transform:translateX(4px);color:var(--accent);}
+
+  /* 투자 논지 섹션 */
+  .thesis{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin-bottom:40px;}
+  .thesis h3{font-size:14px;font-weight:800;color:var(--ink);margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .thesis-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;}
+  .thesis-node{background:#f1f5fb;border:1px solid #c7d9f8;border-radius:8px;padding:8px 14px;font-weight:600;color:#1a2942;white-space:nowrap;}
+  .thesis-arrow{color:var(--accent);font-size:18px;font-weight:700;}
+  .thesis-node.highlight{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  /* 업데이트 현황 */
+  .updates{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;}
+  .updates h3{font-size:14px;font-weight:800;color:var(--ink);margin:0 0 14px;}
+  .update-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;}
+  .update-item:last-child{border-bottom:none;}
+  .update-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .update-dot.news{background:var(--accent);}
+  .update-dot.company{background:#2563a8;}
+  .update-date{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;}
+  .update-text{flex:1;color:var(--text);}
+  .update-link{font-size:11px;color:#2563a8;text-decoration:none;white-space:nowrap;}
+  .update-link:hover{text-decoration:underline;}
+
+  footer{max-width:860px;margin:0 auto;padding:0 24px 40px;color:#9aa1ab;font-size:11px;font-family:var(--mono);line-height:1.6;}
+
+  @media(max-width:560px){
+    .hero h1{font-size:24px;}
+    .cards{grid-template-columns:1fr;}
+    .thesis-flow{gap:6px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="spark"></span>Baseload Power Desk</div>
+    <h1>기저발전 투자 리서치</h1>
+    <p>AI 데이터센터 전력 수요 급증 → 계통 연계 병목 → BTM·온사이트 발전 구조적 수요. 매일 갱신되는 뉴스와 핵심 기업 분석을 한 곳에서.</p>
+  </div>
+</div>
+
+<main>
+
+  <p class="section-label">바로가기</p>
+  <div class="cards">
+
+    <a class="main-card" href="news/">
+      <div class="card-icon">📊</div>
+      <div class="card-title">전력 뉴스 로그</div>
+      <div class="card-desc">매일 오전 9시 자동 갱신. 하이퍼스케일러·발전사·연료전지·원자력·그리드 정책 뉴스를 날짜별로 누적. 마커 하이라이트·메모 기능 포함.</div>
+      <div class="card-meta">
+        <span class="card-tag" style="background:#d9892b;">매일 갱신</span>
+        <span class="card-tag" style="background:#2563a8;">7개 카테고리</span>
+        <span class="card-tag" style="background:#1f7a4d;">하이라이트·메모</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="main-card" href="company/">
+      <div class="card-icon">🏢</div>
+      <div class="card-title">기업 분석</div>
+      <div class="card-desc">핵심 기업별 재무 추이·백로그·컨콜 정리·알파 시그널. 12개 분기 차트, 전문 페이지(하이라이트·메모), 매 분기 업데이트.</div>
+      <div class="card-meta">
+        <span class="card-tag" style="background:#1f7a4d;">Bloom Energy</span>
+        <span class="card-tag" style="background:#c0392b;">Oracle</span>
+        <span class="card-tag" style="background:#9ca3af;">+ 추가 중</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+
+
+</main>
+
+<footer>
+  기저발전 투자 리서치 데스크 · 자동 수집 로그입니다. 발표 자료 인용 전 원문(IR·공시·어닝콜)으로 재확인하세요.<br>
+  매일 09:00 KST 갱신 · wooyagi.github.io/power/
+</footer>
+
+</body>
+</html>
