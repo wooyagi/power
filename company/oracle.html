@@ -107,6 +107,18 @@
   .hl-green{background:var(--hl-green);border-radius:2px;}
   .hl-red{background:var(--hl-red);border-radius:2px;}
 
+  /* 전문 모달 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:12px;width:90%;max-width:780px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h3{font-size:15px;font-weight:700;margin:0;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:20px;overflow-y:auto;font-size:13px;line-height:1.75;white-space:pre-wrap;color:#333;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+
   @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -160,10 +172,10 @@
       <div class="kv-grid">
         <div class="kv-item"><span class="k">핵심 사업</span><span class="v">클라우드 인프라(OCI)·DB·SaaS</span></div>
         <div class="kv-item"><span class="k">회계연도</span><span class="v">5월 31일 종료</span></div>
-        <div class="kv-item"><span class="k">최근 분기 매출</span><span class="v up">$17.19B (Q3 FY26, +22% YoY)</span></div>
-        <div class="kv-item"><span class="k">FY2026 매출 가이던스</span><span class="v up">~$67B</span></div>
-        <div class="kv-item"><span class="k">RPO(백로그)</span><span class="v up">$553B (Q3 FY26)</span></div>
-        <div class="kv-item"><span class="k">FY2026 Capex 가이던스</span><span class="v">~$50B</span></div>
+        <div class="kv-item"><span class="k">최근 분기 매출</span><span class="v up">$19.18B (Q4 FY26, +21% YoY)</span></div>
+        <div class="kv-item"><span class="k">FY2026 매출(확정)</span><span class="v up">$67.4B (+17%)</span></div>
+        <div class="kv-item"><span class="k">RPO(백로그)</span><span class="v up">$638B (Q4 FY26)</span></div>
+        <div class="kv-item"><span class="k">FY2026 Capex(확정)</span><span class="v">$55.7B</span></div>
         <div class="kv-item"><span class="k">본사</span><span class="v">Austin, TX</span></div>
         <div class="kv-item"><span class="k">상장</span><span class="v">NYSE: ORCL</span></div>
       </div>
@@ -196,7 +208,7 @@
   <!-- 2. 재무 추이 -->
   <section id="financials">
     <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
-    <p style="font-size:12px;color:var(--muted);">출처: Oracle 분기 8-K Exhibit 99.1 (SEC EDGAR, CIK 1341439) 및 IR 보도자료. 최근 12개 분기 (Q4 FY2023 ~ Q3 FY2026). GAAP 기준. 회계연도 5월 31일 종료.</p>
+    <p style="font-size:12px;color:var(--muted);">출처: Oracle 분기 8-K Exhibit 99.1 (SEC EDGAR, CIK 1341439) 및 IR 보도자료. 최근 13개 분기 (Q4 FY2023 ~ Q4 FY2026). GAAP 기준. 회계연도 5월 31일 종료.</p>
 
     <div class="chart-wrap">
       <p class="chart-title">① 분기 매출 · 영업이익 (백만 USD)</p>
@@ -228,7 +240,8 @@
         <tr><td>Q4 FY25</td><td>'25-05</td><td class="num">15,903</td><td class="num up">+11%</td><td class="num up">5,109</td><td class="num">32.1%</td><td class="num up">3,427</td><td class="num">21.5%</td><td class="num">1.19</td><td class="num">1.70</td></tr>
         <tr><td>Q1 FY26</td><td>'25-08</td><td class="num">14,926</td><td class="num up">+12%</td><td class="num up">4,277</td><td class="num">28.7%</td><td class="num up">2,927</td><td class="num">19.6%</td><td class="num">1.01</td><td class="num">1.47</td></tr>
         <tr><td>Q2 FY26</td><td>'25-11</td><td class="num">16,058</td><td class="num up">+14%</td><td class="num up">4,731</td><td class="num">29.5%</td><td class="num up">6,135</td><td class="num">38.2%*</td><td class="num">2.10*</td><td class="num">2.26</td></tr>
-        <tr style="background:#fef2f2;font-weight:700;"><td>Q3 FY26</td><td>'26-02</td><td class="num">17,190</td><td class="num up">+22%</td><td class="num up">5,464</td><td class="num">31.8%</td><td class="num up">3,721</td><td class="num">21.6%</td><td class="num">1.27</td><td class="num">1.79</td></tr>
+        <tr><td>Q3 FY26</td><td>'26-02</td><td class="num">17,190</td><td class="num up">+22%</td><td class="num up">5,464</td><td class="num">31.8%</td><td class="num up">3,721</td><td class="num">21.6%</td><td class="num">1.27</td><td class="num">1.79</td></tr>
+        <tr style="background:#fef2f2;font-weight:700;"><td>Q4 FY26</td><td>'26-05</td><td class="num">19,184</td><td class="num up">+21%</td><td class="num up">6,133</td><td class="num">32.0%</td><td class="num up">4,304</td><td class="num">22.4%</td><td class="num">1.45</td><td class="num">2.11</td></tr>
       </tbody>
     </table>
     </div>
@@ -271,6 +284,7 @@
           <tr><td>Q1 FY26</td><td class="num">7,186</td><td class="num">5,721</td><td class="num">670</td><td class="num">1,349</td><td class="num">14,926</td></tr>
           <tr><td>Q2 FY26</td><td class="num">7,977</td><td class="num">5,877</td><td class="num">776</td><td class="num">1,428</td><td class="num">16,058</td></tr>
           <tr><td>Q3 FY26</td><td class="num">8,914</td><td class="num">6,119</td><td class="num">714</td><td class="num">1,443</td><td class="num">17,190</td></tr>
+          <tr style="background:#fef2f2;font-weight:700;"><td>Q4 FY26</td><td class="num">9,913</td><td class="num">6,824</td><td class="num">924</td><td class="num">1,523</td><td class="num">19,184</td></tr>
         </tbody>
       </table>
     </div>
@@ -329,7 +343,8 @@
         <tr><td>Q4 FY25</td><td>'25-05</td><td class="num">$138B</td><td class="num up">+41%</td><td>FY26 RPO "100%+ 성장" 전망 제시</td></tr>
         <tr style="background:#fef2f2;font-weight:700;"><td>Q1 FY26</td><td>'25-08</td><td class="num">$455B</td><td class="num up">+359%</td><td>3개 고객·4건 멀티빌리언 계약</td></tr>
         <tr style="background:#fef2f2;font-weight:700;"><td>Q2 FY26</td><td>'25-11</td><td class="num">$523B</td><td class="num up">+438%</td><td>분기 중 +$68B, Meta·NVIDIA 신규 약정</td></tr>
-        <tr style="background:#fef2f2;font-weight:700;"><td>Q3 FY26</td><td>'26-02</td><td class="num">$553B</td><td class="num up">+325%</td><td>QoQ +$29B</td></tr>
+        <tr style="background:#fef2f2;"><td>Q3 FY26</td><td>'26-02</td><td class="num">$553B</td><td class="num up">+325%</td><td>QoQ +$29B</td></tr>
+        <tr style="background:#fef2f2;font-weight:700;"><td>Q4 FY26</td><td>'26-05</td><td class="num">$638B</td><td class="num up">+363%</td><td>QoQ +$85B · 12% 12개월내·34% 13~36개월내 인식</td></tr>
       </tbody>
     </table>
     </div>
@@ -418,14 +433,46 @@
       <div class="h">💡 알파 4 — 전력 수요측 본 데스크 관점</div>
       Oracle은 그리드 제약을 우회하기 위해 온사이트 발전을 적극 채택(Project Jupiter의 Bloom SOFC 최대 2.45GW). 데이터센터 디벨로퍼가 "전력 조달 속도"를 최우선으로 삼는 구조에서, Oracle의 RPO 실현 가능성은 곧 온사이트 발전(연료전지·가스엔진) 수요의 선행지표가 된다. Oracle 백로그 ↔ Bloom 등 공급측 수주의 연동을 교차 모니터링할 가치. <em>(근거: Project Jupiter 보도자료. 추론: 논리적 도출)</em>
     </div>
+    <div class="insight">
+      <div class="h">💡 알파 5 — Q4 FY26 업데이트: RPO $638B & FY27 가이던스 재확인</div>
+      Q4 FY26(2026-06-10)에서 RPO가 $638B로 한 분기 만에 +$85B 추가됐고, 회사는 백로그의 12%가 향후 12개월, 34%가 13~36개월 내 매출 인식될 것이라 처음으로 구체적 타임라인을 제시했다 — "RPO의 매출 전환 속도" 불확실성을 일부 해소하는 단서. OCI(IaaS)는 +93%로 재가속, FY2027 매출 가이던스 $90B를 재확인했다. 다만 FY2026 Capex가 $55.7B로 종전 가이던스(~$50B)를 상회하며 발표 후 시간외 주가 약 -7% — 성장 가시성(RPO)과 자본부담(capex)의 줄다리기가 Q4에도 핵심 논쟁으로 재확인됐다. <em>(근거: Oracle Q4 FY26 8-K·보도자료. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
   </section>
 
   <!-- 8. 컨콜 정리 -->
   <section id="calls">
-    <h2 class="sec">8. 컨콜 정리 (최근 4개 분기)</h2>
+    <h2 class="sec">8. 컨콜 정리 (최근 5개 분기)</h2>
     <p style="font-size:12px;color:var(--muted);">출처: Oracle IR 분기 보도자료(8-K Ex-99.1) 및 The Motley Fool 어닝콜 트랜스크립트. 아래는 공시·보도자료 기반 핵심 요약(전문 번역은 /concall로 추가 가능).</p>
 
     <!-- NEW_CALL_INSERT -->
+
+    <!-- Q4 FY2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q4 FY26</span>
+        <span class="ctitle">2026-06-10 · 매출 $19.18B(+21%), RPO $638B, OCI +93%, FY26 마감</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$19,184M (+21% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$6,133M (OPM 32%)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$1.45</span></div>
+          <div><span class="k">비GAAP EPS</span><span class="v">$2.11</span></div>
+          <div><span class="k">RPO</span><span class="v">$638B (+363% YoY)</span></div>
+          <div><span class="k">OCI(IaaS)</span><span class="v">$5.8B (+93%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2026 사상 최대 마감: 연간 매출 $67.4B(+17%), GAAP EPS $5.83, 비GAAP EPS $7.63.</li>
+          <li>Q4 총 클라우드 $9.9B(+47%), OCI(IaaS) $5.8B(+93%), SaaS $4.1B(+10%). Cloud가 전체의 ~52%.</li>
+          <li>RPO $638B(QoQ +$85B). 백로그의 12%가 향후 12개월, 34%가 13~36개월 내 인식 예정.</li>
+          <li>FY2027 가이던스 매출 $90B, 비GAAP EPS ~$8.05(+18%). 분기 배당 $0.50.</li>
+          <li>FY2026 Capex $55.7B 집행 — 발표 후 capex 급증 우려로 시간외 주가 약 -7%.</li>
+        </ul>
+        <div class="src">출처: Oracle Q4 FY26 보도자료(2026-06-10, SEC 8-K) · <a href="https://www.sec.gov/Archives/edgar/data/0001341439/000119312526265848/orcl-ex99_1.htm" target="_blank">링크</a></div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/orcl-q4fy26.txt', 'Q4 FY2026 어닝콜 전문')">📄 전문 보기</button>
+      </div>
+    </div>
 
     <!-- Q3 FY2026 -->
     <div class="call-block">
@@ -450,18 +497,7 @@
           <li>FY2026 매출 ~$67B, capex ~$50B 가이던스. FY2027 매출 가이던스 $90B(+34%)로 상향.</li>
         </ul>
         <div class="src">출처: Oracle IR / PRNewswire Q3 FY26 보도자료 · <a href="https://www.prnewswire.com/news-releases/oracle-announces-fiscal-year-2026-third-quarter-financial-results-302709961.html" target="_blank">링크</a></div>
-        <div class="transcript">
-[핵심 요약 — 보도자료 기반]
-
-Safra Catz(당시 경영진)·Larry Ellison(회장/CTO) 메시지 요지:
-"Q3 매출이 22% 성장했습니다. 15년 만에 가장 빠른 유기적 성장입니다. RPO는 5천5백억 달러를 넘어섰고, OCI는 84% 성장했습니다. 우리가 보유한 백로그는 향후 수년의 성장을 예약한 것입니다.
-
-가장 중요한 점 — 대규모 AI 계약의 증가분 대부분은 고객이 선지급하거나 GPU를 직접 공급하는 구조입니다. 따라서 우리는 이 계약들을 위해 추가 자금을 조달할 필요가 거의 없습니다.
-
-FY2027 매출 가이던스를 900억 달러로 상향합니다."
-
-※ 전체 트랜스크립트는 The Motley Fool 등에서 제공. 본 요약은 공식 보도자료 범위 기준.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/orcl-q3fy26.txt', 'Q3 FY2026 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -488,15 +524,7 @@ FY2027 매출 가이던스를 900억 달러로 상향합니다."
           <li>멀티클라우드 DB 매출 +817% YoY(직전 분기 대비 지속 고성장).</li>
         </ul>
         <div class="src">출처: Oracle Q2 FY26 보도자료(2025-12-10) · Motley Fool 트랜스크립트 · <a href="https://www.oracle.com/news/announcement/q2fy26-earnings-release-2025-12-10/" target="_blank">링크</a></div>
-        <div class="transcript">
-[핵심 요약 — 보도자료 기반]
-
-"RPO가 5천2백억 달러를 돌파했습니다. 이번 분기에만 680억 달러가 추가됐습니다. Meta, NVIDIA를 포함한 신규 약정이 견인했습니다. OCI는 68% 성장했습니다.
-
-순이익에는 Ampere 지분 매각에 따른 일회성 차익이 포함되어 있으니, 영업 성과는 영업이익 기준으로 봐주시기 바랍니다."
-
-※ Ampere 매각 차익(~$2.7B)으로 GAAP 순이익이 부풀려진 분기. 전체 트랜스크립트는 Motley Fool 제공.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/orcl-q2fy26.txt', 'Q2 FY2026 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -523,16 +551,7 @@ FY2027 매출 가이던스를 900억 달러로 상향합니다."
           <li>매출 자체는 +12%로 RPO 폭증 대비 완만 → 백로그의 매출 전환 타이밍이 관건.</li>
         </ul>
         <div class="src">출처: Oracle Q1 FY26 보도자료(2025-09-09, SEC 8-K) · <a href="https://www.sec.gov/Archives/edgar/data/1341439/000119312525199175/orcl-ex99_1.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[핵심 요약 — 보도자료 기반]
-
-Safra Catz:
-"RPO가 4천5백5십억 달러로 359% 성장했습니다. 이번 분기에 3개 고객과 4건의 수십억 달러 규모 계약을 체결했습니다. 곧 5천억 달러를 돌파할 것으로 예상합니다.
-
-OCI 매출은 향후 5년간 180억 → 320억 → 730억 → 1,140억 → 1,440억 달러로 성장할 것으로 봅니다. 이 대부분은 이미 RPO에 반영되어 있습니다."
-
-※ 시장을 놀라게 한 RPO 점프 분기. 전체 트랜스크립트는 Motley Fool 제공.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/orcl-q1fy26.txt', 'Q1 FY2026 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -559,13 +578,7 @@ OCI 매출은 향후 5년간 180억 → 320억 → 730억 → 1,140억 → 1,440
           <li>OCI 수요가 가용 용량을 초과한다고 언급, capex 확대 예고.</li>
         </ul>
         <div class="src">출처: Oracle Q4 FY25 보도자료(2025-06-11, SEC 8-K) · <a href="https://www.sec.gov/Archives/edgar/data/1341439/000095017025084831/orcl-ex99_1.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[핵심 요약 — 보도자료 기반]
-
-"FY2025를 마감하며 RPO는 1천3백8십억 달러에 도달했습니다. 내년(FY2026)에는 RPO가 100% 이상 성장할 것으로 예상합니다. OCI 수요가 우리가 공급할 수 있는 용량을 초과하고 있어, capex를 공격적으로 확대할 것입니다."
-
-※ FY26 RPO 100%+ 전망은 실제로 Q1 FY26 +359%로 크게 초과. 전체 트랜스크립트는 Motley Fool 제공.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/orcl-q4fy25.txt', 'Q4 FY2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -575,11 +588,11 @@ OCI 매출은 향후 5년간 180억 → 320억 → 730억 → 1,140억 → 1,440
 
 <script>
 /* ── 차트 공통 ── */
-const q = ["Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26","Q2'26","Q3'26"];
-const rev = [13837,12453,12941,13280,14287,13307,14059,14130,15903,14926,16058,17190];
-const opi = [4140,3296,3622,3750,4686,3991,4220,4358,5109,4277,4731,5464];
-const opm = [29.9,26.5,28.0,28.2,32.8,30.0,30.0,30.8,32.1,28.7,29.5,31.8];
-const npm = [24.0,19.4,19.3,18.1,22.0,22.0,22.4,20.8,21.5,19.6,38.2,21.6];
+const q = ["Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26","Q2'26","Q3'26","Q4'26"];
+const rev = [13837,12453,12941,13280,14287,13307,14059,14130,15903,14926,16058,17190,19184];
+const opi = [4140,3296,3622,3750,4686,3991,4220,4358,5109,4277,4731,5464,6133];
+const opm = [29.9,26.5,28.0,28.2,32.8,30.0,30.0,30.8,32.1,28.7,29.5,31.8,32.0];
+const npm = [24.0,19.4,19.3,18.1,22.0,22.0,22.4,20.8,21.5,19.6,38.2,21.6,22.4];
 
 Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
 Chart.defaults.font.size = 12;
@@ -598,28 +611,28 @@ new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,dat
 ]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
 
 /* ③ Cloud 총매출 + OCI(IaaS) */
-const cloudTot = [4.4,4.6,4.8,5.1,null,5.6,5.9,6.2,6.7,7.2,8.0,8.9];
-const oci = [1.4,1.5,1.6,1.8,null,2.2,2.4,2.7,3.0,3.3,4.1,4.9];
+const cloudTot = [4.4,4.6,4.8,5.1,null,5.6,5.9,6.2,6.7,7.2,8.0,8.9,9.9];
+const oci = [1.4,1.5,1.6,1.8,null,2.2,2.4,2.7,3.0,3.3,4.1,4.9,5.8];
 new Chart(document.getElementById('chartCloud'),{type:'bar',data:{labels:q,datasets:[
   {label:'Cloud 총매출 (IaaS+SaaS, $B)',data:cloudTot,backgroundColor:'rgba(192,57,43,.65)'},
   {label:'OCI(IaaS, $B)',data:oci,backgroundColor:'rgba(124,58,237,.7)'}
 ]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>ctx.raw==null?'데이터 없음':`${ctx.dataset.label}: $${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
 
 /* ④ OCI(IaaS) YoY 성장률 */
-const iaasYoY = [76,66,52,49,null,45,52,49,52,55,68,84];
+const iaasYoY = [76,66,52,49,null,45,52,49,52,55,68,84,93];
 new Chart(document.getElementById('chartIaaS'),{type:'line',data:{labels:q,datasets:[
   {label:'OCI(IaaS) YoY %',data:iaasYoY,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.1)',fill:true,tension:.3,pointRadius:4,spanGaps:true}
 ]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
 
 /* ⑥ RPO */
-const rpoLabels = ["Q3'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26","Q2'26","Q3'26"];
-const rpo = [80,99,97,130,138,455,523,553];
+const rpoLabels = ["Q3'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26","Q2'26","Q3'26","Q4'26"];
+const rpo = [80,99,97,130,138,455,523,553,638];
 new Chart(document.getElementById('chartRPO'),{type:'bar',data:{labels:rpoLabels,datasets:[
   {label:'RPO ($B)',data:rpo,backgroundColor:rpo.map(v=>v>=400?'rgba(192,57,43,.85)':'rgba(192,57,43,.45)'),borderRadius:4}
 ]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
 
 /* ⑦ Capex */
-const capex = [null,1314,1080,1674,2798,2303,3970,5862,9080,8502,12033,18635];
+const capex = [null,1314,1080,1674,2798,2303,3970,5862,9080,8502,12033,18635,16493];
 new Chart(document.getElementById('chartCapex'),{type:'bar',data:{labels:q,datasets:[
   {label:'분기 Capex ($M)',data:capex,backgroundColor:'rgba(37,99,168,.7)',borderRadius:4}
 ]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw==null?'데이터 없음':`$${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
@@ -663,6 +676,37 @@ document.body.addEventListener('click',e=>{
   let el=e.target;
   while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
 });
+
+/* ── 전문 모달 ── */
+async function openTranscript(path, title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = '불러오는 중...';
+  document.getElementById('transcriptModal').classList.add('open');
+  try {
+    const r = await fetch(path);
+    const text = await r.text();
+    document.getElementById('modalBody').textContent = text;
+  } catch(e) {
+    document.getElementById('modalBody').textContent = '전문을 불러올 수 없습니다.';
+  }
+}
+function closeModal() {
+  document.getElementById('transcriptModal').classList.remove('open');
+}
+document.getElementById('transcriptModal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
 </script>
+
+<div class="modal-overlay" id="transcriptModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">컨퍼런스 콜 전문</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 </body>
 </html>
