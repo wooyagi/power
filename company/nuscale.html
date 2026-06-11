@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NuScale Power (SMR) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#4f46e5; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#eef2ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#3730a3;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>NuScale Power Corporation</h1>
+      <p>NYSE: SMR · 경수로 소형모듈원자로(SMR) · Portland, OR</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#4f46e5;">SMR (경수로)</span>
+      <span class="badge" style="background:#15803d;">NRC 승인 유일</span>
+      <span class="badge" style="background:#c0392b;">선수익·무수주</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#pipeline">수주·파이프라인</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·리스크</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="warn"><div class="h">⚠ 선수익(pre-revenue)·고위험 / 핵심 주의</div>NuScale은 <strong>NRC 설계승인을 받은 유일한 SMR</strong>이라는 규제 해자를 가지나, ① <strong>확정 원자로 수주 0건</strong>(2026 Q1 기준, PPA를 2026년 말로 연기), ② 매출이 프로젝트성으로 극심히 변동(Q1'26 $0.565M), ③ FY2025 순손실 $664.5M(ENTRA1 마일스톤 $507.4M 충당 포함), ④ <strong>ENTRA1(상업화 파트너) 관련당사자 논란</strong>(2025-11 Iceberg Research 공매도 리포트), ⑤ <strong>Fluor가 2026-04-23 지분 완전 매각</strong>. 투자 판단 시 이 리스크들을 반드시 고려.</div>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">기술</span><span class="v">경수로 SMR (NPM 77MWe)</span></div>
+        <div class="kv-item"><span class="k">본사 / CEO</span><span class="v">Portland, OR / John Hopkins</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">2022-05 SPAC (Spring Valley)</span></div>
+        <div class="kv-item"><span class="k">FY2025 매출</span><span class="v">$31.5M</span></div>
+        <div class="kv-item"><span class="k">FY2025 순손실</span><span class="v dn">-$664.5M</span></div>
+        <div class="kv-item"><span class="k">유동성 (Q1'26)</span><span class="v">~$1.0B (무부채)</span></div>
+        <div class="kv-item"><span class="k">확정 수주</span><span class="v dn">0건</span></div>
+        <div class="kv-item"><span class="k">NRC 77MWe 승인</span><span class="v up">2025-05-29</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>NuScale은 경수로(light-water) 기반 소형모듈원자로(SMR) "NuScale Power Module(NPM)"을 개발한다. 원설계 50MWe가 2023년 NRC 설계인증을 받았고, <strong>업레이트 77MWe 설계(US460)가 2025-05-29 NRC 표준설계승인(SDA)</strong>을 받아 미국 유일의 NRC 인증 SMR 지위를 굳혔다. NPM은 VOYGR 플랜트(VOYGR-4 ~308MWe, VOYGR-6 ~462MWe, VOYGR-12 ~924MWe)로 묶인다.</p>
+    <p>상업화는 <strong>ENTRA1 Energy</strong>가 담당한다 — NuScale은 모듈을 ENTRA1에 판매(기술 공급자)하고, ENTRA1이 발전소를 개발·금융·소유·운영(50/50 JV "ENTRA1 NuScale LLC", 2024-06 설립)한다. 제조는 한국 Doosan Enerbility가 주 파트너(연 20개 모듈 가능, 12개 진행). 본 데스크 관점에서 NuScale은 "NRC 승인 선행"이라는 진짜 해자를 가졌으나, 그것이 아직 <strong>구속 매출로 전환되지 않은</strong> 초기 단계다.</p>
+
+    <h3 class="sub">경쟁 해자 & 구조 (근거 포함)</h3>
+    <div class="card">
+      <strong>① 규제 해자 (근거 있음)</strong>
+      <p>미국 유일의 NRC 설계승인 SMR(50MWe 2023, 77MWe US460 2025-05). 경수로라 NRC 친숙도가 높아 규제 불확실성이 상대적으로 낮음 — Oklo(Aurora 고속로, NRC 미인가)와 대비되는 1차 차별점. (근거: NRC 25-033, Federal Register)</p>
+    </div>
+    <div class="card">
+      <strong>② ENTRA1 상업화 구조 (양날의 칼)</strong>
+      <p>ENTRA1이 글로벌 독점 상업화 권리 보유, NuScale은 모듈만 공급. 자본집약적 발전소 개발 부담을 ENTRA1에 이전하는 구조이나, <strong>ENTRA1이 관련당사자</strong>(사무실 공유)이고 NuScale이 ENTRA1에 대규모 마일스톤을 지급(2025 $507.4M G&A 충당)하는 점이 논란 — 2025-11 Iceberg Research 공매도 리포트의 핵심.</p>
+    </div>
+    <div class="card">
+      <strong>③ 제조 (Doosan + Framatome)</strong>
+      <p>Doosan Enerbility 주 제조(12개 모듈 진행, 연 20개 가능), 2026 Q1 Framatome 연료·공급망 확대. 장납기 품목 선제 조달로 "납기 우위" 주장. <em>단, 발주가 없으면 제조는 매출이 아님.</em></p>
+    </div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·손익·유동성 추이</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: NuScale 분기 8-K·10-Q(EDGAR CIK 0001822966), 보도자료, macrotrends/stockanalysis 교차확인. 매출은 RoPower 라이선스·엔지니어링 중심으로 극심히 변동.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 ($M) — 프로젝트성 변동</p>
+      <canvas id="chartRev" height="100"></canvas>
+      <p class="chart-note">Q4'24 $34.2M(RoPower 라이선스)·Q1'26 $0.565M(라이선스 종료)처럼 극심히 변동. 반복 매출 부재. 출처: 각 분기 8-K.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 유동성 추이 ($M) — ATM 발행으로 확충</p>
+      <canvas id="chartLiq" height="90"></canvas>
+      <p class="chart-note">$490M(Q2'25) → $1.3B(Q4'25, $750M ATM) → ~$1.0B(Q1'26, ENTRA1 $259.9M 지급으로 감소). 무부채. 출처: 각 분기 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: $M, EPS $)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>매출</th><th>순손실(총)</th><th>EPS(Class A)</th><th>유동성</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2024</td><td class="num">1.4</td><td class="num dn">-48.1</td><td class="num">데이터 없음</td><td class="num">–</td></tr>
+        <tr><td>Q2 2024</td><td class="num">1.0</td><td class="num dn">-74.4</td><td class="num">-0.31</td><td class="num">–</td></tr>
+        <tr><td>Q3 2024</td><td class="num">0.48</td><td class="num dn">-45.6</td><td class="num">데이터 없음</td><td class="num">–</td></tr>
+        <tr><td>Q4 2024</td><td class="num">34.2</td><td class="num dn">-180.3</td><td class="num">데이터 없음</td><td class="num">442</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">37.0</td><td class="num dn">-348.4</td><td class="num">–</td><td class="num">442</td></tr>
+        <tr><td>Q1 2025</td><td class="num">13.4</td><td class="num dn">데이터 없음</td><td class="num">-0.11</td><td class="num">521</td></tr>
+        <tr><td>Q2 2025</td><td class="num">8.1</td><td class="num dn">-37.6</td><td class="num">-0.13</td><td class="num">490</td></tr>
+        <tr><td>Q3 2025</td><td class="num">18.2</td><td class="num dn">-532.6*</td><td class="num">데이터 없음</td><td class="num">692</td></tr>
+        <tr><td>Q4 2025</td><td class="num">~1.2</td><td class="num dn">데이터 없음</td><td class="num">데이터 없음</td><td class="num">~1,300</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">31.5</td><td class="num dn">-664.5*</td><td class="num">-2.17</td><td class="num">~1,300</td></tr>
+        <tr style="background:#eef2ff;font-weight:700;"><td>Q1 2026</td><td class="num">0.565</td><td class="num dn">-46.7</td><td class="num">-0.14</td><td class="num">~1,000</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 일회성·현금소진</div>* FY2025 순손실 -$664.5M의 핵심은 ENTRA1 "Milestone Contribution 1" $507.4M 비현금 충당(Q3'25에 ~$495M). Q1'26 영업현금유출 -$314.7M(ENTRA1 마일스톤 $259.9M 현금 지급 포함) — NuScale가 상업화 파트너에게 지급하는 구조. 회사는 가이던스 미제시. 출처: NuScale 8-K·10-Q.</div>
+  </section>
+
+  <!-- 3. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">3. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06-10)</span><span class="v">~$9.23</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$3.39B</span></div>
+        <div class="kv-item"><span class="k">발행주식수</span><span class="v">~323.7M (Class A)</span></div>
+        <div class="kv-item"><span class="k">P/E</span><span class="v">N/A (적자)</span></div>
+        <div class="kv-item"><span class="k">현금/부채</span><span class="v">~$1.0B / 무부채</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">없음</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">③ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 2025년 피크 $57+ → Iceberg 공매도 리포트·ENTRA1 우려로 ~70%+ 하락 → ~$9. 정확한 주가는 증권사 확인.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>선수익·적자로 P/E 무의미. 시장은 NRC 승인 해자·SMR 테마·메가 프레임워크(TVA 6GW)로 평가하나, 확정 수주가 없어 옵션성 가치에 가깝다. ATM 대규모 발행($462.6M Q3 + $750M Q4 2025)로 희석 진행, Fluor 완전 매각(2026-04)으로 ~$2.43B 매도 물량(현재 해소). 주가 변동성이 매우 큼.</div>
+  </section>
+
+  <!-- 4. 수주·파이프라인 -->
+  <section id="pipeline">
+    <h2 class="sec">4. 수주 &amp; 파이프라인 (구속 vs 프레임워크)</h2>
+    <div class="warn"><div class="h">⚠ 확정 원자로 수주 0건</div>2026 Q1 기준 <strong>구속력 있는 상업 NPM 발주는 0건</strong>이다. 경영진의 "2025년 내 확정 수주" 목표는 미달, 현재 "2026년 말 PPA 해결"로 안내. 아래는 모두 프레임워크·라이선스 단계.</div>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>항목</th><th>규모</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td>TVA / ENTRA1 6GW 프로그램</td><td class="num">72개 모듈, 6GW</td><td>비구속 협력(2025-09), "미국 최대 SMR 프로그램"</td></tr>
+        <tr><td>ENTRA1 PMA(마일스톤 합의)</td><td class="num">72개 모듈 프레임</td><td>2025-08 서명. NuScale이 ENTRA1에 마일스톤 지급. 근저 구매는 비구속(MOU 수준)</td></tr>
+        <tr><td>ENTRA1 미·일 $25B 프레임워크</td><td class="num">최대 $25B</td><td>프레임워크/포지셔닝(2025-10), 확정 발주 아님</td></tr>
+        <tr><td>RoPower(루마니아 Doicești)</td><td class="num">VOYGR-6 (462MWe)</td><td>FEED-2 완료, FID ~2026 예상(미실행)</td></tr>
+        <tr><td>Standard Power(데이터센터)</td><td class="num">24개 모듈</td><td>비구속, 2023년 이후 공시에서 사실상 사라짐(stale)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- 5. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">5. 주요 계약·규제</h2>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">규제(완료)</span>NRC US460 (77MWe) 표준설계승인 — 2025-05-29</div>
+      <p style="font-size:13px;margin:6px 0;">미국 유일 NRC 인증 SMR. 50MWe(2023)에 이어 업레이트 77MWe US460 승인. 규제 선행의 핵심 마일스톤(구속적).</p>
+      <div class="deal-meta">출처: NRC 25-033 · Federal Register 2025-06-04</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>ENTRA1 PMA + TVA 6GW + 미·일 $25B</div>
+      <p style="font-size:13px;margin:6px 0;">ENTRA1 Partnership Milestones Agreement(2025-08, 구속적 합의이나 근저 원자로 구매는 비구속). TVA 6GW 72모듈 협력(2025-09, 비구속). 미·일 $25B 프레임워크(2025-10).</p>
+      <div class="deal-meta">출처: NuScale 8-K · 2025-08~10</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">라이선스(진행)</span>RoPower 루마니아 — VOYGR-6</div>
+      <p style="font-size:13px;margin:6px 0;">기술 라이선스(2024 서명, FY2024/Q1'25 매출 견인) + FEED Phase 2(Fluor 주도). FID ~2026 예상(미실행). Pre-EPC 활동 2026 2분기.</p>
+      <div class="deal-meta">출처: NuScale 8-K · RoPower</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">공급/제조</span>Doosan Enerbility · Framatome</div>
+      <p style="font-size:13px;margin:6px 0;">Doosan 주 제조(12개 모듈 진행, 연 20개 가능). 2026 Q1 Framatome 연료·공급망 확대(워싱턴 Richland, 독일 Lingen). 공급 계약이며 매출 발주 아님.</p>
+      <div class="deal-meta">출처: NuScale 보도자료 · 2025~2026</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">지분 변동</span>Fluor 완전 매각 (2026-04-23)</div>
+      <p style="font-size:13px;margin:6px 0;">2024년 디컨솔리데이션 후 2025-09부터 매도, <strong>2026-04-23 완전 매각</strong>(누적 ~$2.43B 매도). 전략적 대주주 상실 — 신호 해석 분분(차익 실현 vs 확신 약화).</p>
+      <div class="deal-meta">출처: Fluor 8-K · 2026-04</div>
+    </div>
+  </section>
+
+  <!-- 6. 핵심·리스크 -->
+  <section id="alpha">
+    <h2 class="sec">6. 핵심 시그널 &amp; 리스크</h2>
+
+    <h3 class="sub">긍정·과소평가 신호 (근거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 신호 1 — NRC 승인 선행 = 진짜 규제 해자</div>
+      미국 유일 NRC 인증 SMR(77MWe US460, 2025-05). 경수로라 규제 친숙도 높음 → Oklo 등 미인가 경쟁사 대비 실질적 선행. SMR 상용화 경쟁에서 규제는 가장 큰 장벽. <em>(근거: NRC 25-033. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 2 — 데이터센터 수요·메가 프레임워크</div>
+      "3~4년 전 4모듈 → 오늘 12모듈+" 요청(하이퍼스케일러). TVA 6GW(72모듈)·미·일 $25B 프레임워크. 자본집약 부담을 ENTRA1에 이전하는 구조. 단 모두 비구속. <em>(근거: 콜. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 3 — 무부채 + ~$1B 유동성</div>
+      ATM로 $1.3B까지 확충(이후 ~$1.0B), 무부채로 다년 런웨이. 연말 영업현금흐름 흑자 목표(단 확정 수주 전제). <em>(근거: 8-K)</em>
+    </div>
+
+    <div class="warn"><div class="h">⚠ 리스크 1 — 선수익·확정 수주 0건</div>Q1'26 매출 $0.565M(라이선스 종료로 급감). 구속 원자로 발주 부재, "2025 내 수주" 목표 미달 후 2026말로 연기. 첫 플랜트는 ~2030 이전 불가.</div>
+    <div class="warn"><div class="h">⚠ 리스크 2 — ENTRA1 관련당사자 / 거버넌스</div>2025-11 Iceberg Research 공매도 리포트: ENTRA1이 NuScale 사무실 공유·원자력 경험 부재·구속 구매 의무 부재, ~$495M가 비구속 MOU에 따라 ENTRA1로 유입. NuScale은 "근거 없다" 반박. 주가 피크 $57+ → ~$9.</div>
+    <div class="warn"><div class="h">⚠ 리스크 3 — 거액 손실·현금소진·희석</div>FY2025 순손실 $664.5M, Q1'26 영업현금유출 -$314.7M(ENTRA1 지급). 대규모 ATM 발행 희석(~323.7M주). Fluor 완전 매각.</div>
+  </section>
+
+  <!-- 7. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">7. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: NuScale 분기 8-K·어닝콜. 각 블록 "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05-07 · 매출 $0.565M, ENTRA1 $259.9M 지급, PPA 연내 목표</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$0.565M (-96%)</span></div>
+          <div><span class="k">순손실</span><span class="v">-$46.7M (EPS -$0.14)</span></div>
+          <div><span class="k">영업현금유출</span><span class="v">-$314.7M</span></div>
+          <div><span class="k">유동성</span><span class="v">~$1.0B (무부채)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>RoPower 라이선스 매출 비반복으로 매출 급감. ENTRA1 마일스톤 $259.9M 현금 지급.</li>
+          <li>TVA/ENTRA1 PPA "연내 확정" 희망. Framatome 연료 공급(병목 없음).</li>
+          <li>한국($350B)·일본($550B) 정부 프레임워크 프로젝트 금융 논의. 연말 영업현금흐름 흑자 목표.</li>
+        </ul>
+        <div class="src">출처: NuScale Q1 2026 8-K·어닝콜 · 2026-05-07 · <a href="https://www.nuscalepower.com/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/smr-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-02-26 · FY 매출 $31.5M, ENTRA1 마일스톤 충당, 유동성 $1.3B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">FY 매출</span><span class="v">$31.5M</span></div>
+          <div><span class="k">FY 순손실</span><span class="v dn">-$664.5M</span></div>
+          <div><span class="k">FY EPS</span><span class="v dn">-$2.17</span></div>
+          <div><span class="k">유동성</span><span class="v">~$1.3B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>77MWe 표준설계 NRC 승인(일정 선행). TVA/ENTRA1 6GW(72모듈), 수십억$ 텀시트(NDA).</li>
+          <li>RoPower FEED-2 완료($63.1M 18개월). Doosan 12개 모듈, 연 20개 확대.</li>
+          <li>$507.4M ENTRA1 마일스톤 충당이 손실 핵심. Q4 $750M ATM 발행. 여전히 확정 수주 없음.</li>
+        </ul>
+        <div class="src">출처: NuScale Q4/FY2025 8-K · 2026-02-26 · <a href="https://www.nuscalepower.com/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/smr-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-11-06 · TVA 6GW 발표, ENTRA1 마일스톤 $148.5M, 매출 $18.2M</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$18.2M (RoPower FEED-2)</span></div>
+          <div><span class="k">순손실</span><span class="v dn">-$532.6M (ENTRA1 충당)</span></div>
+          <div><span class="k">유동성</span><span class="v">$753.8M</span></div>
+          <div><span class="k">ATM 조달</span><span class="v">$475.2M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>TVA·ENTRA1 최대 6GW(72모듈) 합의 — "미국 최대 SMR 프로그램". 첫 마일스톤 트리거(2025-09-02).</li>
+          <li>ENTRA1 미·일 프레임워크 유일 지명 개발사(최대 $25B). 77MWe uprate NRC 승인, COLA 전환.</li>
+          <li>※ 2025-11-14 Iceberg Research 공매도 리포트로 주가 급락.</li>
+        </ul>
+        <div class="src">출처: NuScale Q3 2025 8-K · 2025-11-06 · <a href="https://www.nuscalepower.com/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/smr-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-08-07 · 77MWe 승인 조기 달성, 매출 $8.1M, 무부채 $490M</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$8.1M (vs $1M)</span></div>
+          <div><span class="k">순손실</span><span class="v dn">-$37.6M (EPS -$0.13)</span></div>
+          <div><span class="k">유동성</span><span class="v">$489.9M (무부채)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>77MWe 설계 승인을 7월 예정보다 2개월 조기 달성.</li>
+          <li>ENTRA1 구조 — NuScale은 모듈 판매, ENTRA1이 개발·금융·운영. RoPower FID "2026 중후반~2027 초".</li>
+          <li>"3~4년 전 4모듈 → 오늘 12모듈+" 수요. "2025 내 미국 hard contract" 목표(이후 지연).</li>
+        </ul>
+        <div class="src">출처: NuScale Q2 2025 8-K · 2025-08-07 · <a href="https://www.nuscalepower.com/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/smr-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+new Chart(document.getElementById('chartRev'),{type:'bar',data:{labels:["Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],datasets:[{label:'매출 ($M)',data:[1.4,1.0,0.48,34.2,13.4,8.1,18.2,1.2,0.565],backgroundColor:'rgba(79,70,229,.7)'}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartLiq'),{type:'line',data:{labels:["Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],datasets:[{label:'유동성 ($M)',data:[442,521,490,692,1300,1000],borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,.1)',fill:true,tension:.3,pointRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jul'25","Sep'25","Oct'25","Nov'25","Dec'25","Feb'26","Apr'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[40,52,57,30,22,17,11,9.2],borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
