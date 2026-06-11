@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oklo (OKLO) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#6d28d9; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#f5f3ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#4c1d95;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .transcript{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:8px;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto;white-space:pre-wrap;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;} .tag.prepay{background:#6d28d9;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>Oklo Inc.</h1>
+      <p>NYSE: OKLO · 차세대 소형 원자로(SMR/마이크로) · Santa Clara, CA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#6d28d9;">SMR</span>
+      <span class="badge" style="background:#c0392b;">프리레비뉴</span>
+      <span class="badge" style="background:#7c3aed;">AI 데이터센터</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#pipeline">고객 파이프라인</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#deals">마일스톤·딜</a>
+    <a href="#alpha">핵심·리스크</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="warn"><div class="h">⚠ 프리레비뉴(Pre-revenue) 개발기업</div>Oklo는 매출이 사실상 없으며 분기마다 적자가 확대되고 있다. 투자 논지는 현재 재무가 아니라 <strong>고객 파이프라인</strong>에 있으며, 그 파이프라인의 대부분은 <strong>비구속(Non-binding) LOI·기본합의(framework)</strong>이다. 본 리포트는 구속/비구속을 명시적으로 구분한다.</div>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">상장</span><span class="v">2024-05 AltC SPAC 합병</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Santa Clara, CA</span></div>
+        <div class="kv-item"><span class="k">CEO</span><span class="v">Jacob DeWitte (공동창업)</span></div>
+        <div class="kv-item"><span class="k">전 이사회 의장</span><span class="v">Sam Altman (2025-04 사임)</span></div>
+        <div class="kv-item"><span class="k">현금+증권 (Q1'26)</span><span class="v up">~$2.54B</span></div>
+        <div class="kv-item"><span class="k">파이프라인</span><span class="v">~14GW (대부분 비구속)</span></div>
+        <div class="kv-item"><span class="k">첫 발전 목표</span><span class="v">2027말~2028초 (INL)</span></div>
+        <div class="kv-item"><span class="k">매출</span><span class="v">~$0 (프리레비뉴)</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Oklo는 <strong>Aurora powerhouse</strong>라는 소형 고속로(나트륨 냉각, EBR-II 계승)를 개발하는 차세대 원자력 기업이다. 금속 HALEU 연료(재활용·잉여 물질 포함)를 사용하며, 단위당 약 15~75MWe 규모(첫 INL 호기 75MWe)이다. 원자로를 판매하는 대신 <strong>건설·소유·운영(Build-Own-Operate)</strong>하여 장기 PPA로 전력을 판매하는 사업모델을 택한다.</p>
+    <p>첫 상업 호기 Aurora-INL은 아이다호 국립연구소(INL)에 건설되며 2025년 9월 착공, 첫 발전은 2027년 말~2028년 초를 목표로 한다(인허가·건설 진척에 좌우). NRC 통합건설허가(COLA)가 검토 접수되었고(차세대 핵분열 최초), DOE Reactor Pilot Program 경로를 병행한다. Sam Altman이 의장이었으나 2025년 4월 OpenAI–Oklo 전력 협의 이해상충 회피를 위해 사임했다.</p>
+
+    <h3 class="sub">핵심 기술·모델 요소</h3>
+    <div class="card">
+      <strong>① Aurora 고속로 (sodium-cooled fast reactor)</strong>
+      <p>금속 연료 + 나트륨 냉각, EBR-II 실증 계승. 폐연료 재활용 옵션. 15~75MWe로 마이크로~소형 영역.</p>
+    </div>
+    <div class="card">
+      <strong>② Build-Own-Operate + PPA</strong>
+      <p>장비 매출이 아닌 전력 판매(PPA) 모델. 고객은 capex 부담 없이 전력 구매. 데이터센터·국방·산업 부하 타깃.</p>
+    </div>
+    <div class="card">
+      <strong>③ 연료·동위원소 수직화</strong>
+      <p>민간 연료 재활용 추진 + Atomic Alchemy(방사성 동위원소, 2025-02 인수)로 옵션 수익원 확보.</p>
+    </div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 재무 추이 (프리레비뉴)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Oklo 10-Q/10-K (SEC EDGAR), stockanalysis.com 교차확인. 매출 ≈ $0. 상장 후 Q2 2024 ~ Q1 2026.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 영업비용 · 순손실 (백만 USD)</p>
+      <canvas id="chartLoss" height="100"></canvas>
+      <p class="chart-note">R&amp;D + G&amp;A 증가로 적자 확대. FY2025 영업손실 $139.3M. Q1'26 순손실 -$33.1M(이자·배당수익 $21.3M이 일부 상쇄). 출처: 10-Q.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 현금 + 시장성 증권 추이 (백만 USD)</p>
+      <canvas id="chartCash" height="100"></canvas>
+      <p class="chart-note">Q1'26 ~$2.54B로 급증 — 2025 ATM 주식발행(~12.4M주, 순 ~$1.18B)이 동력. 즉 현금은 영업이 아니라 희석(dilution)으로 조달. 출처: 10-Q.</p>
+    </div>
+
+    <h3 class="sub">분기 재무 (단위: 백만 USD)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>영업비용</th><th>순손실</th><th>EPS</th><th>현금+증권</th></tr></thead>
+      <tbody>
+        <tr><td>Q2 2024</td><td class="num">17.77</td><td class="num dn">-27.29</td><td class="num">-$0.27</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q3 2024</td><td class="num">12.28</td><td class="num dn">-9.96</td><td class="num">-$0.08</td><td class="num">데이터 없음</td></tr>
+        <tr><td>Q4 2024</td><td class="num">15.38</td><td class="num dn">-10.29</td><td class="num">-$0.11</td><td class="num">~227.8</td></tr>
+        <tr><td>Q1 2025</td><td class="num">17.87</td><td class="num dn">-9.81</td><td class="num">-$0.07</td><td class="num">~201.0</td></tr>
+        <tr><td>Q2 2025</td><td class="num">28.02</td><td class="num dn">-24.69</td><td class="num">-$0.18</td><td class="num">~534.4</td></tr>
+        <tr><td>Q3 2025</td><td class="num">36.31</td><td class="num dn">-29.72</td><td class="num">-$0.20</td><td class="num">~921.6</td></tr>
+        <tr><td>Q4 2025</td><td class="num">57.10</td><td class="num dn">-41.45</td><td class="num">-$0.27</td><td class="num">~1,228</td></tr>
+        <tr style="background:#f5f3ff;font-weight:700;"><td>Q1 2026</td><td class="num">51.25</td><td class="num dn">-33.07</td><td class="num">-$0.19</td><td class="num up">~2,537</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 현금 흐름·가이던스</div>FY2025 영업손실 $139.3M. 2026 가이던스: 영업현금 사용 $80~100M, PP&amp;E 자본지출 $350~450M(Aurora-INL 착공 반영). 현금 ~$2.54B로 연간 opex 대비 다년 런웨이 확보했으나, capex 램프와 향후 발전소 건설로 <strong>지속적 추가 주식발행(희석)이 거의 확실</strong>. 출처: Q1 2026 콜.</div>
+  </section>
+
+  <!-- 3. 고객 파이프라인 -->
+  <section id="pipeline">
+    <h2 class="sec">3. 고객 파이프라인 (구속/비구속 구분)</h2>
+    <p style="font-size:12px;color:var(--muted);">경영진 헤드라인 ~14GW(Switch 12GW + Meta 1.2GW 앵커), 광의로는 ~18,100MWe까지 인용. <strong>대부분 비구속</strong>. 출처: 각 보도자료·공시.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 주요 파이프라인 (MW, 색상=구속력)</p>
+      <canvas id="chartPipe" height="110"></canvas>
+      <p class="chart-note">보라=선불약정(Meta/Equinix, 현금 커밋), 주황=비구속 LOI/기본합의(Switch/Diamondback). Switch 12GW가 파이프라인 대부분이나 명시적 비구속. 출처: 각 공시.</p>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>고객</th><th>규모</th><th>구속력</th><th>출처·시점</th></tr></thead>
+      <tbody>
+        <tr><td>Switch</td><td class="num">12 GW</td><td class="dn">비구속 기본합의(MPA)</td><td>Utility Dive · 2024-12-18</td></tr>
+        <tr><td>Meta Platforms (Ohio)</td><td class="num">1.2 GW</td><td class="up">선불약정(Prepayment)</td><td>Oklo PR · 2026-01</td></tr>
+        <tr><td>Equinix</td><td class="num">최대 500 MWe</td><td class="up">LOI + $25M 선불</td><td>DCD/S-4 · 2024-04</td></tr>
+        <tr><td>US Air Force (Eielson AFB)</td><td class="num">단일 호기</td><td>낙찰의향 통지(NOITA)</td><td>Oklo PR · 2025</td></tr>
+        <tr><td>Diamondback Energy</td><td class="num">~50 MWe</td><td class="dn">합의/LOI</td><td>World Nuclear News</td></tr>
+        <tr><td>Prometheus Hyperscale</td><td class="num">데이터센터</td><td class="dn">합의/LOI(비구속)</td><td>press</td></tr>
+        <tr><td>Liberty Energy</td><td class="num">전략 파트너십</td><td class="dn">파트너십(비구속)</td><td>2025-08</td></tr>
+        <tr><td>기타 데이터센터 LOI</td><td class="num">~+4,750 MWe</td><td class="dn">비구속</td><td>PowerMag</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 핵심 정밀 포인트</div>헤드라인 파이프라인 중 <strong>현금 커밋이 있는 건 Meta(선불약정)와 Equinix($25M 선불)뿐</strong>이다. 파이프라인의 대부분을 차지하는 Switch 12GW는 명시적 <strong>비구속 기본합의</strong>이며, 아직 가동 중인 원자로가 없어 <strong>확정 PPA 매출은 전혀 인식되지 않는다</strong>. 정직한 논지의 핵심은 "LOI의 구속 PPA 전환"이며, 이것이 입증되지 않은 중심 촉매다. <em>(근거: 각 공시. 단정 금지)</em></div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06-10)</span><span class="v">~$55.24</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$9.6B (Class A ~174M)</span></div>
+        <div class="kv-item"><span class="k">현금+증권</span><span class="v">~$2.54B</span></div>
+        <div class="kv-item"><span class="k">총부채</span><span class="v">$64.9M</span></div>
+        <div class="kv-item"><span class="k">P/E</span><span class="v">N/A (적자·프리레비뉴)</span></div>
+        <div class="kv-item"><span class="k">매출</span><span class="v">~$0</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 딜·실적 뉴스에 변동성 큼.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>매출 $0·분기 -$33M 적자에 ~$9.6B+ 시총 — 전체 가치가 옵션/파이프라인 가치다. ~14GW 파이프라인을 자본화한 가격으로, LOI 전환 리스크에 매우 민감. <strong>이중 클래스 구조</strong>(Class A 공모 + Class B 창업자 슈퍼보팅)로 ~$9.6B는 Class A 기준 — 완전희석 시총은 더 높음. 펀딩 모델이 반복 주식발행(2025 ATM ~$1.18B)이라 지속 희석 위험 구조적. P/E는 적자로 무의미.</div>
+  </section>
+
+  <!-- 5. 마일스톤·딜 -->
+  <section id="deals">
+    <h2 class="sec">5. 마일스톤 &amp; 딜 (구속/비구속 태깅)</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(완료)</span>Atomic Alchemy 인수 — 방사성 동위원소</div>
+      <p style="font-size:13px;margin:6px 0;">2025-02-28 완료(~$25M 전액 주식). VIPR 기술 기반 방사성 동위원소 생산 — 옵션 수익원.</p>
+      <div class="deal-meta">출처: Oklo PR/BusinessWire · 2025-02-28</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag prepay">선불약정</span>Meta 1.2GW (Ohio Pike County)</div>
+      <p style="font-size:13px;margin:6px 0;">2026-01 발표. 1단계 ~2030, 풀 1.2GW 2034까지. Meta가 전력을 선불하고 초기 개발을 지원하는 상업적 선불약정 — 순수 LOI보다 강한 커밋(단, 고정물량 확정 PPA는 아님).</p>
+      <div class="deal-meta">출처: Oklo PR/BusinessWire · 2026-01</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">비구속</span>Switch 12GW Master Power Agreement</div>
+      <p style="font-size:13px;margin:6px 0;">2024-12-18. 2044년까지 12GW 기본합의. <strong>비구속 framework</strong> — "마일스톤 도달 시 개별 구속 계약 체결" 명시. 파이프라인 앵커이나 확정 계약 아님.</p>
+      <div class="deal-meta">출처: Utility Dive/8-K · 2024-12-18</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">LOI+선불</span>Equinix 500MWe + $25M 선불</div>
+      <p style="font-size:13px;margin:6px 0;">2024-04-02. 최대 500MWe 사전합의 + $25M 선불(주식 또는 할인 전력 옵션), 36개월 우선매수권.</p>
+      <div class="deal-meta">출처: DCD/S-4 · 2024-04-02</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">정부</span>NRC COLA 접수 · DOE Reactor Pilot · INL 착공</div>
+      <p style="font-size:13px;margin:6px 0;">NRC가 Aurora-INL 통합건설허가(COLA) 검토 접수(차세대 핵분열 최초). DOE Reactor Pilot Program 선정(임계 목표 2026-07-04). 2025-09 INL 착공. 2025-11 DOE 연료제조시설 NSDA 승인.</p>
+      <div class="deal-meta">출처: GAIN/INL · DOE.gov · ANS · 2025</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">비구속</span>US Air Force Eielson AFB · Diamondback · Prometheus 등</div>
+      <p style="font-size:13px;margin:6px 0;">Eielson AFB(알래스카) 낙찰의향 통지(최종 계약 아님), Diamondback ~50MWe, Prometheus Hyperscale, Liberty Energy 전략 파트너십 등 — 모두 비구속/탐색 단계.</p>
+      <div class="deal-meta">출처: Oklo PR/ANS · World Nuclear News · 2025</div>
+    </div>
+  </section>
+
+  <!-- 6. 핵심·리스크 -->
+  <section id="alpha">
+    <h2 class="sec">6. 핵심 시그널 &amp; 리스크</h2>
+
+    <h3 class="sub">긍정·과소평가 신호 (근거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 신호 1 — 규제 모멘텀의 차별화</div>
+      NRC가 차세대 핵분열 최초로 COLA를 검토 접수, DOE Reactor Pilot Program 경로(테스트로 임계 목표 2026-07-04), 2025년 다수 DOE 설계 승인. 경쟁사가 복제하기 가장 어려운 해자. <em>(근거: GAIN/INL, DOE. 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 2 — "종이"에서 "건설"로 이동</div>
+      2025-09 INL 착공으로 SMR 피어(대부분 사전 부지 단계) 대비 실제 건설 단계 진입. 실행 가시성 측면의 차별점. <em>(근거: ANS 2025-09-29)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 3 — 예외적 자금 런웨이</div>
+      ~$2.54B 현금 vs 연 $80~100M opex burn — capex 전 다년 런웨이. 단기 자금 절벽 리스크 제거. Meta·Equinix 선불은 실제 고객 현금 커밋(LOI보다 강한 신호). <em>(근거: Q1'26 콜)</em>
+    </div>
+
+    <h3 class="sub">핵심 리스크 (근거 기반)</h3>
+    <div class="warn">
+      <div class="h">⚠ 리스크 1 — 프리레비뉴·적자 확대</div>
+      Q1 2026 순손실 -$33.1M(전년 -$9.8M). 매출 $0. ~$9.6B+ 시총은 전적으로 미래 옵션 가치.
+    </div>
+    <div class="warn">
+      <div class="h">⚠ 리스크 2 — 파이프라인 대부분 비구속</div>
+      12GW Switch 앵커는 명시적 framework. LOI의 구속 PPA 전환이 중심 미입증 촉매. 일정 지연 시 LOI 증발 가능.
+    </div>
+    <div class="warn">
+      <div class="h">⚠ 리스크 3 — 인허가·실행 타임라인</div>
+      첫 발전이 빨라야 2027말~2028초, NRC·건설에 좌우. 지연 시 고객 계약으로 연쇄 파급.
+    </div>
+    <div class="warn">
+      <div class="h">⚠ 리스크 4 — 희석</div>
+      반복 주식발행(2025 ATM ~$1.18B)이 펀딩 모델. $350~450M capex 램프 + 향후 건설로 지속 희석 거의 확실.
+    </div>
+  </section>
+
+  <!-- 7. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">7. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Oklo 분기 실적·보도자료·어닝콜 트랜스크립트. 어닝콜=파랑.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05-12 · 순손실 -$33M, 현금 ~$2.5B, 파이프라인 ~14GW</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">순손실</span><span class="v">-$33.1M</span></div>
+          <div><span class="k">현금+증권</span><span class="v">~$2.5B (ATM ~$1.18B 후)</span></div>
+          <div><span class="k">파이프라인</span><span class="v">~14GW</span></div>
+          <div><span class="k">2026 burn</span><span class="v">opex $80~100M · capex $350~450M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Aurora-INL 착공 + DOE 인가, NRC PDC Topical Report 승인.</li>
+          <li>Meta 1.2GW(Ohio) 진행. NVIDIA/Los Alamos 협력, Centrus 연료 파트너십.</li>
+          <li>2025 ATM(~12.4M주, ~$1.18B)으로 현금 ~$2.5B 확보 — 다년 런웨이.</li>
+          <li>적자 확대로 발표 후 주가 하락.</li>
+        </ul>
+        <div class="src">출처: Oklo Q1 2026 실적·어닝콜 · 2026-05-12 · <a href="https://www.fool.com/earnings/call-transcripts/2026/05/13/oklo-oklo-q1-2026-earnings-call-transcript/" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료·트랜스크립트 기반, 컨콜 톤]
+
+Jacob DeWitte (CEO):
+"이번 분기에 우리는 '종이'에서 '건설'로 넘어갔습니다. 아이다호에서 Aurora를 착공했고, DOE 인가와 NRC의 PDC Topical Report 승인을 받았습니다. Meta와의 오하이오 1.2기가와트 프로젝트도 진척되고 있고, NVIDIA·로스앨러모스와 원자로 설계에, Centrus와는 연료에 협력합니다.
+
+우리의 강한 재무상태와 전략적 파트너십이 개발에서 실행으로의 전환을 뒷받침합니다."
+
+CFO:
+"순손실은 3천3백만 달러입니다. 현금과 증권은 약 25억 달러로, 2025년 ATM 프로그램(약 1,240만 주, 순 11.8억 달러)이 크게 기여했습니다. 2026년 영업현금 사용은 8천만~1억 달러, 자본지출은 3.5억~4.5억 달러로 봅니다 — Aurora 착공 때문입니다."
+
+※ 적자 확대 인식으로 발표 후 주가는 하락했습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4/FY 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-03-17 · FY 영업손실 $139.3M, 현금 ~$1.4B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">Q4 순손실</span><span class="v">-$41.5M</span></div>
+          <div><span class="k">FY 영업손실</span><span class="v">$139.3M</span></div>
+          <div><span class="k">현금+증권</span><span class="v">~$1.4B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 영업손실 $139.3M. Q4 순손실 -$41.5M.</li>
+          <li>연료제조시설 설계 승인(DOE NSDA/PDSA).</li>
+        </ul>
+        <div class="src">출처: Oklo Q4/FY2025 실적 · 2026-03-17 · <a href="https://www.sec.gov/Archives/edgar/data/1849056/000162828026018698/oklo-20251231.htm" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+2025년 영업손실은 1억 3,930만 달러였고, 연말 현금·증권은 약 14억 달러였습니다. 4분기 순손실은 4,150만 달러. 연료제조시설에 대한 DOE 설계 승인(NSDA/PDSA)을 받으며 연료 수직화에 진전을 보였습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">~2025-11 · 순손실 -$29.7M, INL 착공</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">순손실</span><span class="v">-$29.7M</span></div>
+          <div><span class="k">현금+증권</span><span class="v">~$921.6M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>9월 Aurora-INL 착공 달성. ATM 확대로 현금 증가.</li>
+          <li>파이프라인 확대.</li>
+        </ul>
+        <div class="src">출처: Oklo Q3 2025 실적 · ~2025-11</div>
+        <div class="transcript">
+[요약 — 보도자료 기반]
+
+3분기 순손실 2,970만 달러, 현금·증권 약 9억 2,160만 달러. 9월 아이다호에서 Aurora 착공을 달성했고, ATM 프로그램 확대로 현금이 늘었습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">~2025-08 · 순손실 -$24.7M, Liberty Energy 파트너십</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">순손실</span><span class="v">-$24.7M</span></div>
+          <div><span class="k">현금+증권</span><span class="v">~$534M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Liberty Energy 전략 파트너십(2025-08).</li>
+          <li>Eielson AFB 낙찰의향.</li>
+        </ul>
+        <div class="src">출처: Oklo Q2 2025 실적 · ~2025-08</div>
+        <div class="transcript">
+[요약 — 보도자료 기반]
+
+2분기 순손실 2,470만 달러, 현금·증권 약 5억 3,400만 달러. Liberty Energy와 전략 파트너십을 체결했고, 미 공군 Eielson 기지 낙찰의향 통지를 받았습니다.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+const q = ["Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const opex = [17.77,12.28,15.38,17.87,28.02,36.31,57.10,51.25];
+const netloss = [-27.29,-9.96,-10.29,-9.81,-24.69,-29.72,-41.45,-33.07];
+const cash = [null,null,227.8,201.0,534.4,921.6,1228,2537];
+
+new Chart(document.getElementById('chartLoss'),{type:'bar',data:{labels:q,datasets:[
+  {label:'영업비용 ($M)',data:opex,backgroundColor:'rgba(109,40,217,.7)'},
+  {label:'순손실 ($M)',data:netloss,type:'line',borderColor:'#c0392b',backgroundColor:'transparent',pointRadius:4,tension:.3}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartCash'),{type:'line',data:{labels:q,datasets:[
+  {label:'현금+증권 ($M)',data:cash,borderColor:'#15803d',backgroundColor:'rgba(21,128,61,.1)',fill:true,tension:.3,pointRadius:4,spanGaps:true}
+]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'$M'},ticks:{callback:v=>'$'+v}}}}});
+
+new Chart(document.getElementById('chartPipe'),{type:'bar',data:{labels:['Switch 12GW','Meta 1.2GW','Equinix 0.5GW','Diamondback 50MW'],datasets:[
+  {label:'MW',data:[12000,1200,500,50],backgroundColor:['#b45309','#6d28d9','#6d28d9','#b45309']}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} MW`}}},scales:{y:{grid,type:'logarithmic',title:{display:true,text:'MW (로그)'}}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jun'24","Sep'24","Dec'24","Mar'25","Jun'25","Sep'25","Dec'25","Mar'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[9,12,22,30,55,75,95,70,55],borderColor:'#6d28d9',backgroundColor:'rgba(109,40,217,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
