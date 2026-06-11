@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cameco (CCJ) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#b45309; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#fef6ec;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#7c3d09;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>Cameco Corporation</h1>
+      <p>NYSE: CCJ · TSX: CCO · 세계 최대급 우라늄 생산기업 · Saskatoon</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#b45309;">우라늄 Tier-1</span>
+      <span class="badge" style="background:#15803d;">흑자·배당</span>
+      <span class="badge" style="background:#4f46e5;">Westinghouse 49%</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#contracts">계약·시장</a>
+    <a href="#deals">주요 딜</a>
+    <a href="#alpha">핵심·리스크</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">사업</span><span class="v">우라늄 채굴·전환·원자로(Westinghouse)</span></div>
+        <div class="kv-item"><span class="k">본사 / CEO</span><span class="v">Saskatoon / Tim Gitzel</span></div>
+        <div class="kv-item"><span class="k">FY2025 매출</span><span class="v up">CAD $3.5B (+11%)</span></div>
+        <div class="kv-item"><span class="k">FY2025 조정 EBITDA</span><span class="v up">CAD $1.9B (+26%)</span></div>
+        <div class="kv-item"><span class="k">장기 계약</span><span class="v">~230M lbs U₃O₈</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">CAD $0.24/주</span></div>
+        <div class="kv-item"><span class="k">Westinghouse</span><span class="v">49% (Brookfield 51%)</span></div>
+        <div class="kv-item"><span class="k">2026 우라늄 생산</span><span class="v">19.5~21.5M lbs</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Cameco는 캐나다 사스카툰에 본사를 둔 세계 최대급 우라늄 생산기업이다. ① <strong>우라늄(채굴)</strong> — McArthur River/Key Lake·Cigar Lake 등 세계 최대 고품위(평균 품위 세계평균 약 100배) Tier-1 광산, ② <strong>연료서비스(전환·가공)</strong> — Port Hope·Blind River UF6 변환, ③ <strong>Westinghouse(49% 지분법 JV)</strong> — 2023년 11월 인수, AP1000 원자로. 본 데스크 관점에서 Cameco는 본 섹터에서 드물게 <strong>흑자·배당을 내는 우량 기업</strong>으로, 우라늄 구조적 강세장과 Westinghouse AP1000 수요의 동시 수혜주다.</p>
+    <p>※ 통화: 별도 표기 없으면 CAD(보고통화). 주가·시총은 USD(CCJ).</p>
+
+    <h3 class="sub">사업부 & 경쟁 해자 (근거 포함)</h3>
+    <div class="card">
+      <strong>① Uranium (채굴) — 최대 이익원</strong>
+      <p>McArthur River/Key Lake(연 한도 18.7M lbs)·Cigar Lake — 세계 최대 고품위 광산 2곳. <em>경쟁 해자(근거):</em> 광석 품위가 세계 평균의 약 100배 → 채굴 단위원가 우위(Q1'26 자사 생산 총원가 US$34.05/lb). 저비용 Tier-1 매장량 지배.</p>
+    </div>
+    <div class="card">
+      <strong>② Fuel Services (전환/가공)</strong>
+      <p>UF6·UO2 변환, 중수로 연료. Port Hope UF6 사상 최대 생산(FY2025). 전환 가격 역사적 고수준. 연 13~14M kgU.</p>
+    </div>
+    <div class="card">
+      <strong>③ Westinghouse (49% 지분법)</strong>
+      <p>AP1000 원자로(가장 많이 배치된 3세대+ 기술). <em>경쟁 해자:</em> 채굴→전환→원자로로 연료주기 수직통합. AP1000 1기당 약 US$400~600M EBITDA. 단 신규 건설 lumpy로 분기 지분법 손익 변동 큼(Q1'26 순손실 -$46M이나 조정 EBITDA +$122M).</p>
+    </div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·조정 EBITDA 추이 (CAD)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Cameco 분기 6-K·보도자료(SEC/SEDAR+), stockanalysis 교차확인. 통화 CAD. Westinghouse 지분법 손익 변동으로 GAAP 순이익보다 조정 EBITDA가 추세 파악에 유용.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 조정 EBITDA (CAD $M)</p>
+      <canvas id="chartRev" height="100"></canvas>
+      <p class="chart-note">매출은 인도 시점에 따라 분기 변동(Q4 계절적 강세). 조정 EBITDA는 Westinghouse 기여로 Q2'25 $673M 등 변동. 출처: 각 분기 6-K.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 연간 조정 EBITDA (CAD $M)</p>
+      <canvas id="chartA" height="80"></canvas>
+      <p class="chart-note">FY2023 $884M → FY2024 ~$1,500M → FY2025 $1,900M(+26%). Westinghouse 편입·우라늄 가격 상승. 출처: 각 연도 보도자료.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: CAD $M, EPS CAD$)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>매출</th><th>순이익</th><th>조정 순이익</th><th>조정 EBITDA</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2024</td><td class="num">634</td><td class="num dn">-7</td><td class="num">56</td><td class="num">345</td></tr>
+        <tr><td>Q2 2024</td><td class="num">598</td><td class="num">36</td><td class="num">62</td><td class="num">337</td></tr>
+        <tr><td>Q3 2024</td><td class="num">721</td><td class="num">7</td><td class="num dn">-3</td><td class="num">308</td></tr>
+        <tr><td>Q4 2024</td><td class="num">1,183</td><td class="num">135</td><td class="num">157</td><td class="num">데이터 없음</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">2,288</td><td class="num">172</td><td class="num">292</td><td class="num">~1,500</td></tr>
+        <tr><td>Q1 2025</td><td class="num">789</td><td class="num">70</td><td class="num">70</td><td class="num">353</td></tr>
+        <tr><td>Q2 2025</td><td class="num">877</td><td class="num">321</td><td class="num">308</td><td class="num">673</td></tr>
+        <tr><td>Q3 2025</td><td class="num">615</td><td class="num dn">소폭 손실</td><td class="num">32</td><td class="num">310</td></tr>
+        <tr><td>Q4 2025</td><td class="num">1,201</td><td class="num">~199*</td><td class="num">~217*</td><td class="num">데이터 없음</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">3,482</td><td class="num">~590*</td><td class="num">~630</td><td class="num up">1,900</td></tr>
+        <tr style="background:#fef6ec;font-weight:700;"><td>Q1 2026</td><td class="num">845</td><td class="num up">131</td><td class="num up">203</td><td class="num up">509</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 출처·파생치</div>* Q4 2025 순이익·조정순이익(~$199M/~$217M)과 FY2025 순이익(~$590M)은 보도된 YoY 증감을 전년치에 더한 <strong>파생치</strong>(원문 직접 수치 일부 미확보). FY2025 조정순이익은 "just under $630M(+115%)" 공시 기준. Westinghouse 지분법 손익 변동으로 GAAP 순이익이 노이즈 — 조정 EBITDA/조정순이익 기준 평가가 적절. 출처: Cameco 6-K.</div>
+  </section>
+
+  <!-- 3. 사업부 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 (Q1 2026 조정 EBITDA 기여)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Cameco Q1 2026 6-K. 통화 CAD. Westinghouse는 49% 지분법(equity-accounted) 기여분.</p>
+    <div class="chart-wrap">
+      <p class="chart-title">③ Q1 2026 세그먼트 조정 EBITDA (CAD $M)</p>
+      <canvas id="chartSeg" height="100"></canvas>
+      <p class="chart-note">우라늄 $423M(+48%), Westinghouse 몫 $122M(+33%), 연료서비스 $54M(-28%). 연결 조정 EBITDA $509M(코퍼릿·조정 차감). 출처: Q1'26 6-K.</p>
+    </div>
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>세그먼트 코멘트:</strong> 우라늄이 핵심 이익원 — Q1'26 판매 7.8M lbs(+13%), 실현가 CAD$91.26/lb(US$66.21), 세전이익 $358M(+58%). 연료서비스는 실현가 하락으로 EBITDA -28%(여전히 마진 40%). Westinghouse는 지분법으로 분기 변동 크나(GAAP 순손실 -$46M vs 조정 EBITDA +$122M) AP1000 수요로 구조적 성장.</p>
+    </div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06-11, USD)</span><span class="v">~$94</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$41B</span></div>
+        <div class="kv-item"><span class="k">P/E (TTM)</span><span class="v">~88~114x</span></div>
+        <div class="kv-item"><span class="k">52주 범위</span><span class="v">$64 ~ $135</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">CAD $0.24/주 (~0.2%대)</span></div>
+        <div class="kv-item"><span class="k">애널리스트 PT</span><span class="v">$129.38 (24명 Buy)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 우라늄 강세장·Westinghouse $80B 파트너십으로 상승. 정확한 주가는 증권사 확인.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>P/E ~88~114x로 높게 보이는 것은 Westinghouse 지분법 손익의 분기 변동성·비현금 항목 + 우라늄 가격 전환기 실적 때문 — <strong>조정 EBITDA 기준 평가가 더 의미</strong>. 가격에 미래 성장·Westinghouse·우라늄 강세 상당 부분 선반영. 배당은 저배당(연 CAD$0.24). 출처·시점별 시총 $41~50B 차이.</div>
+  </section>
+
+  <!-- 5. 계약·시장 -->
+  <section id="contracts">
+    <h2 class="sec">5. 장기 계약 &amp; 우라늄 시장</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">장기 우라늄 계약</span><span class="v">~230M lbs U₃O₈</span></div>
+        <div class="kv-item"><span class="k">5년 연평균 인도</span><span class="v">~28M lbs/년</span></div>
+        <div class="kv-item"><span class="k">전환 계약</span><span class="v">83M kg</span></div>
+        <div class="kv-item"><span class="k">현물(spot, Q1'26말)</span><span class="v">US$84.25/lb</span></div>
+        <div class="kv-item"><span class="k">장기(term) 가격</span><span class="v up">~US$90~91.50/lb</span></div>
+        <div class="kv-item"><span class="k">2026 실현가 가이던스</span><span class="v">CAD$85~89/lb</span></div>
+      </div>
+    </div>
+    <p style="font-size:13px;">장기 계약 포트폴리오 약 230M lbs(향후 5년 연평균 28M lbs, 2026~2028 평균 이상·2029~2030 평균 이하). <strong>장기(term) 우라늄 가격이 US$90/lb로 2008년 이후 최고</strong> — 강한 구조적 강세 신호. 경영진은 "수요를 공급으로 앞지르지 않는다(never front-run demand with supply)"는 규율로 미약정 생산능력을 보존, 가격 상승기에 layering. Westinghouse AP1000 글로벌 파이프라인: 미국 8~10기(+DOE 검토 10기+), 폴란드 6기, 불가리아 2기, 체코, 캐나다 Bruce Site C 4기·Wesleyville 10기.</p>
+    <div class="warn"><div class="h">⚠ 우라늄 가격 변동성</div>2026년 초 현물이 US$101 터치 후 분기말 US$83.90으로 급락(분기 내 ~17% 변동). 실현가·실적에 직결. McArthur River 생산은 페이싱(2025 가이던스 18M→14~15M 하향 이력).</div>
+  </section>
+
+  <!-- 6. 주요 딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜</h2>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">완료</span>Westinghouse 인수 (49%, Brookfield 51%)</div>
+      <p style="font-size:13px;margin:6px 0;">2023년 11월 종결. 지분법 적용. AP1000·AP300. 인수 케이스 기대 상회하는 조정 EBITDA 기여.</p>
+      <div class="deal-meta">출처: Cameco IR · 2023-11</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">발표(구속)</span>미국 정부 + Brookfield + Cameco "$80B 원자력 파트너십"</div>
+      <p style="font-size:13px;margin:6px 0;">2025-10-27~28 발표. 미국 내 <strong>최소 US$80B</strong> 신규 원자로(AP1000·AP300). 미 정부=금융·인허가, Cameco=우라늄 연료 서구권 공급, Brookfield=인프라 투자. 이익공유 메커니즘, 정부 최대 20% 지분 가능($17.5B 분배 임계 초과 시). 장납기 발주 2026 가능.</p>
+      <div class="deal-meta">출처: Brookfield 보도자료 · K&L Gates · 2025-10</div>
+    </div>
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">개별 AP1000 프로젝트</span>폴란드·불가리아·체코·미국 데이터센터</div>
+      <p style="font-size:13px;margin:6px 0;">폴란드 3기(~EUR 42B, 2024-10 발주). 불가리아 Kozloduy 2기(엔지니어링 계약). 체코 두코바니 참여(2025 EBITDA 기여). 미국 Fermi America(텍사스) 데이터센터에 AP1000 4기 합의(Doosan 협력, 2026 착공·2031 가동 목표).</p>
+      <div class="deal-meta">출처: Westinghouse · World Nuclear News · 2024~2025</div>
+    </div>
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">기술 개발</span>Global Laser Enrichment (GLE)</div>
+      <p style="font-size:13px;margin:6px 0;">레이저 농축 기술 TRL6 달성(99.6% Sigma 신뢰도). DOE tails 재농축 프로젝트 — 열화 UF6에서 연 4~5M lbs 우라늄 생산 잠재. 상용(TRL7-9) 단계 전환 중.</p>
+      <div class="deal-meta">출처: Cameco 콜 · 2025~2026</div>
+    </div>
+  </section>
+
+  <!-- 7. 핵심·리스크 -->
+  <section id="alpha">
+    <h2 class="sec">7. 핵심 시그널 &amp; 리스크</h2>
+
+    <h3 class="sub">강세 신호 (근거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 신호 1 — 우라늄 구조적 강세장</div>
+      장기(term) 우라늄 가격 US$90/lb로 2008년 이후 최고. 2025 term 계약(116M lbs)이 대체율 하회 → "더 많은 수요가 와야 한다"는 경영진 시각. 미약정 생산능력 보존으로 상승기 업사이드. <em>(근거: Q4'25 콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 2 — Westinghouse AP1000 수요 폭증 + $80B 파트너십</div>
+      미국 8~10기 + $80B 정부 파트너십 + 폴란드·불가리아·체코. AP1000 1기당 ~US$400~600M EBITDA. Cameco가 연료 서구권 독점 공급자로 지정 — 채굴+원자로 수직통합의 시너지. <em>(근거: 콜·Brookfield 발표. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 3 — 흑자·배당·계약 가시성</div>
+      본 섹터에서 드물게 흑자·배당(연 CAD$0.24). FY2025 조정 EBITDA $1.9B(+26%), 조정순이익 +115%. ~230M lbs 장기 계약으로 매출 가시성. 데이터센터 수요는 "가속제이나 필수는 아님"(known fleet만으로 충분). <em>(근거: 콜)</em>
+    </div>
+
+    <div class="warn"><div class="h">⚠ 리스크</div>① 우라늄 가격 변동성(현물 분기 ~17% 변동). ② 생산 리스크(McArthur River 페이싱·기술 이슈, "채굴은 어렵다"). ③ Westinghouse 지분법 손익 분기 변동(GAAP 순이익·EPS 노이즈, 높은 P/E). ④ 환율(CAD/USD). ⑤ 밸류에이션 부담(P/E ~90~114, 미래 성장 선반영). ⑥ CRA 이전가격 분쟁(잠재 현금 $559M, 시점 불확실).</div>
+  </section>
+
+  <!-- 8. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">8. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Cameco 분기 6-K·어닝콜. 통화 CAD. 각 블록 "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05-05 · 조정 EBITDA $509M(+44%), 우라늄 판매 7.8M lbs</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">CAD $845M (+7%)</span></div>
+          <div><span class="k">순이익</span><span class="v">$131M (+87%)</span></div>
+          <div><span class="k">조정 순이익</span><span class="v">$203M (2배+)</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$509M (+44%)</span></div>
+          <div><span class="k">우라늄 실현가</span><span class="v">CAD$91.26 (US$66.21)</span></div>
+          <div><span class="k">Westinghouse 몫 EBITDA</span><span class="v">$122M (+33%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>우라늄 판매 7.8M lbs(+13%), 세전이익 $358M(+58%), 조정 EBITDA $423M(+48%).</li>
+          <li>현금 $1.1B, 무부채 가까움. 2026 가이던스 유지(생산 19.5~21.5M lbs).</li>
+          <li>Gitzel: "연간 기대치와 부합". Meta 6.6GWe 등 데이터센터발 비전통 수요 부상.</li>
+        </ul>
+        <div class="src">출처: Cameco Q1 2026 6-K · 2026-05-05 · <a href="https://www.cameco.com/invest/financial-information/quarterly-reports/2026/q1" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/ccj-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-02-13 · FY 매출 $3.5B, 조정 EBITDA $1.9B, $80B 파트너십</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">FY 매출</span><span class="v">CAD $3.5B (+11%)</span></div>
+          <div><span class="k">FY 조정 EBITDA</span><span class="v up">$1.9B (+26%)</span></div>
+          <div><span class="k">FY 조정 순이익</span><span class="v">~$630M (+115%)</span></div>
+          <div><span class="k">FY 우라늄 생산</span><span class="v">21M lbs</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Cigar Lake 기대 상회. FY 인도 33M lbs, 실현 ~US$87/lb. 장기 계약 ~230M lbs.</li>
+          <li>$80B 미국 정부+Brookfield 파트너십(미국 8~10기 AP1000). Westinghouse 2026 가이던스 US$370~430M.</li>
+          <li>2026 가이던스: 생산 19.5~21.5M lbs, 인도 29~32M lbs, 실현가 CAD$85~89/lb. GLE TRL6.</li>
+        </ul>
+        <div class="src">출처: Cameco Q4/FY2025 6-K · 2026-02-13 · <a href="https://www.businesswire.com/news/home/20260212233756/en/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/ccj-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-11-05 · 조정 EBITDA $310M, $80B 파트너십 발표</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">CAD $615M</span></div>
+          <div><span class="k">조정 순이익</span><span class="v">$32M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$310M</span></div>
+          <div><span class="k">현금</span><span class="v">$779M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>$80B 미국 정부 파트너십(최소 US$80B, 정부 최대 20% 지분 가능). Westinghouse 분배 US$171.5M.</li>
+          <li>2025 생산 가이던스 하향(McArthur 14~15M lbs). Isaac: "term 시장 아직 미도달".</li>
+          <li>데이터센터/AI는 "가속제이나 필수 아님" — known fleet만으로 충분한 수요. 배당 $0.24.</li>
+        </ul>
+        <div class="src">출처: Cameco Q3 2025 6-K · 2025-11-05 · <a href="https://www.cameco.com/invest" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/ccj-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-07-31 · 조정 EBITDA $673M, Westinghouse +$126M 반전</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">CAD $877M (+47%)</span></div>
+          <div><span class="k">순이익</span><span class="v">$321M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v up">$673M</span></div>
+          <div><span class="k">Westinghouse 49% 순이익</span><span class="v">+$126M</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Westinghouse 체코 두코바니 참여로 Q2 +US$170M, 2025 49% 조정 EBITDA 몫 US$525~580M 기대.</li>
+          <li>Isaac: 가이던스는 FID 미도달 제외(보수적), "사업의 벽이 쌓이고 있다". 우라늄 플로어 "$70s"·실링 "$130".</li>
+          <li>경영진 전환 예고(Isaac→사장·COO, Shockey→CFO, 2025-09-01부).</li>
+        </ul>
+        <div class="src">출처: Cameco Q2 2025 6-K · 2025-07-31 · <a href="https://www.cameco.com/invest" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/ccj-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+new Chart(document.getElementById('chartRev'),{type:'bar',data:{labels:["Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],datasets:[
+  {label:'매출 (CAD $M)',data:[634,598,721,1183,789,877,615,1201,845],backgroundColor:'rgba(180,83,9,.7)',yAxisID:'y'},
+  {label:'조정 EBITDA (CAD $M)',data:[345,337,308,null,353,673,310,null,509],type:'line',borderColor:'#15803d',backgroundColor:'transparent',pointRadius:4,tension:.3,yAxisID:'y',spanGaps:true}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'CAD $M'}}}}});
+
+new Chart(document.getElementById('chartA'),{type:'bar',data:{labels:["FY2023","FY2024","FY2025"],datasets:[{label:'조정 EBITDA (CAD $M)',data:[884,1500,1900],backgroundColor:'rgba(180,83,9,.75)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`CAD $${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'CAD $M'}}}}});
+
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:['우라늄','Westinghouse(49%)','연료서비스'],datasets:[{label:'Q1 2026 조정 EBITDA (CAD $M)',data:[423,122,54],backgroundColor:['#b45309','#4f46e5','#15803d']}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'CAD $M'}}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jun'25","Aug'25","Oct'25","Dec'25","Feb'26","Apr'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[55,70,95,105,100,98,94],borderColor:'#b45309',backgroundColor:'rgba(180,83,9,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
