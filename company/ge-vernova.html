@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GE Vernova (GEV) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#b45309; --accent2:#2563a8;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#fff7ed;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#7c2d12;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .transcript{margin-top:16px;padding:14px;background:#f8f9fa;border-radius:8px;font-size:13px;line-height:1.7;max-height:400px;overflow-y:auto;white-space:pre-wrap;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent2);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>GE Vernova Inc.</h1>
+      <p>NYSE: GEV · 가스터빈·그리드·원자력 · Cambridge, MA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#b45309;">가스터빈</span>
+      <span class="badge" style="background:#2563a8;">백로그 $163B</span>
+      <span class="badge" style="background:#7c3aed;">AI 데이터센터</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">백로그·수주</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">상장</span><span class="v">2024-04-02 GE 분사</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Cambridge, MA</span></div>
+        <div class="kv-item"><span class="k">직원 수</span><span class="v">~75,000명 (약 100개국)</span></div>
+        <div class="kv-item"><span class="k">FY2025 매출</span><span class="v">$38.1B (+9%)</span></div>
+        <div class="kv-item"><span class="k">Q1 2026 매출</span><span class="v up">$9.3B (+16%)</span></div>
+        <div class="kv-item"><span class="k">총 백로그 (Q1 2026)</span><span class="v up">$163B</span></div>
+        <div class="kv-item"><span class="k">가스터빈 슬롯</span><span class="v up">100GW (예약 포함)</span></div>
+        <div class="kv-item"><span class="k">2028 매출 목표</span><span class="v up">$52B (마진 20%)</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>GE Vernova는 2024년 4월 General Electric에서 분사한 글로벌 에너지 기업으로, GE의 130년+ 전력·그리드 사업을 계승하였다. "전기화(electrify)와 탈탄소화(decarbonize)"를 동시에 추진하는 것을 미션으로 내세우며, 발전 설비(가스·원자력·수력·증기·풍력)와 송배전·그리드 솔루션, 그리고 관련 장기 서비스를 제공한다. 전 세계 발전량의 상당 부분이 GE Vernova 기술로 생산된다는 거대한 설치 기반(installed base)이 장기 서비스 매출의 토대이다.</p>
+    <p>AI 데이터센터발 전력 수요 폭증의 핵심 공급측 플레이어로, 가스터빈 백로그·예약이 100GW까지 차오르며 납기가 2028~2030년까지 잠겨 있다. 이 슬롯 희소성이 가격결정력과 수익 가시성의 원천이다.</p>
+
+    <h3 class="sub">사업부별 상세 (3개 세그먼트)</h3>
+    <div class="card">
+      <strong>① Power (전력 — 최대·최고수익 세그먼트)</strong>
+      <p>가스(Gas Power, HA급 터빈 주력), 원자력(Nuclear, GE Hitachi BWRX-300 SMR 포함), 수력(Hydro), 증기(Steam) 기술의 설계·제조·서비스. 고객은 유틸리티, 독립발전사업자(IPP), 산업체, 데이터센터. FY2025 매출 $19.8B(전사 약 52%). <br><em>경쟁 강점(근거 포함):</em> 가스터빈 백로그+슬롯예약(SRA) 합계 100GW(Q1 2026)로 납기가 2028~2030년까지 잠김 — CEO Strazik은 2026년말까지 2030년분까지 매진 전망(출처: Utility Dive, power-eng). 신규 capacity 없이는 신규 진입 차단 → 과점·가격결정력. 글로벌 설치 기반 기반 장기 서비스 백로그 $86B(FY2025).</p>
+    </div>
+    <div class="card">
+      <strong>② Electrification (전기화 — 고성장·마진 급반전)</strong>
+      <p>그리드 솔루션(Grid Solutions), 전력변환(Power Conversion), 태양광·저장(Solar &amp; Storage), 디지털. 송배전·전력관리 장비. FY2025 매출 $9.6B(약 25%). 2026년 1월 변압기 업체 Prolec GE 잔여지분 인수로 완전 자회사화. <br><em>경쟁 강점(근거 포함):</em> 마진이 2024년 7%대에서 Q1 2026 17.8%로 급반전(출처: 각 분기 IR). 데이터센터·재전기화 수요로 그리드 장비 부족 → 가격·물량 동반 상승. Q1 2026 데이터센터용 장비 수주만 $2.4B(작년 연간 전체 초과).</p>
+    </div>
+    <div class="card">
+      <strong>③ Wind (풍력 — 유일 약점)</strong>
+      <p>육상·해상 풍력 터빈·블레이드. FY2025 매출 $9.1B(약 24%). 현재 적자 세그먼트(특히 Offshore). Q1 2026 매출 -23%, 세그먼트 EBITDA $(382)M로 적자 확대. <br><em>현황:</em> 2028년 6% 마진(손익분기 전환) 목표. 전사 마진 희석 요인이나 비중은 축소 추세.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>GE Vernova 보도자료는 조정 EBITDA(Adjusted EBITDA)를 핵심 지표로 공개하며, 분기별 GAAP 매출총이익(GPM)·영업이익(OPM)은 대부분 미공개(연간 영업이익만 공개)이다. 본 리포트의 분기 마진 차트는 조정 EBITDA 마진 기준이다. 일부 분기 GAAP EPS·세그먼트 EBITDA는 미확보분이 있어 "데이터 없음"으로 표기.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: GE Vernova 분기 보도자료·SEC 8-K (CIK 0001996810). 상장(스핀오프) 후 Q1 2024 ~ Q1 2026 (9개 분기). GAAP 매출 + 조정 EBITDA 기준. ※ GAAP 분기 영업이익은 미공개로 조정 EBITDA로 대체.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 조정 EBITDA (백만 USD)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">출처: 각 분기 보도자료. 매출은 빠르게 우상향(Q1'24 $7.3B → Q4'25 $11.0B). 조정 EBITDA는 계절성(Q1 약세, Q4 강세) 존재.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 조정 EBITDA 마진 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">조정 EBITDA 마진. 2.6%(Q1'24) → 10.6%(Q4'25) → 9.6%(Q1'26, +390bp YoY)로 구조적 개선. 2028년 목표 20%. 출처: 각 분기 IR.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 테이블 (GAAP, 단위: 십억 USD 또는 표기)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>분기</th><th>매출</th><th>YoY</th><th>GAAP 순이익</th><th>NPM</th><th>조정 EBITDA</th><th>EBITDA 마진</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Q1 2024</td><td class="num">$7.3B</td><td class="num">+6%</td><td class="num dn">-$0.1B</td><td class="num dn">적자</td><td class="num">$0.2B</td><td class="num">2.6%</td></tr>
+        <tr><td>Q2 2024</td><td class="num">$8.2B</td><td class="num">+1%</td><td class="num up">$1.3B</td><td class="num">–</td><td class="num">$0.5B</td><td class="num">6.4%</td></tr>
+        <tr><td>Q3 2024</td><td class="num">$8.9B</td><td class="num">+8%</td><td class="num dn">-$0.1B</td><td class="num dn">적자</td><td class="num">$0.2B</td><td class="num">2.7%</td></tr>
+        <tr><td>Q4 2024</td><td class="num">$10.6B</td><td class="num">+5%</td><td class="num up">$0.5B</td><td class="num">4.6%</td><td class="num">$1.1B</td><td class="num">10.2%</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">$34.9B</td><td class="num">+5%</td><td class="num up">$1.6B</td><td class="num">4.5%</td><td class="num">$2.0B</td><td class="num">5.8%</td></tr>
+        <tr><td>Q1 2025</td><td class="num">$8.0B</td><td class="num up">+11%</td><td class="num up">$0.3B</td><td class="num">3.3%</td><td class="num">$0.5B</td><td class="num">5.7%</td></tr>
+        <tr><td>Q2 2025</td><td class="num">$9.1B</td><td class="num up">+12%</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">$0.8B</td><td class="num">8.5%</td></tr>
+        <tr><td>Q3 2025</td><td class="num">$10.0B</td><td class="num up">+12%</td><td class="num up">$0.5B</td><td class="num">4.5%</td><td class="num">$0.8B</td><td class="num">8.1%</td></tr>
+        <tr><td>Q4 2025</td><td class="num">$11.0B</td><td class="num up">+4%</td><td class="num up">$3.7B*</td><td class="num">33.5%</td><td class="num">$1.2B</td><td class="num">10.6%</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">$38.1B</td><td class="num up">+9%</td><td class="num up">$4.9B</td><td class="num">12.8%</td><td class="num">$3.2B</td><td class="num">8.4%</td></tr>
+        <tr style="background:#fff7ed;font-weight:700;"><td>Q1 2026</td><td class="num">$9.3B</td><td class="num up">+16%</td><td class="num up">$4.7B†</td><td class="num">50.9%</td><td class="num">$0.90B</td><td class="num">9.6%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 일회성 이익 주의</div>* Q4 2025 순이익 $3.7B에는 약 $2.9B 세금혜택 포함. † Q1 2026 순이익 $4.7B(GAAP EPS $17.44)에는 Prolec GE 잔여지분 재평가 세전 $4.0B 차익 + Proficy 매각 차익 등 일회성 포함. 정상화 수익은 조정 EBITDA 마진(9.6%)·조정 EPS(~$2)로 판단해야 함. 출처: GE Vernova 보도자료·SEC 8-K, benzinga/stocktitan.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 매출 · 마진</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: GE Vernova FY2025 10-K 세그먼트, Q1 2026 보도자료. Power / Electrification / Wind 3개 세그먼트.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 세그먼트 매출 (FY2025 vs Q1 2026, 백만 USD)</p>
+      <canvas id="chartSeg" height="110"></canvas>
+      <p class="chart-note">FY2025 세그먼트 매출: Power $19,767M, Electrification $9,642M, Wind $9,110M. Q1 2026: Power $4,971M(+12%), Electrification $2,959M(+61%), Wind $1,432M(-23%). 출처: 10-K, Q1'26 PR.</p>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">FY2025 매출 비중</p>
+        <canvas id="chartPie25" height="180"></canvas>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">Q1 2026 세그먼트 EBITDA (백만 USD)</p>
+        <canvas id="chartSegEbitda" height="180"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>세그먼트 추세:</strong> Power는 FY2025 세그먼트 이익 +$0.6B(가스·증기 가격·생산성↑). Electrification은 FY2025 +$0.8B로 마진이 7%대→17.8%(Q1'26)로 급반전 — Grid Solutions 물량·가격 + Prolec 변압기 수직통합. Wind는 적자 지속(Q1'26 EBITDA $(382)M)이나 비중 축소 중. ※ 분기별 세그먼트 EBITDA 정밀 시계열은 Q1'25·Q1'26만 확보, 나머지 분기는 "데이터 없음".</p>
+    </div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06-10)</span><span class="v">~$870.96</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$234B</span></div>
+        <div class="kv-item"><span class="k">EV</span><span class="v">~$241B</span></div>
+        <div class="kv-item"><span class="k">Trailing P/E</span><span class="v">26.9x</span></div>
+        <div class="kv-item"><span class="k">Forward P/E</span><span class="v">49.8x</span></div>
+        <div class="kv-item"><span class="k">P/B</span><span class="v">17.8x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA</span><span class="v">70.6x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">0.23% ($2.00/주)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">⑤ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 스핀오프(2024-04) ~$130대 → 2026-06 ~$871. 약 2년간 6배+ 상승.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>Trailing P/E 26.9x는 Prolec 재평가·세금혜택 등 일회성 이익이 EPS를 부풀려 낮게 보이는 착시. Forward P/E 49.8x가 정상화 수익을 더 잘 반영. EV/EBITDA 70.6x는 현재 마진(9.6%) 기준 매우 높은 수준으로, 2028년 마진 20%·매출 $52B 목표 달성을 상당 부분 선반영. 시총은 출처 간 $234B~$260B 차이 존재.</div>
+  </section>
+
+  <!-- 5. 백로그·수주 -->
+  <section id="backlog">
+    <h2 class="sec">5. 백로그 &amp; 수주 (Book-to-Bill)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: GE Vernova 분기 보도자료. 총 백로그 = Equipment + Services. 가스터빈 슬롯 예약(SRA, Slot Reservation Agreement)은 공급 병목 논거의 핵심 선행지표.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑥ 총 백로그 추이 ($B)</p>
+      <canvas id="chartBacklog" height="90"></canvas>
+      <p class="chart-note">스핀오프(2024-04) $116B → Q2'25 $128.7B → FY2025 $150.2B(Equipment $64B, Services $86B) → Q1'26 $163B. 2028 목표 ~$200B. 출처: 각 분기 PR.</p>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">⑦ 분기 수주(Orders) 추이 ($B)</p>
+        <canvas id="chartOrders" height="150"></canvas>
+        <p class="chart-note">Q1'25 $10.2B → Q4'25 $22.2B → Q1'26 $18.3B(+71% 유기적). FY2025 $59.3B(+34%). 출처: 각 분기 PR.</p>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">⑧ 가스터빈 슬롯 (백로그+SRA, GW)</p>
+        <canvas id="chartGas" height="150"></canvas>
+        <p class="chart-note">Q1'25 ~50GW → FY2025 ~83GW → Q1'26 100GW → 2026말 목표 110GW+. 납기 2028~2030 잠김. 출처: IR, Utility Dive.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">Book-to-Bill</h3>
+    <p style="font-size:12px;color:var(--muted);">GE Vernova는 수주/매출 비율을 분기마다 시사. 아래는 공시 수주·매출 기반 계산치(추정 포함, 단정 금지).</p>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>수주(Orders)</th><th>매출</th><th>추정 Book-to-Bill</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2025</td><td class="num">$10.2B</td><td class="num">$8.0B</td><td class="num">~1.28x</td><td>+8% 수주</td></tr>
+        <tr><td>Q4 2025</td><td class="num">$22.2B</td><td class="num">$11.0B</td><td class="num up">~2.0x</td><td>+65% 수주</td></tr>
+        <tr><td>Q1 2026</td><td class="num">$18.3B</td><td class="num">$9.3B</td><td class="num up">~1.97x</td><td>+71% 유기적</td></tr>
+        <tr><td>FY2025</td><td class="num">$59.3B</td><td class="num">$38.1B</td><td class="num up">~1.56x</td><td>+34% 수주</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 백로그 해석 포인트</div>Book-to-Bill이 1.5~2.0x로 지속되며 백로그가 매출 성장보다 빠르게 적층되고 있다. 특히 FY2025 Equipment 백로그가 +$21B(+50%)로 급증하면서 경영진은 "신규 수주가 과거 저마진 백로그를 고마진으로 교체 중(약 6%p accretion)"이라고 언급 — 미래 P&amp;L 마진 개선의 선행지표. 가스터빈 슬롯 100GW의 약 20%가 데이터센터 부하 직결. <em>(근거: FY2025 IR, Q1 2026 PR. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약/SRA</span>Chevron — 데이터센터 4GW 발전 (7HA 가스터빈 7기)</div>
+      <p style="font-size:13px;margin:6px 0;">Chevron의 데이터센터向 4GW 발전 프로젝트에 7HA급 가스터빈 7기 공급(2027년까지), 첫 인도 2026년. Chevron이 가스 공급. 슬롯예약(SRA) 단계로 시작 — 완전 구속 계약 여부는 공시상 명시되지 않음.</p>
+      <div class="deal-meta">출처: GE Vernova Gas Power 자료 · gevernova.com</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">수주</span>Q1 2026 가스터빈 21GW 신규 체결</div>
+      <p style="font-size:13px;margin:6px 0;">미국·베트남·멕시코·브라질·캐나다 고객 대상 가스터빈 21GW 신규 약정(백로그 4GW + SRA 일부). 가스 슬롯 100GW 도달에 기여.</p>
+      <div class="deal-meta">출처: naturalgasintel · Q1 2026</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">수주</span>Electrification — 데이터센터 장비 $2.4B 수주 (Q1 2026)</div>
+      <p style="font-size:13px;margin:6px 0;">Q1 2026 데이터센터용 그리드·전력변환 장비 수주만 $2.4B로, 직전 연간 전체 수주를 초과. 그리드 장비 부족 구조의 직접 수혜.</p>
+      <div class="deal-meta">출처: power-eng / mgrid · Q1 2026</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약(구속)</span>GE Hitachi BWRX-300 SMR — Darlington (Ontario, OPG)</div>
+      <p style="font-size:13px;margin:6px 0;">온타리오 전력공사(OPG)와 4기 계약, 1호기 건설 중(서방 최초 상업 SMR 착공). 2030년대 말 완공 목표. 원자력 SMR 상업화의 선두 레퍼런스.</p>
+      <div class="deal-meta">출처: GE Vernova Nuclear PR · gevernova.com/nuclear</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">MOU/탐색</span>BWRX-300 — Poland / Estonia(Fermi Energia) / 동남아</div>
+      <p style="font-size:13px;margin:6px 0;">폴란드 설계 개발 진척, 에스토니아 Fermi Energia SMR 선정(MOU 성격), 히타치 통한 동남아 배치 탐색. 구속력 있는 건설 계약 여부는 미확정.</p>
+      <div class="deal-meta">출처: GE Vernova PR (LOI/MOU 단계)</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">파트너십</span>NRG Energy × GE Vernova × Kiewit — 5.4GW 가스 JV (참고)</div>
+      <p style="font-size:13px;margin:6px 0;">NRG가 ERCOT/PJM용 가스 4개 프로젝트 약 5.4GW를 GE Vernova 터빈 + Kiewit EPC로 추진(2029~2032 단계 가동). GE Vernova 슬롯 선확보 사례.</p>
+      <div class="deal-meta">출처: Utility Dive · 2025</div>
+    </div>
+  </section>
+
+  <!-- 7. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">7. 핵심 포인트 &amp; 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (스핀오프 후 펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>매출·마진 동반 개선:</strong> 매출 FY2024 $34.9B → FY2025 $38.1B(+9%), 조정 EBITDA 마진 5.8% → 8.4% → Q1'26 9.6%. 2028년 매출 $52B·마진 20% 목표. (출처: 각 분기 IR, Investor Update)</li>
+        <li><strong>백로그 적층 가속:</strong> 스핀오프 $116B → Q1'26 $163B. Book-to-Bill 1.5~2.0x 지속. Equipment 백로그가 고마진으로 교체 중. (출처: 각 분기 PR)</li>
+        <li><strong>가스터빈 슬롯 매진:</strong> 백로그+SRA 100GW, 납기 2028~2030 잠김. 2026말 110GW+ 전망. (출처: IR, Utility Dive)</li>
+        <li><strong>FCF 급증 + 자본환원 전환:</strong> FCF FY2024 $1.7B → FY2025 $3.7B. 배당 2배($0.25→$0.50), 자사주 $6B→$10B 확대. (출처: Investor Update 2025-12-09)</li>
+        <li><strong>GAAP 지표 왜곡:</strong> Q4'25·Q1'26 순이익은 세금혜택·Prolec 재평가 일회성 포함. 정상화 수익은 조정 EBITDA 기준으로 판단.</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — "슬롯 매진"이 만드는 가격결정력</div>
+      가스터빈 capacity가 2028~2030년분까지 사실상 잠겨 있고, 신규 capacity 증설 없이는 경쟁사 진입이 불가능하다. 이는 단순 수주 증가가 아니라, AI 데이터센터·재산업화가 "전력 조달 슬롯"을 두고 경쟁하는 구조에서 GE Vernova가 가격을 결정하는 위치에 고착됨을 의미. SRA가 43→56GW(Q1'26)로 늘어난 것은 고객이 미래 슬롯을 선점하려 선불 예약하는 신호. <em>(근거: Q1 2026 PR, CEO 발언. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — Electrification 마진 급반전의 지속성</div>
+      Electrification 마진이 7%대(2024)에서 17.8%(Q1'26)로 급반전. 그리드 장비(변압기·스위치기어) 글로벌 공급 부족이 구조적이며, Prolec 변압기 수직통합으로 원가·납기 통제력 확보. 이 마진이 일시적 믹스인지 구조적 재가격(re-pricing)인지가 핵심 판단 포인트 — 백로그 $30B→$60B 목표(2028)가 달성되면 구조적 전환 입증. <em>(근거: 각 분기 IR, Investor Update. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — Equipment 백로그의 마진 accretion (선행지표)</div>
+      FY2025 Equipment 백로그 +$21B(+50%) 적층 과정에서 "약 6%p 마진 accretion"이 언급됨. 이는 현재 P&amp;L에 아직 반영되지 않은 미래 마진 개선이 백로그에 이미 계약 형태로 잠겨 있다는 의미. 시장이 현재 마진(9.6%)으로만 밸류에이션하면, 2027~2028년 마진 점프를 과소평가할 수 있음. <em>(근거: FY2025 IR. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="warn"><div class="h">⚠ 리스크</div>① Wind 적자 지속(Q1'26 EBITDA $(382)M) — 2028년 6% 마진 목표 미달 시 전사 마진 희석. ② 밸류에이션 부담(EV/EBITDA 70x) — 2028 목표 선반영, 실행 차질 시 조정 위험. ③ GAAP 일회성 이익이 실적 가시성을 흐림. ④ 가스터빈 수요가 데이터센터 Capex 사이클에 연동 — AI 투자 둔화 리스크.</div>
+  </section>
+
+  <!-- 8. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">8. IR 이벤트 (최근 4개 분기 + Investor Update)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: GE Vernova IR 보도자료·SEC 8-K·웹캐스트. 공식 전문 트랜스크립트 일부 미확보분은 보도자료·언론 기반 요약. 어닝콜=파랑, Investor Update=보라.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-04-22 · 매출 $9.3B, 가스 100GW 도달, 가이던스 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$9.3B (+16% YoY)</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$0.90B (9.6%, +390bp)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$17.44 (일회성 포함)</span></div>
+          <div><span class="k">조정 EPS</span><span class="v">~$2.01 (출처 충돌, 미확정)</span></div>
+          <div><span class="k">FCF</span><span class="v">$4.8B (전년比 4배+)</span></div>
+          <div><span class="k">수주</span><span class="v">$18.3B (+71% 유기적)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>가스터빈 슬롯(백로그+SRA) 100GW 도달. 총 백로그 $163B.</li>
+          <li>Electrification 매출 +61%, 마진 17.8%. 데이터센터 장비 수주 $2.4B.</li>
+          <li>2026 가이던스 상향: 매출 $44.5~45.5B, 조정 EBITDA 마진 12~14%, FCF $6.5~7.5B.</li>
+          <li>Prolec GE 잔여지분 인수 완료(변압기 수직통합) — 순이익에 일회성 재평가 차익 $4.0B 반영.</li>
+          <li>발표 후 주가 약 +14%.</li>
+        </ul>
+        <div class="src">출처: GE Vernova Q1 2026 보도자료·SEC 8-K · 2026-04-22 · <a href="https://www.gevernova.com/news/press-releases/ge-vernova-reports-first-quarter-2026-financial" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료·언론 기반, 컨콜 톤]
+
+Scott Strazik (CEO):
+"올해 1분기는 우리가 그리는 그림을 그대로 보여줍니다. 매출 +16%, 수주 +71%. 가장 중요한 숫자는 가스 100기가와트입니다 — 백로그와 슬롯 예약을 합친 수치죠. 고객들이 2028년, 2029년, 2030년 슬롯을 지금 잡으려 합니다. 우리는 연말까지 2030년분까지 매진될 것으로 봅니다.
+
+Electrification은 이번 분기의 또 다른 스타입니다. 매출 61% 성장, 마진 17.8%. 데이터센터향 그리드 장비 수주만 24억 달러 — 작년 한 해 전체를 한 분기에 넘어섰습니다.
+
+가이던스를 올립니다. 매출 445~455억 달러, 조정 EBITDA 마진 12~14%, 잉여현금흐름 65~75억 달러."
+
+CFO:
+"순이익에는 Prolec 잔여지분 인수에 따른 재평가 차익 약 40억 달러가 포함됩니다. 일회성입니다. 정상화 기준으로는 조정 EBITDA 9.6% 마진, 전년 대비 390bp 개선이 본질입니다. 잉여현금흐름은 48억 달러로 전년의 4배를 넘었습니다."
+
+※ 공식 전문 트랜스크립트 일부 미확보. Q1 2026 조정 EPS는 출처 간 $2.01 vs $2.06 충돌 — SEC 8-K 원문 확인 권장.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4/FY 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-01-28 · 연간 $38.1B, 백로그 $150.2B, Prolec 인수로 outlook 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">Q4 매출</span><span class="v">$11.0B (+4% YoY)</span></div>
+          <div><span class="k">연간 매출</span><span class="v">$38.1B (+9%)</span></div>
+          <div><span class="k">Q4 조정 EBITDA</span><span class="v">$1.2B (10.6%)</span></div>
+          <div><span class="k">연간 조정 EBITDA</span><span class="v">$3.2B (8.4%)</span></div>
+          <div><span class="k">Q4 수주</span><span class="v">$22.2B (+65%)</span></div>
+          <div><span class="k">연간 FCF</span><span class="v">$3.7B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 백로그 $150.2B(+25%). Equipment $64B(+50%), Services $86B(+13%).</li>
+          <li>Q4 순이익 $3.7B에 약 $2.9B 세금혜택 포함 — 정상화 수익은 조정 EBITDA 기준.</li>
+          <li>Prolec GE 인수(변압기)로 Electrification outlook 상향.</li>
+          <li>FY2025 주주환원 총 $3.6B.</li>
+        </ul>
+        <div class="src">출처: GE Vernova Q4/FY2025 보도자료 · 2026-01-28 · <a href="https://www.gevernova.com/news/articles/ge-vernova-releases-fourth-quarter-full-year-2025-financial" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반, 컨콜 톤]
+
+Scott Strazik (CEO):
+"2025년은 GE Vernova가 분사 이후 본격적으로 실력을 증명한 해였습니다. 매출 381억 달러, 9% 성장. 백로그는 1,502억 달러로 25% 늘었습니다. 특히 장비 백로그가 50% 증가했는데, 이 신규 수주들은 과거보다 훨씬 높은 마진을 담고 있습니다.
+
+수주는 4분기에만 222억 달러, 65% 성장. 가스, 그리드, 원자력 모두 강합니다."
+
+CFO:
+"4분기 순이익에는 약 29억 달러의 세금혜택이 포함되어 있습니다. 본질적 수익력은 조정 EBITDA 32억 달러, 마진 8.4%로 보시는 게 맞습니다. 잉여현금흐름 37억 달러, 주주환원 36억 달러를 집행했습니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-10-22 · 매출 $10.0B, Power 수주 +50%</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$10.0B (+12% YoY)</span></div>
+          <div><span class="k">순이익</span><span class="v">$0.5B (4.5%)</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$0.8B (8.1%)</span></div>
+          <div><span class="k">수주</span><span class="v">$14.6B (+55%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Power 수주 $7.8B(+50%). 가스터빈 수요 강세 지속.</li>
+          <li>Wind 매출 $1.8B(+13%).</li>
+          <li>2025 가이던스 재확인: 매출 $36~37B, 마진 8~9%, FCF $3.0~3.5B.</li>
+        </ul>
+        <div class="src">출처: GE Vernova Q3 2025 보도자료 · 2025-10-22 · <a href="https://www.gevernova.com/sites/default/files/gev_webcast_pressrelease_10222025.pdf" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+3분기 매출 100억 달러(+12%), 조정 EBITDA 8억 달러(마진 8.1%). 수주 146억 달러(+55%)로 가스 중심 강세. Power 세그먼트 수주가 78억 달러(+50%)로 두드러졌고, 2025년 가이던스(매출 360~370억, 마진 8~9%, FCF 30~35억 달러)를 재확인했습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-07-23 · 매출 $9.1B, Electrification 마진 14.6%, 가이던스 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$9.1B (+12% YoY)</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$0.8B (8.5%, +80bp)</span></div>
+          <div><span class="k">수주</span><span class="v">$12.4B</span></div>
+          <div><span class="k">백로그</span><span class="v">$128.7B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Electrification 마진 14.6%(+740bp) — 마진 급반전 본격화.</li>
+          <li>가스 수요 강세로 연간 가이던스 상향.</li>
+        </ul>
+        <div class="src">출처: GE Vernova Q2 2025 보도자료·SEC 8-K · 2025-07-23 · <a href="https://www.sec.gov/Archives/edgar/data/0001996810/000199681025000132/gevpressrelease2q25.htm" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 보도자료 기반]
+
+2분기 매출 91억 달러(+12%), 조정 EBITDA 8억 달러(마진 8.5%, +80bp). 수주 124억 달러, 백로그 1,287억 달러. Electrification 마진이 14.6%로 740bp 급등하며 그리드 장비 가격·물량 동반 개선을 입증. 연간 가이던스를 상향했습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Investor Update 2025-12-09 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#7c3aed">Investor Update</span>
+        <span class="ctitle">2025-12-09 · 2028 목표 대폭 상향 + 배당 2배 + 자사주 $10B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">이벤트</span><span class="v">Investor Update (CMD)</span></div>
+          <div><span class="k">주최</span><span class="v">GE Vernova IR</span></div>
+          <div><span class="k">형식</span><span class="v">공개 웹캐스트 + 슬라이드·트랜스크립트</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>2028 목표 상향:</strong> 매출 $52B(기존 $45B), 조정 EBITDA 마진 20%(기존 14%), 2025~28 누적 FCF $22B+(기존 $14B+).</li>
+          <li>세그먼트 2028 마진: Power·Electrification 각 22%, Wind 6%.</li>
+          <li>2028 백로그 목표 ~$200B(기존 $135B). Electrification 백로그 $30B→$60B.</li>
+          <li><strong>자본환원:</strong> 분기배당 $0.25→$0.50(2배), 자사주 한도 $6B→$10B 확대.</li>
+        </ul>
+        <div class="src">출처: GE Vernova Investor Update · 2025-12-09 · <a href="https://www.businesswire.com/news/home/20251209799497/en/" target="_blank">링크</a></div>
+        <div class="transcript">
+[요약 번역 — 웹캐스트·보도자료 기반]
+
+Scott Strazik (CEO):
+"오늘 우리는 목표를 크게 올립니다. 2028년 매출 520억 달러, 조정 EBITDA 마진 20%. 1년 전 제시한 450억 달러·14%에서 대폭 상향입니다. 가스 슬롯이 매진되고, 그리드 장비 가격이 구조적으로 재책정되고 있기 때문입니다.
+
+자본환원도 강화합니다. 분기 배당을 25센트에서 50센트로 두 배 올리고, 자사주 매입 한도를 60억에서 100억 달러로 확대합니다. 2025년부터 2028년까지 누적 잉여현금흐름을 220억 달러 이상으로 봅니다."
+
+CFO:
+"세그먼트별 2028년 마진 목표는 Power와 Electrification 각각 22%, Wind 6%입니다. 백로그는 2028년 약 2,000억 달러를 목표로 하며, 특히 Electrification 백로그를 300억에서 600억 달러로 두 배 늘릴 계획입니다."
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+const q = ["Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const rev = [7300,8200,8900,10600,8000,9100,10000,11000,9300];
+const ebitda = [200,500,200,1100,500,800,800,1200,896];
+const ebMargin = [2.6,6.4,2.7,10.2,5.7,8.5,8.1,10.6,9.6];
+
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+/* ① 매출 + 조정 EBITDA */
+new Chart(document.getElementById('chartRevOp'),{type:'bar',data:{labels:q,datasets:[
+  {label:'매출 (좌축, $M)',data:rev,backgroundColor:'rgba(37,99,168,.7)',yAxisID:'y'},
+  {label:'조정 EBITDA (우축, $M)',data:ebitda,type:'line',borderColor:'#b45309',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:'#b45309',tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'EBITDA $M'}}}}});
+
+/* ② 조정 EBITDA 마진 */
+new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'조정 EBITDA 마진 %',data:ebMargin,borderColor:'#b45309',backgroundColor:'rgba(180,83,9,.1)',fill:true,tension:.3,pointRadius:4}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ③ 세그먼트 매출 FY2025 vs Q1 2026 */
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:['Power','Electrification','Wind'],datasets:[
+  {label:'FY2025 ($M)',data:[19767,9642,9110],backgroundColor:'rgba(37,99,168,.75)'},
+  {label:'Q1 2026 ($M)',data:[4971,2959,1432],backgroundColor:'rgba(180,83,9,.75)'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* 파이 FY2025 매출 비중 */
+new Chart(document.getElementById('chartPie25'),{type:'doughnut',data:{labels:['Power ($19.8B)','Electrification ($9.6B)','Wind ($9.1B)'],datasets:[{data:[19767,9642,9110],backgroundColor:['#2563a8','#b45309','#9ca3af']}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+/* Q1 2026 세그먼트 EBITDA */
+new Chart(document.getElementById('chartSegEbitda'),{type:'bar',data:{labels:['Power','Electrification','Wind'],datasets:[{label:'Q1 2026 EBITDA ($M)',data:[811,528,-382],backgroundColor:[ 'rgba(31,122,77,.8)','rgba(31,122,77,.8)','rgba(192,57,43,.8)']}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ⑤ 주가 (개략값) */
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Apr'24","Jul'24","Oct'24","Jan'25","Apr'25","Jul'25","Oct'25","Jan'26","Apr'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[137,175,260,330,310,480,600,620,760,871],borderColor:'#b45309',backgroundColor:'rgba(180,83,9,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+/* ⑥ 총 백로그 */
+new Chart(document.getElementById('chartBacklog'),{type:'bar',data:{labels:['스핀오프(24.4)','Q2 2025','FY2025','Q1 2026'],datasets:[
+  {label:'총 백로그 ($B)',data:[116,128.7,150.2,163],backgroundColor:'rgba(37,99,168,.7)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ⑦ 분기 수주 */
+new Chart(document.getElementById('chartOrders'),{type:'bar',data:{labels:["Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],datasets:[
+  {label:'수주 ($B)',data:[10.2,12.4,14.6,22.2,18.3],backgroundColor:'rgba(180,83,9,.75)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ⑧ 가스터빈 슬롯 */
+new Chart(document.getElementById('chartGas'),{type:'line',data:{labels:["Q1'25","FY2025","Q1'26","2026E"],datasets:[
+  {label:'가스 백로그+SRA (GW)',data:[50,83,100,110],borderColor:'#1f7a4d',backgroundColor:'rgba(31,122,77,.12)',fill:true,tension:.3,pointRadius:5}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}GW`}}},scales:{y:{grid,title:{display:true,text:'GW'},ticks:{callback:v=>v+'GW'}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
