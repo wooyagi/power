@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FuelCell Energy (FCEL) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#0891b2; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#ecfeff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#155e75;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>FuelCell Energy, Inc.</h1>
+      <p>NASDAQ: FCEL · 카보네이트 연료전지·탄소포집 · Danbury, CT</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#0891b2;">연료전지(MCFC)</span>
+      <span class="badge" style="background:#c0392b;">적자·구조조정</span>
+      <span class="badge" style="background:#7c3aed;">데이터센터 피벗</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#backlog">백로그</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#datacenter">데이터센터</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·리스크</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="warn"><div class="h">⚠ 적자·소형주 / 액면병합 주의</div>FuelCell Energy는 매출이 빠르게 성장(FY2025 +41%)하나 <strong>깊은 적자(FY2025 순손실 -$191M)</strong>이며, 현금은 거의 전적으로 <strong>희석적 ATM 주식발행</strong>으로 유지된다. 2024-11-08 <strong>1:30 액면병합</strong>을 단행했으므로 주당 수치는 병합 반영. 본 리포트는 회계연도 10월 말 기준(FQ1~FQ4)이며, 일부 분기 GAAP 세부는 "데이터 없음".</div>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">핵심 기술</span><span class="v">카보네이트(MCFC) + 탄소포집</span></div>
+        <div class="kv-item"><span class="k">본사 / CEO</span><span class="v">Danbury, CT / Jason Few</span></div>
+        <div class="kv-item"><span class="k">FY2025 매출</span><span class="v up">$158.2M (+41%)</span></div>
+        <div class="kv-item"><span class="k">FY2025 순손실</span><span class="v dn">-$191M</span></div>
+        <div class="kv-item"><span class="k">백로그 (Q2 FY26)</span><span class="v">$1.14B</span></div>
+        <div class="kv-item"><span class="k">현금 (Q2 FY26)</span><span class="v">$440.9M</span></div>
+        <div class="kv-item"><span class="k">데이터센터 파이프라인</span><span class="v up">~4GW (제안)</span></div>
+        <div class="kv-item"><span class="k">조정 EBITDA 흑자 목표</span><span class="v">100MW 연환산 생산</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>FuelCell Energy는 용융탄산염 연료전지(MCFC, 카보네이트) 기반 분산 발전 기업이다. 카보네이트 플랫폼은 발전과 동시에 <strong>외부 배기에서 CO2를 포집</strong>할 수 있는 유일한 상용 연료전지로, ExxonMobil과 탄소포집을 공동 개발한다(고체산화물 SOFC/SOEC도 보유하나 FY2025 $65.8M 손상으로 전략적 비중 축소). 코네티컷 토링턴에서 모듈을 제조한다.</p>
+    <p>2024~2025년 다단계 구조조정(2025년 6월 인력 22% 감축, 영업비용 30% 목표)으로 초점을 카보네이트 분산 발전 + <strong>데이터센터</strong>로 좁혔다. 본 데스크 관점에서 FCEL은 Bloom Energy와 같은 연료전지 섹터의 <strong>소형 도전자</strong>로, 백로그 ~$1.1B(Bloom ~$20B 대비)·데이터센터 거래 대부분이 아직 LOI/협력 단계라는 점을 분명히 인식해야 한다.</p>
+
+    <h3 class="sub">사업 구조 (4개 매출 흐름) & 경쟁 포지션</h3>
+    <div class="card">
+      <strong>① Product (모듈 판매) · ② Service (장기 서비스 계약)</strong>
+      <p>고객 소유 발전소용 카보네이트 모듈 판매 + 장기 서비스. 한국 GGE(세계 최대 연료전지 단지, 58.8MW·42개 모듈)가 핵심. <em>경쟁 강점(근거):</em> "10·20·50MW 유틸리티 스케일 플랫폼을 7년+ 연속 가동으로 입증한 유일한 연료전지 제조사"(CEO 발언). 단, 제품 백로그는 $36M으로 작음.</p>
+    </div>
+    <div class="card">
+      <strong>③ Generation (자가 발전 PPA)</strong>
+      <p>회사 소유 발전소를 PPA로 운영(가중평균 15년). 백로그의 약 81%($928.5M)가 여기에 해당 — 장기·자본집약적. 코네티컷 Hartford(7.4MW, 20년 PPA, $160M)·Derby·Groton. <em>주의:</em> Groton은 Q2 FY26 $42.6M 비현금 손상.</p>
+    </div>
+    <div class="card">
+      <strong>④ Advanced Technologies (탄소포집·정부 R&D)</strong>
+      <p>ExxonMobil Rotterdam 탄소포집 공동개발(2026 가동 목표), DOE 과제. 백로그 $15.4M. <em>차별점:</em> 발전+CO2 포집+수소 동시 생산은 "타 기술 불가"(CEO).</p>
+    </div>
+    <div class="warn"><div class="h">⚠ Bloom Energy 대비</div>Bloom(BE)이 명백한 선두 — 400MW+ 배치, 백로그 ~$20B(SOFC 제품 ~$6B), 대형 AI 데이터센터 계약 다수. FCEL은 훨씬 작은 도전자(백로그 ~$1.1B)로, 데이터센터용 표준 12.5MW 블록을 막 출시했고 SDCL과 최대 450MW LOI(2026-01). FCEL의 차별점은 통합 탄소포집, Bloom은 규모·수주에서 압도.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·손익 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: FuelCell 분기 8-K·보도자료(GlobeNewswire), stockanalysis 교차확인. 회계연도 10월 말, 1:30 액면병합 반영. 적자 기업 — 조정 EBITDA·현금소진이 핵심.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 조정 EBITDA (백만 USD)</p>
+      <canvas id="chartRev" height="100"></canvas>
+      <p class="chart-note">매출은 FY2025 강한 성장(GGE 모듈) 후 Q2 FY26 첫 YoY 감소(-5%). 조정 EBITDA는 -$16~19M 적자 지속(구조조정으로 점진 개선). 출처: 각 분기 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: 매출 $M, EPS는 병합조정 $)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기(회계)</th><th>분기말</th><th>매출</th><th>YoY</th><th>순손실(보통주)</th><th>EPS</th><th>조정 EBITDA</th></tr></thead>
+      <tbody>
+        <tr><td>FQ1 FY25</td><td>'25-01</td><td class="num">19.0</td><td class="num up">+14%</td><td class="num dn">데이터 없음</td><td class="num dn">-1.42</td><td class="num">데이터 없음</td></tr>
+        <tr><td>FQ2 FY25</td><td>'25-04</td><td class="num">37.4</td><td class="num up">+67%</td><td class="num dn">-37.7</td><td class="num dn">-1.79</td><td class="num">-19.3</td></tr>
+        <tr><td>FQ3 FY25</td><td>'25-07</td><td class="num">46.7</td><td class="num up">+97%</td><td class="num dn">-92.5*</td><td class="num dn">-3.78</td><td class="num">-16.4</td></tr>
+        <tr><td>FQ4 FY25</td><td>'25-10</td><td class="num">55.0</td><td class="num up">+12%</td><td class="num dn">-30.7</td><td class="num dn">-0.85</td><td class="num">-17.7</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td>'25-10</td><td class="num">158.2</td><td class="num up">+41%</td><td class="num dn">-191.1</td><td class="num dn">-7.42</td><td class="num">-74.4</td></tr>
+        <tr><td>FQ1 FY26</td><td>'26-01</td><td class="num">30.5</td><td class="num up">+61%</td><td class="num dn">-26.1</td><td class="num dn">-0.49</td><td class="num">-17.0</td></tr>
+        <tr style="background:#ecfeff;font-weight:700;"><td>FQ2 FY26</td><td>'26-04</td><td class="num">35.6</td><td class="num dn">-5%</td><td class="num dn">-77.6**</td><td class="num dn">-1.45</td><td class="num">-17.1</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 손상·일회성</div>* FQ3 FY25 순손실 -$92.5M에는 비현금 손상 $64.5M + 구조조정 $4.1M 포함. ** FQ2 FY26 영업손실 -$77.9M·순손실 -$77.6M에는 Groton $42.6M 비현금 손상 포함(조정 주당손실은 -$0.53). FY2025 손상 총 $65.8M(고체산화물). 분석은 조정 EBITDA 기준. ※ 일부 분기 GAAP 순손실·총이익은 미확보("데이터 없음"). 출처: FuelCell 8-K·보도자료.</div>
+  </section>
+
+  <!-- 3. 백로그 -->
+  <section id="backlog">
+    <h2 class="sec">3. 백로그 & 구성</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: FuelCell 분기 보도자료. 총 백로그 = 제품+서비스+발전+Advanced Technologies.</p>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">② 총 백로그 추이 ($B)</p>
+        <canvas id="chartBacklog" height="150"></canvas>
+        <p class="chart-note">$1.26B(FQ2'25) → $1.14B(FQ2'26)로 완만 감소 — 매출 인식이 신규 수주를 상회(Book-to-Bill <1 추정). 출처: 각 분기 PR.</p>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">③ 백로그 구성 (Q2 FY26, 백만 USD)</p>
+        <canvas id="chartComp" height="150"></canvas>
+        <p class="chart-note">Generation $928.5M(약 81%), Service $155.4M, Product $36.1M, Adv Tech $15.4M. 발전(자가 PPA) 비중 압도. 출처: Q2 FY26.</p>
+      </div>
+    </div>
+    <div class="warn"><div class="h">⚠ 백로그 해석 주의</div>백로그의 약 81%가 <strong>장기 자가 발전(Generation) PPA</strong>로, 건설에 자본이 필요하고 15년에 걸쳐 인식된다. <strong>제품 백로그는 $36M으로 작고</strong> 총 백로그는 YoY 감소 중(Book-to-Bill <1 추정, 추정임 명시). 데이터센터 파이프라인(4GW)은 아직 백로그가 아닌 제안 단계 — 백로그≠파이프라인≠매출.</div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06-10)</span><span class="v">~$16.55 (병합조정)</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$0.9B</span></div>
+        <div class="kv-item"><span class="k">발행주식수</span><span class="v">~52.9M (+83% YoY)</span></div>
+        <div class="kv-item"><span class="k">P/E</span><span class="v">N/A (적자)</span></div>
+        <div class="kv-item"><span class="k">EV</span><span class="v">~$560~600M</span></div>
+        <div class="kv-item"><span class="k">현금</span><span class="v">$440.9M</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">없음</span></div>
+        <div class="kv-item"><span class="k">ATM 한도</span><span class="v">$200M (2025-12 확대)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">④ 데이터센터 제안 파이프라인 (GW)</p>
+      <canvas id="chartPipe" height="90"></canvas>
+      <p class="chart-note">Q1 FY26 1.5GW → Q2 FY26 4GW(+267% QoQ), 약 89%가 데이터센터, 평균 제안 130MW. ※ 제안 파이프라인(백로그 아님). 출처: 각 분기 콜.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션·희석 주의</div>적자로 P/E 무의미, EV/EBITDA 음수. 시장은 데이터센터 피벗·파이프라인 전환 기대로 평가. <strong>발행주식이 YoY +83% 급증</strong>(현금은 ATM $153M+ 조달로 유지, 영업 아님). 주당 가치 희석이 구조적 — 매출이 성장해도 per-share 침식 위험. (시총은 주가·시점별 출처 간 $0.7~1.1B 차이.)</div>
+  </section>
+
+  <!-- 5. 데이터센터 -->
+  <section id="datacenter">
+    <h2 class="sec">5. 데이터센터 피벗 (핵심 논지)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: FuelCell 분기 콜·보도자료. 2025~26 전략 초점.</p>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>파이프라인 급증:</strong> 제출 제안 Q4 FY25 "수백 MW" → Q1 FY26 1.5GW → <strong>Q2 FY26 4GW(+267% QoQ)</strong>, 약 89%가 데이터센터, 평균 130MW.</li>
+        <li><strong>표준 12.5MW 블록 출시(Q2 FY26):</strong> 1.25MW 모듈러 → 유틸리티 스케일 아키텍처. 계약 전환 가속 기대.</li>
+        <li><strong>차별점:</strong> 빠른 time-to-power(그리드 인터커넥션 5~7년·터빈 3~5년 회피), 열통합(50MW에 흡수냉각 9,000톤 ≈ 5MW 부하 절감), 인허가 마찰 최소(무공해·저소음).</li>
+        <li><strong>토링턴 확장:</strong> 100MW → 350MW(FY26 $20~30M 착수) → 500MW(Q2 FY26 발표, $200~275M). 수요·계약·구조화 자본에 맞춰 단계 확장.</li>
+        <li><strong>파트너십(대부분 LOI/협력):</strong> SDCL 최대 450MW LOI(2026-01), Diversified·TESIAC ADC 최대 360MW 협력(2025-03), 한국 Inuverse AI 데이터센터 MOU.</li>
+      </ul>
+    </div>
+    <div class="insight"><div class="h">💡 해석</div>데이터센터 피벗은 명확하고 공격적(12.5MW 블록·토링턴 500MW·SDCL/Diversified)이나, <strong>거래 대부분이 LOI·협력 단계로 구속 발주가 아니며</strong> FCEL은 Bloom($20B 백로그) 대비 규모가 작다. 파이프라인 4GW 중 일부만 구속 전환돼도 현 백로그($1.1B)를 압도하나, "파이프라인≠백로그≠매출"이며 전환·자금조달이 미입증 촉매. <em>(근거: 각 분기 콜. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약(구속)</span>Gyeonggi Green Energy (한국) — 120MW 모듈 + 서비스</div>
+      <p style="font-size:13px;margin:6px 0;">2024-05-28. 세계 최대 연료전지 단지(화성 바란산단). 모듈 구매 + 장기 서비스. FY2025 22개 모듈 인도, 잔여 인도 H2 FY2026. 한국 누적 108MW 설치/백로그.</p>
+      <div class="deal-meta">출처: FuelCell IR/GlobeNewswire · 2024-05-28</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약(구속)</span>CGN (한국) — 10MW 리파워링</div>
+      <p style="font-size:13px;margin:6px 0;">2025-07-30. 8개 카보네이트 모듈. 제품 백로그 $24M + 서비스 $7.7M 추가. FY2026부터 인도.</p>
+      <div class="deal-meta">출처: FuelCell IR · 2025-07-30</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약(구속)</span>Hartford(CT) — 7.4MW, 20년 PPA ($160M)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-01-22. Eversource/United Illuminating과 20년 PPA, 발전 백로그 $160M+. Toyota Tri-gen(롱비치항, 세계 최초 tri-gen, DOE 2025 Better Project Award)도 가동.</p>
+      <div class="deal-meta">출처: FuelCell IR · 2025-01-22 · Toyota Newsroom</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">LOI</span>SDCL — 데이터센터 최대 450MW</div>
+      <p style="font-size:13px;margin:6px 0;">2026-01-20. Sustainable Development Capital(SDCL)과 글로벌 데이터센터용 연료전지 최대 450MW 의향서(LOI). 기관 자본·인프라 운용 결합. <strong>구속 발주 아님</strong>.</p>
+      <div class="deal-meta">출처: FuelCell IR · DCD · 2026-01-20</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">협력</span>Diversified Energy + TESIAC — 오프그리드 데이터센터 최대 360MW</div>
+      <p style="font-size:13px;margin:6px 0;">2025-03-10. 석탄광 메탄+천연가스 활용 오프그리드 데이터센터 전력 ADC(인수·개발사) 설립 협력(VA/WV/KY). "powered land 솔루션"(가스+전력). <strong>확정 발주 아님</strong>.</p>
+      <div class="deal-meta">출처: FuelCell IR/Diversified IR · 2025-03-10</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">R&D/실증</span>ExxonMobil Rotterdam — 탄소포집</div>
+      <p style="font-size:13px;margin:6px 0;">카보네이트 탄소포집 실증 — Rotterdam 정유시설에 모듈 운송(2026 가동 목표). 발전+90%+ CO2 포집+수소 동시 생산. 상업화는 실증 성공 후. (현행 상업계약 여부는 자료 미확보.)</p>
+      <div class="deal-meta">출처: FuelCell IR / Q2~Q4 콜</div>
+    </div>
+  </section>
+
+  <!-- 7. 핵심·리스크 -->
+  <section id="alpha">
+    <h2 class="sec">7. 핵심 시그널 &amp; 리스크</h2>
+
+    <h3 class="sub">긍정·과소평가 신호 (근거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 신호 1 — 파이프라인 변곡</div>
+      제안 파이프라인이 Q2 FY26 ~4GW(+267% QoQ), 약 89% 데이터센터. 일부만 구속 전환돼도 현 백로그($1.1B)를 크게 상회. 단 "파이프라인≠백로그". <em>(근거: Q2 FY26 콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 2 — 구조조정이 조정 EBITDA에 반영</div>
+      30% 영업비용 감축으로 조정 EBITDA가 YoY 개선($(25.3)→$(17.7)M Q4, $(19.3)→$(17.1)M Q2). 토링턴 500MW 확장 발표는 수요 확신의 자본 약정 신호. <em>(근거: 각 분기 8-K)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 3 — 통합 탄소포집 차별점</div>
+      발전+탄소포집+수소 동시 생산은 "타 기술 불가"(ExxonMobil Rotterdam). 신규 12.5MW 블록이 time-to-power를 단축 — 데이터센터 셀링포인트. <em>(근거: 콜·ExxonMobil 협력)</em>
+    </div>
+
+    <div class="warn">
+      <div class="h">⚠ 리스크 1 — 현금소진 vs 손실, 희석 의존</div>
+      FY2025 순손실 -$191M, 일부 분기 음(-) 총마진. 현금은 영업이 아니라 ATM($153M+ 조달, 한도 $200M)으로 유지. 발행주식 YoY +83% — per-share 침식 구조적(Seeking Alpha는 "2027년 유동성 이슈" 경고).
+    </div>
+    <div class="warn">
+      <div class="h">⚠ 리스크 2 — 반복적 손상 = 과거 자본배분 부실</div>
+      고체산화물 $65.8M(FY25), Groton $42.6M(Q2 FY26) 손상 — 과거 투자의 가치 파괴, 발전 자산 장부가에 의문.
+    </div>
+    <div class="warn">
+      <div class="h">⚠ 리스크 3 — Bloom 대비 규모 열위·LOI 단계</div>
+      Bloom 백로그 ~$20B vs FCEL ~$1.1B. 데이터센터 traction은 대부분 LOI/협력(SDCL LOI, Diversified ADC) — 구속 발주 아님. 백로그도 YoY 감소.
+    </div>
+    <div class="warn">
+      <div class="h">⚠ 리스크 4 — 백로그 질·집중</div>
+      백로그 81%가 장기 자가 발전 PPA(건설 자본 필요), 제품 백로그는 $36M에 불과.
+    </div>
+  </section>
+
+  <!-- 8. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">8. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: FuelCell 분기 8-K·보도자료·어닝콜. 각 블록 "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q2 FY2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 FY26</span>
+        <span class="ctitle">2026-06-08 · 매출 $35.6M(-5%), 파이프라인 4GW, 12.5MW 블록 출시</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$35.6M (-5% YoY)</span></div>
+          <div><span class="k">영업손실</span><span class="v">-$77.9M (Groton $42.6M 손상)</span></div>
+          <div><span class="k">EPS</span><span class="v">-$1.45 (조정 -$0.53)</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">-$17.1M</span></div>
+          <div><span class="k">현금</span><span class="v">$440.9M</span></div>
+          <div><span class="k">백로그</span><span class="v">$1.14B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>데이터센터 파이프라인 4GW(+267% QoQ), 약 89% 데이터센터, 평균 130MW.</li>
+          <li>12.5MW 연료전지 블록 출시. 토링턴 350MW→500MW 확장($200~275M, 24개월).</li>
+          <li>ATM: 1,090만 주 $9.45($100.4M) + 분기 후 410만 주 $13.31($52.9M). "사실상 무부채".</li>
+          <li>한국 GGE 잔여 6개 모듈 H2 FY26, ExxonMobil Rotterdam 2개 유닛 운송.</li>
+        </ul>
+        <div class="src">출처: FuelCell Q2 FY26 8-K·어닝콜 · 2026-06-08 · <a href="https://www.sec.gov/Archives/edgar/data/0000886128/000110465926071181/fcel-20260608xex99d1.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/fcel-q2-fy2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q1 FY2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 FY26</span>
+        <span class="ctitle">2026-03-09 · 매출 $30.5M(+61%), 파이프라인 1.5GW, SDCL</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$30.5M (+61% YoY)</span></div>
+          <div><span class="k">순손실</span><span class="v">-$26.1M</span></div>
+          <div><span class="k">EPS</span><span class="v">-$0.49</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">-$17.0M</span></div>
+          <div><span class="k">현금</span><span class="v">$379.6M</span></div>
+          <div><span class="k">백로그</span><span class="v">$1.17B (-10.8%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>데이터센터 파이프라인 1.5GW(>80%가 데이터센터, 시설당 50~300MW, 미국 가중).</li>
+          <li>SDCL 데이터센터 파트너십(최대 450MW LOI). 토링턴 100MW→350MW.</li>
+          <li>흡수냉각으로 100MW 시설 20년간 ~$127M 증분 가치.</li>
+          <li>영업비용 $20.4M로 감소(R&D 절감), $54.9M 주식 + $25M Ex-Im.</li>
+        </ul>
+        <div class="src">출처: FuelCell Q1 FY26 보도자료 · 2026-03-09 · <a href="https://investor.fce.com/press-releases/press-release-details/2026/FuelCell-Energy-Delivers-Strong-Q126-Revenue-Growth-vs-Q125-Advances-Data-Center-Power-Strategy/default.aspx" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/fcel-q1-fy2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 FY2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 FY25</span>
+        <span class="ctitle">2025-12-18 · FY 매출 $158.2M(+41%), 구조조정 완료, 데이터센터 초점</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">Q4 매출</span><span class="v">$55.0M (+12%)</span></div>
+          <div><span class="k">FY2025 매출</span><span class="v up">$158.2M (+41%)</span></div>
+          <div><span class="k">FY 순손실</span><span class="v dn">-$191.1M</span></div>
+          <div><span class="k">FY 조정 EBITDA</span><span class="v">-$74.4M (26% 개선)</span></div>
+          <div><span class="k">현금</span><span class="v">$341.8M</span></div>
+          <div><span class="k">백로그</span><span class="v">$1.19B (+2.6%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>구조조정(2025-06 인력 22% 감축)으로 초점 강화. 100MW에서 조정 EBITDA 흑자 목표.</li>
+          <li>한국 GGE 100MW+ 백로그 + 100MW MOU. FY25 22개 모듈 인도.</li>
+          <li>OBBBA로 ITC 2032까지. 토링턴 100MW→최대 350MW(FY26 $20~30M).</li>
+          <li>Diversified Energy 협력. ATM $200M 확대(2025-12) → 발표 후 주가 하락.</li>
+        </ul>
+        <div class="src">출처: FuelCell Q4/FY2025 8-K·IR · 2025-12-18 · <a href="https://www.sec.gov/Archives/edgar/data/0000886128/000110465925122295/fcel-20251218xex99d1.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/fcel-q4-fy2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 FY2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 FY25</span>
+        <span class="ctitle">2025-09-09 · 매출 $46.7M(+97%), CGN 10MW, Inuverse MOU</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$46.7M (+97% YoY)</span></div>
+          <div><span class="k">순손실</span><span class="v">-$92.5M (손상 $64.5M 포함)</span></div>
+          <div><span class="k">조정 EPS</span><span class="v">-$0.95</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">-$16.4M</span></div>
+          <div><span class="k">현금</span><span class="v">$236.9M</span></div>
+          <div><span class="k">백로그</span><span class="v">$1.24B (+4%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>매출 +97%(GGE 8개 모듈·Ameresco). CGN 10MW 리파워링 계약. 한국 108MW.</li>
+          <li>Inuverse MOU — 한국 최대 데이터센터에 2027년부터 최대 100MW.</li>
+          <li>6월 구조조정 결실(영업비용 30% 감축). 100MW에서 조정 EBITDA 흑자 목표.</li>
+          <li>ExxonMobil Rotterdam 탄소포집 모듈 conditioning, 2026 가동 예상.</li>
+        </ul>
+        <div class="src">출처: FuelCell Q3 FY2025 8-K·GlobeNewswire · 2025-09-09 · <a href="https://www.globenewswire.com/news-release/2025/09/09/3146786/8041/en/FuelCell-Energy-Reports-Third-Quarter-of-Fiscal-2025-Results.html" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/fcel-q3-fy2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+new Chart(document.getElementById('chartRev'),{type:'bar',data:{labels:["FQ1'25","FQ2'25","FQ3'25","FQ4'25","FQ1'26","FQ2'26"],datasets:[
+  {label:'매출 (좌축, $M)',data:[19.0,37.4,46.7,55.0,30.5,35.6],backgroundColor:'rgba(8,145,178,.7)',yAxisID:'y'},
+  {label:'조정 EBITDA (우축, $M)',data:[null,-19.3,-16.4,-17.7,-17.0,-17.1],type:'line',borderColor:'#c0392b',backgroundColor:'transparent',pointRadius:4,tension:.3,yAxisID:'y2',spanGaps:true}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'매출 $M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'조정 EBITDA $M'}}}}});
+
+new Chart(document.getElementById('chartBacklog'),{type:'line',data:{labels:["FQ2'25","FQ3'25","FQ4'25","FQ1'26","FQ2'26"],datasets:[{label:'백로그 ($B)',data:[1.26,1.24,1.19,1.17,1.14],borderColor:'#0891b2',backgroundColor:'rgba(8,145,178,.1)',fill:true,tension:.3,pointRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+new Chart(document.getElementById('chartComp'),{type:'doughnut',data:{labels:['Generation $928.5M','Service $155.4M','Product $36.1M','Adv Tech $15.4M'],datasets:[{data:[928.5,155.4,36.1,15.4],backgroundColor:['#0891b2','#15803d','#7c3aed','#9ca3af']}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+new Chart(document.getElementById('chartPipe'),{type:'bar',data:{labels:["Q1 FY26","Q2 FY26"],datasets:[{label:'데이터센터 제안 파이프라인 (GW)',data:[1.5,4.0],backgroundColor:'rgba(124,58,237,.7)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}GW`}}},scales:{y:{grid,title:{display:true,text:'GW'},ticks:{callback:v=>v+'GW'}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
