@@ -1,0 +1,53 @@
+출처: earningscall.ai (NRG Energy Q1 2026 어닝콜) · 2026-05-06 · https://www.earningscall.ai/stock/transcript/NRG-2026-Q1
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Robert(Rob) Gaudette(신임 대표·CEO) · Bruce Chung(CFO) · Brandon Mulhern(IR 총괄) · Brad(가정사업) · Matt(TEF 개발). (전임 CEO Larry Coben의 후임으로 Gaudette가 취임.)
+
+────────────────────────────────────────
+재무 (Q1 2026)
+────────────────────────────────────────
+- 조정 EBITDA $1.08B (전년 대비 -$46M) — 텍사스 온화한 날씨 + Winter Storm Fern 타이밍.
+- 조정 EPS $1.49, 조정 순이익 $308M.
+- 2026 가이던스 재확인: 조정 EBITDA $5.325~5.825B, 조정 EPS $7.90~9.90, FCFbG $2.8~3.3B.
+
+자본 배분(Bruce Chung, 총 $3.05B 워터폴):
+- 부채 상환 ~$1B, 자사주·배당 ≥$1.4B(4/30까지 $817M 집행), 성장 투자 $310M.
+- 4/28 $3.5B 리파이낸싱 완료, 선순위 담보채 $1.5B 상환, 순레버리지 3x 목표.
+
+운영:
+- LS Power: 1/30 마감(Q1에 2개월 반영), 자산 기대대로. 업레이트 잠재 1GW→2GW로 상향.
+- TEF: TH Wharton 2026년 5월 COD("on time, on cost, on spec"), Cedar Bayou·Greens Bayou 2028 COD. 총 1.5GW(텍사스 약 30만 가구).
+- 데이터센터: ERCOT·PJM 하이퍼스케일러와 활발한 협상, front-of-meter, 2029 COD 목표.
+- GE Vernova/Kiewit: 건설 역량·장비 접근 확보.
+- 시장: ERCOT 시스템 피크 85GW+ 기록, 대형부하 파이프라인 2033까지 367GW+(예비). PJM West Hub 온피크 $103/MWh(+72% YoY).
+- Smart Home: 고객 2.37M(+9% YoY, 가이던스 5~6% 상회). CPower(C&I 수요반응). 가정용 VPP 텍사스 1GW 목표.
+
+신임 CEO 우선순위(Rob Gaudette):
+- "계약된 현금흐름(contracted cash flows)"과 카운터파티 듀레이션 강조. 개발 역량이 없는 규제 유틸리티와의 파트너십 가능. "대서양에서 태평양까지" 지리적 확장. 고객 약정에 정렬된 장기 발전 개발. NextEra 모델 유사.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Shar Poreza (Wells Fargo) — PJM co-location, front-of-meter vs behind-the-meter 경제성
+- Gaudette: front-of-meter가 주력, 대안 구조에도 유연.
+
+[Q2] Julian DeMoulin-Smith (Jefferies) — 전략 방향·전력커브 약세
+- Gaudette: 장기 고객 약정의 계약 발전 강조(NextEra 모델 유사).
+
+[Q3] Michael Sullivan (Wolfe) — 데이터센터 딜 진척·자사주 페이스
+- Chung: 기회적 매입 타이밍으로 계획보다 낮은 평균가 달성.
+
+[Q4] Nick Amicucci (Evercore ISI) — 가정·수요반응 시너지
+- (경영진): 기록적 Smart Home 성장, 가정+CPower 번들 계획.
+
+[Q5] Moses Sutton (BNP Paribas) — 증분 부하의 화력 상방·배터리
+- Gaudette: 배터리 경제성 악화로 근시일 건설 파이프라인 축소.
+
+[Q6] James West (Melius) — 하이퍼스케일러 계약 일정·가스 공급
+- Gaudette: 확립된 미드스트림 관계·조달 역량 확인.
+
+[Q7] Andrew Whistle (Scotiabank) — 계약 없는 PJM 업레이트 경제성·날씨 리스크
+- Gaudette: "계약 없이는 자본 투입 없음" 정책 재확인.
+
+[메모] 분기 실적은 Q2~Q4 가중. (SEC 8-K: GAAP 매출 $10,256M, GAAP 순이익 $125M, 조정 EBITDA $1,080M, 조정 EPS $1.49.)

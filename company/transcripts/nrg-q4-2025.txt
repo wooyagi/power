@@ -1,0 +1,62 @@
+출처: earningscall.ai (NRG Energy Q4/FY2025 어닝콜) · 2026-02-24 · https://www.earningscall.ai/stock/transcript/NRG-2025-Q4
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Larry Coben(회장·CEO, 자문역 전환 발표) · Bruce Chung(CFO) · Rob Gaudette(President) · Brendan Mulhern(IR). 애널리스트: Char Pereza(WF), Julian(Jefferies), Nicholas Campanella(Barclays), Michael Sullivan(Wolfe), Nick Amakuchi(Evercore), Bill(UBS), Angie Storzinski(Seaport), Carly Davenport(Goldman), Andrew Weissel(Scotiabank), David Arcaro(MS).
+
+────────────────────────────────────────
+재무 (FY2025)
+────────────────────────────────────────
+- 조정 EPS $8.24 (+21%), 조정 EBITDA $4.087B (+8%), FCFbG $2.210B ($11.63/주).
+- 2025 성과: 10년 연속 top-decile 안전, $750M 유기적 성장 목표 달성, 데이터센터 PPA 445MW 체결, TEF 1.5GW 대출 확보, 텍사스 가정용 VPP "당초 목표의 10배", 주주환원 $1.6B·배당 +8%(6년 연속).
+- 세그먼트: Texas $1.877B, East $981M, West/Other $137M, Smart Home $1.092B.
+
+2026 가이던스(LS 11개월 반영):
+- 조정 EBITDA $5.575B(중간), 조정 순이익 $1.9B, 조정 EPS $8.90, FCFbG $3.05B.
+- 2030까지 14%+ EPS·FCFbG CAGR 연장(2029→2030). "추가 데이터센터 계약·가격 상승 미가정"(보수적).
+
+전략·포트폴리오:
+- LS Power로 발전 2배 25GW, 75%+ 가스(가스 18개 자산, 주로 PJM). PJM 피킹 1GW 복합화력 전환 잠재.
+- "Bring Your Own Power": 신규 대형부하는 직접 발전 계약 + 수요반응 유연 용량. 6GW+ 가스 예약(GE Vernova/Kiewit 5.4GW + LS 1GW 업레이트).
+- 데이터센터: 445MW 외 6GW+ 장기 PPA 지원 가능 → 그 규모면 "20년 계약으로 연 $2.5B 반복 조정 EBITDA 추가" 잠재.
+- Winter Storm Fern 중 텍사스 함대 97% in-the-money 가동률.
+- Coben: 자문역·장기 주주로 전환 발표, "1.8만 직원"에 감사, "최고의 시간은 아직."
+
+CFO(Bruce Chung):
+- 2030 경로: 조정 EPS $8.90(2026)→$14+(2030), FCFbG $14.50/주→$22+(2030). 둘 다 14%+ CAGR. 2030까지 총 가용자본 $18.3B(자사주 $11B, 배당 $2.2B, 성장/미배정 $2.2B), 부채 감축 $2.9B(3x 목표). 모든 프로젝트 12~15% 세전 무차입 IRR 허들.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Char Pereza (Wells Fargo) — 데이터센터 $2.5B 기회 구조·가스 리스크
+- Larry Coben: 1GW 초과 블록, 10~20년, 투자등급 카운터파티, "상당한 고정가 요소". 첫 전력 2029 후반, 이후 연 ~1GW.
+- Rob Gaudette: "매우 높은 용량요금 + 하이퍼스케일러용 heat rate 변동분. 가스 리스크는 그들이 부담. 떠넘기길 원하면 우리 가스 플랫폼으로 도와준다." PJM은 1GW 업레이트 우선, 나머지 5.4GW는 PJM 외.
+
+[Q2] Julian (Jefferies) — 14% 가이던스 내 자사주↔데이터센터 capex
+- Bruce Chung: "향후 수년 10억 달러 자사주는 거의 확정." 프로젝트 자금 조달하면서도 $1B 자사주 유지 가능. 12~15% 세전 무차입 허들 일관 적용.
+
+[Q3] Nicholas Campanella (Barclays) — 가격 목표·자금 조달
+- Rob Gaudette: "$80에서 $80+로 상향. 1.2GW GEV를 지으려면 $90~95 이상이 돼야. 장비·수익을 충당 못 하면 안 한다." 프로젝트는 프로젝트 파이낸싱이 아닌 '기업 대차대조표'(3x 레버리지)로 자금 조달.
+
+[Q4] Michael Sullivan (Wolfe) — 성장 동력·CT→CCGT 업레이트
+- Bruce Chung: $750M 프로그램(2023 발표) 정상 진행(Smart Home 50%·C&I/retail 50%). 성장 믹스 "유기적 80 : 자사주 20".
+- Rob Gaudette: 모든 플랜트에 엔지니어 배치, 1,000MW 업레이트 + 25/50MW 단위 추가 평가.
+
+[Q5] Nick Amakuchi (Evercore) — 3년 연속 beat-and-raise 비결
+- Bruce Chung: "실행, 실행, 실행." Larry Coben: "One NRG 문화 — 더 낫고 더 수익성 있게."
+
+[Q6] Bill (UBS) — 카운터파티 신용도
+- Rob Gaudette: "그렇다. 하이퍼스케일러 안에서도 더 선별." (소매 채널 ~500MW 추가분도 지속.)
+
+[Q7] Angie Storzinski (Seaport) — 가스 신규 건설 리스크(10~15년 계약 vs 40년 수명)
+- Larry Coben: "무차입 허들을 못 맞추면 아무것도 안 한다. 투기적 신규 용량 건설엔 관심 0." Rob Gaudette: "$95는 용량+변동 하단의 대표값. 자사 부지 거래는 별도 토지 거래 포함, 20년 계약 내 자본 회수." $2.5B는 "정확히 약 6GW".
+
+[Q8] Carly Davenport (Goldman) — 브리지 파워·배터리
+- Rob Gaudette: "과엔지니어링 왕복엔진"이 가장 성공적. CCGT 건설 중 임시 용량. ERCOT 1GW+ 배터리 계약(PPA·톨) 보유, 수요 변화 시 확대.
+
+[Q9] Andrew Weissel (Scotiabank) — ERCOT 배칭·1GW+ 발표 목표
+- Rob Gaudette: 배칭은 "시장에 완벽한 진전." Larry Coben: "최소 1GW, 가이던스/롤포워드에 미포함."
+
+[Q10] David Arcara (Morgan Stanley) — PJM 활동
+- Larry Coben: "PJM은 텍사스보다 느리지만 진전 중."
+(FY2025 조정 EBITDA $4.087B, 조정 EPS $8.24 — SEC 8-K.)

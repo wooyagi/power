@@ -1,0 +1,45 @@
+출처: earningscall.ai (NRG Energy Q2 2025 어닝콜) · 2025-08-06 · https://www.earningscall.ai/stock/transcript/NRG-2025-Q2
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Lawrence(Larry) Coben(CEO) · Bruce Chung(CFO) · Rob Gaudette(부사장, 도매시장운영) · Brendan Mulhern(IR).
+
+────────────────────────────────────────
+재무 (Q2 2025)
+────────────────────────────────────────
+- 조정 EBITDA $909M, 조정 EPS $1.73(정규화 +8% YoY), 조정 순이익 $339M, FCFbG $914M.
+- 상반기: 조정 EPS $4.42(+40~48%), 조정 EBITDA $2.35B+(+11%), FCFbG $1.207B.
+- 세그먼트: Texas $512M Q2($811M H1, +13%/+20%), East Gas $99M Q2($573M H1), West/Other $43M Q2($120M H1), Smart Home $255M Q2($531M H1, retention 90%+).
+
+주요 발전:
+- 데이터센터: 데이터센터 사업자와 장기 소매 전력계약 초기 295MW(1GW까지 확대 가능), 목표 범위 중간 이상 + 보호 마진, 10년 초기(20년 연장), 2030 완전 가동. 파이프라인 4GW+ JDA·LOI + 가스터빈 2.4GW 예약.
+- TEF: TH Wharton 대출 확보, 2026 중반 COD. 추가 2개 1.1GW 2028.
+- 가정용 VPP: Renew Home 파트너십, 2025 목표 20MW→150MW(7.5배), 장기 1GW(2035).
+- 자본: TLB +$1B, 자사주 $768M(목표 $1.3B의 60%, 평균 $112.74). LS Power 세금 절감 ~$1B+(2027~2030).
+- 2025 가이던스 재확인(상단 추세).
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Julien Dumoulin-Smith (Jefferies) — 데이터센터 계약 구조·마진
+- Coben: "프리미엄 마진의 C&I 계약에 가까움", 인덱싱·헤징 등 보호 장치. 상업 민감성으로 세부 비공개. "이제 시작." 4GW LOI 전부가 성사되진 않음.
+
+[Q2] Nicholas Campanella (Barclays) — 4GW 백로그 전환 일정
+- Coben: 분기별 예측 자제 — 인터커넥션 스터디 등 통제 밖 요인. (VPP는 텍사스 검증 후 PJM 평가, 연내 PJM 확장은 어려움.)
+
+[Q3] Agnieszka Storozynski (Seaport) — LS 세금 효익·자산 인수 제약
+- Bruce Chung: 세금 절감 당초 가정 초과, $1B+ 가능(2027~2030 집중).
+- Coben: 소규모 인수 여력 지속(LS 규모는 아님). TEF 자산은 그리드 전력만(직접 전용 불가), 기존 자산은 front-of-meter로 데이터센터 공급 가능.
+
+[Q4] Michael Sullivan (Wolfe) — 데이터센터 부하 램프·가이던스 cadence
+- Rob Gaudette: 모듈형 엣지 용량(작은 클립)으로 점진 램프.
+- Coben: 3분기 콜에서 NRG standalone 2026 가이던스, LS는 연말 콜(마감 시) 또는 Q1 2026 콜에 반영.
+
+[Q5] Carly Davenport (Goldman) — VPP 강세·GE Vernova/Kiewit 진척
+- Coben: 3개월 결과는 "아직 초기"이나 기대 크게 상회. GEV/Kiewit는 4GW 파이프라인과 "매우 밀접" — LOI 진전 시 가스 자산 프로젝트에 활성화.
+
+[Q6] David Arcaro (Morgan Stanley) — 마진 보호·추가성 수요·텍사스 가격
+- Coben: 인덱싱·헤징 등 다중 보호. 그리드 신뢰성 우려로 "엄청난 수요(additionality)".
+- Gaudette: 오프피크 상승 추세이나 선도커브는 미래 수요 저평가 — "텍사스 커브에 상방 충분."
+
+[메모] (SEC 8-K: 조정 EBITDA $909M, 조정 EPS $1.73, GAAP 순손실 -$104M(비현금 MtM), FCFbG $914M.)

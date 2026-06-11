@@ -1,0 +1,47 @@
+출처: earningscall.ai (NRG Energy Q3 2025 어닝콜) · 2025-11-05 · https://www.earningscall.ai/stock/transcript/NRG-2025-Q3
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Larry Coben(회장·대표·CEO) · Bruce Chung(CFO) · Rob(시장운영) · Brad(Smart Home) · Brendan Mulhern(IR).
+
+────────────────────────────────────────
+재무 (Q3 2025)
+────────────────────────────────────────
+- 조정 EPS $2.78 (+32% YoY), 조정 EBITDA $1.205B (+14% YoY), FCFbG $828M.
+- YTD: 조정 EPS $7.17 (+36%), 조정 EBITDA $3.2B+ (+12%).
+- 세그먼트: Texas $807M(YTD $1.618B, +29%), East $107M(YTD $680M), West/Other $19M(YTD $139M). Vivint Q3 $272M(YTD $803M).
+
+가이던스:
+- 2025 재확인(9월 상향): 조정 EPS $7.55~8.15, 조정 EBITDA $3.875~4.025B, FCFbG $2.1~2.25B.
+- 2026 standalone(신규): 조정 EBITDA $3.925~4.175B, FCFbG $1.975~2.225B (LS 영향으로 EPS 미제시).
+
+주요 발전:
+- 데이터센터: 계약 445MW + 신규 150MW 프리미엄(메릴랜드/일리노이 PJM), 가격 $80/MWh 초과. 파이프라인 5.4GW(GEV/Kiewit). LOI 전분기 대비 +35%.
+- LS Power: Q1 2026 마감 순조, 우호적 조건 자금 조달, 14% EPS CAGR(2029까지, 데이터센터 제외), 규제 신청 완료.
+- TEF: TH Wharton 건설 진행, 2번째 프로젝트 대출 완료.
+- Vivint: 고객 +9%(목표 5~6% 상회), 기록적 retention, 가정용 VPP 150MW 파일럿(20MW→150MW 상향).
+- 자본: 자사주 YTD $1.084B(목표 $1.3B의 85%, 평균 $125.35), 배당 +7~9%, 신규 $3B 한도(2028까지).
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Shar Perez (Wells Fargo) — 데이터센터 발표 시점
+- Coben: GE Vernova 파트너십 내 발표 예상하나 협상 복잡성으로 구체 시점 보류.
+
+[Q2] Julian DeMoulin-Smith (Jefferies) — GE Vernova 장비 일정·PJM 확장
+- Coben: 계약 일정 자신, 월별 가이던스는 자제. 5.4GW 규모 강조. LS 마감 후 PJM 개발 가속(가스+저장). 일리노이 입법은 운영 기회 대비 부차적.
+
+[Q3] Angie Storozinski (Seaport) — 마진 민감도·실행
+- Bruce Chung: LS 인수 후 민감도 분석 업데이트 예정.
+- Coben: "우리는 한 일을 말하지, 할 일을 말하지 않는다."
+
+[Q4] David Arcaro (Morgan Stanley) — 소매 마진
+- Brad: 텍사스 마진 견조, 에너지 절감+홈 자동화+보안 통합으로 동부 가격 경쟁 방어.
+
+[Q5] Ryan Levine (Citi) — Smart Home 성장 가정·데이터센터 계약 조건
+- (경영진): 2026 Smart Home은 2025와 유사 성장 가정($750M 계획에 5~6% 순고객 성장 내재). 데이터센터 고객은 10년+ 듀레이션 선호, 자체 발전 자금 조달 시 더 장기. 비용 전가 조항 표준화로 고정 마진.
+
+[Q6] Andrew Weisel (Scotiabank) — 자사주 가이던스
+- (경영진): 연 $1B 자사주는 LS 발표 시 제시한 디레버리징 일정 반영.
+
+(Q3 조정 EBITDA $1,205M, 조정 EPS $2.78 — SEC 8-K.)
