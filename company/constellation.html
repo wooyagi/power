@@ -86,6 +86,17 @@
   .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
   .hl-green{background:var(--hl-green);border-radius:2px;}
   .hl-red{background:var(--hl-red);border-radius:2px;}
+  /* 전문 모달 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:12px;width:90%;max-width:780px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h3{font-size:15px;font-weight:700;margin:0;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:20px;overflow-y:auto;font-size:13px;line-height:1.75;white-space:pre-wrap;color:#333;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
   @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -359,17 +370,7 @@
           <li>PJM 데이터센터 프레임워크 예상보다 빠르게 진전. PUCT가 CyrusOne/Freestone 순계량 승인(2026 4Q 가동).</li>
         </ul>
         <div class="src">출처: Constellation Q1 2026 8-K·어닝콜 · 2026-05-11 · <a href="https://www.fool.com/earnings/call-transcripts/2026/05/11/constellation-ceg-q1-2026-earnings-transcript/" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료·트랜스크립트 기반, 컨콜 톤]
-
-Joe Dominguez (CEO):
-"올해 1분기는 두 가지 이야기입니다. 첫째, Calpine 통합이 시작됐습니다 — 매출이 두 배 가까이 늘었고, 우리는 이제 무탄소 원자력과 디스패처블 가스를 한 지붕 아래 가진 거의 유일한 회사입니다. 둘째, 우리는 2026년 가이던스 110~120억 센트(주당 $11~12)를 유지합니다. 분명히 말씀드립니다 — 이건 베이스라인입니다. 여기서 실적을 의미 있게 끌어올릴 실행 가능한 기회가 여럿 있습니다.
-
-PJM의 데이터센터 프레임워크는 우리가 예상한 것보다 빠르게 움직이고 있습니다. 텍사스에서는 PUCT가 CyrusOne Freestone 순계량 합의를 승인했고, 올 4분기에 전력을 공급하기 시작합니다."
-
-CFO:
-"조정 영업 EPS는 $2.74로 컨센서스 $2.59를 넘었습니다. Calpine은 풀이어 기준 주당 약 2달러를 더합니다. 2026~27년 성장 전 잉여현금흐름은 84억 달러로 봅니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/ceg-q1-2026.txt', 'Constellation Q1 2026 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -393,11 +394,7 @@ CFO:
           <li>Calpine 인수 완료 임박(2026-01-07 완료). 2026 Outlook 콜 2026-03-31 별도 개최.</li>
         </ul>
         <div class="src">출처: Constellation Q4/FY2025 8-K · 2026-02-24 · <a href="https://www.sec.gov/Archives/edgar/data/0001868275/000186827526000029/ceg-20260224991.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-"2025년 조정 영업 EPS는 $9.39로, 4년 연속 가이던스 중간값을 넘었습니다. 이사회는 2026년 배당을 10% 인상하기로 했습니다. Calpine 인수는 모든 승인을 마치고 마감 직전이며(이후 2026년 1월 7일 완료), 통합 회사의 2026년 전망은 3월 31일 별도 콜에서 상세히 설명하겠습니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/ceg-q4-2025.txt', 'Constellation Q4 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -419,11 +416,7 @@ CFO:
           <li>여름 고수요 + 우호적 가격 환경.</li>
         </ul>
         <div class="src">출처: Constellation Q3 2025 8-K · 2025-11-07 · <a href="https://www.sec.gov/Archives/edgar/data/0001868275/000186827525000089/ceg-20251107991.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-3분기 조정 영업 EPS는 $3.04로 전년 동기 $2.74에서 개선됐습니다. GAAP EPS $2.97, 매출 65.7억 달러. 여름철 높은 수요와 우호적 가격이 실적을 견인했습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/ceg-q3-2025.txt', 'Constellation Q3 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -445,11 +438,7 @@ CFO:
           <li>6월 Meta Clinton 20년 PPA(1,121MW) 체결 직후 분기.</li>
         </ul>
         <div class="src">출처: Constellation Q2 2025 8-K · 2025-08-07 · <a href="https://www.sec.gov/Archives/edgar/data/0001868275/000186827525000070/ceg-20250807991.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-2분기 조정 영업 EPS는 $1.91로 전년 동기 $1.68에서 개선됐습니다. 6월에 체결한 Meta Clinton 원전 20년 PPA(1,121MW)가 하이퍼스케일러 계약 모멘텀을 이어갔습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/ceg-q2-2025.txt', 'Constellation Q2 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -516,6 +505,37 @@ document.body.addEventListener('click',e=>{
   let el=e.target;
   while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
 });
+
+/* ── 전문 모달 ── */
+async function openTranscript(path, title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = '불러오는 중...';
+  document.getElementById('transcriptModal').classList.add('open');
+  try {
+    const r = await fetch(path);
+    const text = await r.text();
+    document.getElementById('modalBody').textContent = text;
+  } catch(e) {
+    document.getElementById('modalBody').textContent = '전문을 불러올 수 없습니다.';
+  }
+}
+function closeModal() {
+  document.getElementById('transcriptModal').classList.remove('open');
+}
+document.getElementById('transcriptModal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
 </script>
+
+<div class="modal-overlay" id="transcriptModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">컨퍼런스 콜 전문</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 </body>
 </html>

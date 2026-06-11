@@ -1,0 +1,50 @@
+출처: earningscall.ai (Constellation Energy Q3 2025 어닝콜) · 2025-11-07 · https://www.earningscall.ai/stock/transcript/CEG-2025-Q3
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Joe Dominguez(대표·CEO) · Dan Eggers(최고재무책임자, CFO) · Emily Duncan(IR SVP) · Jim McHugh(상업 부문) · Brian(운영팀).
+
+────────────────────────────────────────
+재무 지표 (Q3 2025)
+────────────────────────────────────────
+- 조정 영업 EPS: $3.04
+- GAAP EPS: $2.97
+- 연간 가이던스(독립 기준): 주당 $9.05~$9.45
+- 주가: 연초 대비 +50% 이상
+
+────────────────────────────────────────
+준비 발언 하이라이트
+────────────────────────────────────────
+- Dominguez: "또 한 번의 강한 운영·재무 분기". 원자력 함대 가동률 96.8%(업계 평균 대비 약 +4%p). 상업팀이 장기 전망을 상회하는 마진으로 "탁월한 성과".
+- 데이터 경제: 시장이 "그 어느 때보다 뜨겁다". 하이퍼스케일러 협상은 "7회 스트레치를 지난" 단계이나 마지막 이닝이 "길어질 수 있다"고 신중. front-of-meter(계량기 앞)에 집중.
+- Calpine: DOJ 승인이 마지막 관문, "정부 셧다운 영향 없음". 자산 매각 일정은 후순위 — "서두를 필요 없다".
+- 규제 성과: 메릴랜드 Conowingo 댐 50년 운영 라이선스 확보. 메릴랜드 신속 절차로 배터리 800MW + 가스 700MW 제안.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Shar Perez (Wells Fargo)
+질문: front-of-meter vs behind-the-meter 딜 구조, 원자력-가스 가격 수렴.
+- Dominguez: 가스 대비 원자력의 지속가능성 우위를 재강조.
+
+[Q2] Steve Fleissman (Wolfe Research)
+질문: Calpine 자산 매각 지연.
+- Dominguez: 우호적 시장 환경을 감안해 매각 시점에 "시간을 들이겠다"는 자신감.
+
+[Q3] Jeremy Tonnet (J.P. Morgan)
+질문: Three Mile Island(Crane) 재가동 업데이트.
+- Dominguez: 핵심 항목 완료, 예상치 못한 난관 없음.
+
+[Q4] David O'Carroll (Morgan Stanley)
+질문: 수요반응(DR) 이니셔티브.
+- Jim McHugh: GridBeyond와 파트너십으로 약 1,000MW 목표, 장기 계약·플로어 가격 제공.
+
+[Q5] Angie Sorosinski (Seaport)
+질문: bring-your-own-generation 경쟁 우려.
+- Dominguez: 경쟁사 대비 계약 실행 품질에 자신.
+
+[Q6] Paul Zimbardo (Jefferies)
+질문: 업레이트 기회.
+- Dominguez: 식별된 업레이트 잠재력 약 900~1,000MW, 주요 프로젝트로 LaSalle·Limerick. 업레이트는 신규 건설 대비 추가 인력·연료 비용을 피할 수 있음.
+
+[메모] 조정 영업 EPS $3.04(전년 $2.74), GAAP $2.97, 매출 $6,570M. 여름 고수요·우호적 가격이 견인. (SEC 8-K 기준.)
