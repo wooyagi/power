@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talen Energy (TLN) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#0f766e; --accent2:#15803d;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#f0fdfa;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#134e4a;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="index.html">← 기업 분석</a>
+    <div class="hdr-brand">
+      <h1>Talen Energy Corporation</h1>
+      <p>NASDAQ: TLN · PJM 독립발전사업자(IPP)·원자력 · Houston, TX</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#0f766e;">머천트 IPP</span>
+      <span class="badge" style="background:#15803d;">Susquehanna 원전</span>
+      <span class="badge" style="background:#7c3aed;">AWS 데이터센터</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#fleet">함대·발전</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#aws">AWS·데이터센터</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#alpha">핵심·리스크</a>
+    <a href="#calls">IR 이벤트</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">사업</span><span class="v">PJM 독립발전(IPP)</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Houston, TX</span></div>
+        <div class="kv-item"><span class="k">총 용량</span><span class="v">~13.1GW (Freedom·Guernsey 후)</span></div>
+        <div class="kv-item"><span class="k">Susquehanna 원전</span><span class="v">~2.2~2.5GW (90% 보유)</span></div>
+        <div class="kv-item"><span class="k">FY2025 조정 EBITDA</span><span class="v">$1,035M</span></div>
+        <div class="kv-item"><span class="k">2026 가이던스</span><span class="v up">EBITDA $1.75~2.05B</span></div>
+        <div class="kv-item"><span class="k">AWS PPA</span><span class="v up">최대 1,920MW (~2042)</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">2024-07 NASDAQ (TLN)</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Talen Energy는 PJM 최대급 순수 독립발전사업자(IPP)로, 핵심 자산은 미국 6번째 규모 원전인 <strong>Susquehanna 원자력발전소(~2.2~2.5GW, 90% 보유)</strong>다. 2022년 5월 Chapter 11을 신청해 약 $22억 부채를 정리하고 2023년 5월 출자전환으로 출범, 2024년 7월 NASDAQ(TLN)에 상장했다. 2025년 11월 Moxie Freedom·Guernsey 가스(~2.8GW), 2026년 Cornerstone(~2.6GW 가스) 인수로 함대를 ~13.1GW로 확대 중이다.</p>
+    <p>본 데스크 관점에서 Talen의 핵심 논지는 <strong>Susquehanna 부지의 Amazon AWS 데이터센터 거래</strong>다. 2024년 co-location(behind-the-meter) 구조가 FERC 기각(300MW 제한)을 겪은 뒤, 2025년 6월 <strong>front-of-the-meter PPA(최대 1,920MW, 2042년까지)</strong>로 재구조화하며 머천트 리스크를 크게 낮췄다.</p>
+
+    <h3 class="sub">사업 구조 & 경쟁 해자 (근거 포함)</h3>
+    <div class="card">
+      <strong>① Susquehanna 원자력 (왕관의 보석)</strong>
+      <p>~2.2~2.5GW, Talen 90% 보유, 연 발전량의 약 50%·무탄소. PJM 내 희소한 디스패처블 무탄소 기저부하. 데이터센터 캠퍼스와 물리적 인접 — co-location/PPA의 선점 우위. FY2024 함대 강제정지율 2.2%(고신뢰). (근거: 시장지위·EFOF)</p>
+    </div>
+    <div class="card">
+      <strong>② 가스 함대 (~9GW, 확대 중)</strong>
+      <p>가스/오일 ~6.3GW + Freedom·Guernsey(~2.8GW, 2025-11) + Cornerstone(~2.6GW, 2026 마감 예정). PJM 용량가격 상승·데이터센터 부하의 직접 수혜. 하이브리드 모델(기존+신규)로 데이터센터 적정성 해결.</p>
+    </div>
+    <div class="card">
+      <strong>③ 석탄 (퇴역 중)</strong>
+      <p>역사적 ~5GW. 자체 보유 석탄 퇴역 방침. Brandon Shores·H.A. Wagner는 PJM과 RMR 합의로 2029-05-31까지 운영.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의</div>Talen의 핵심 지표는 <strong>조정 EBITDA·조정 FCF</strong>이다. GAAP은 헤지 시가평가(MtM)·fresh-start 회계·일회성으로 극심히 왜곡(FY2025 GAAP 순손실 -$219M인데 조정 EBITDA $1,035M — 2024년 $888M 매각차익 부재 + Q4 $501M 비현금 주식보상 회계 변경 영향). 파산 후 공개 이력이 짧아 본 리포트는 FY2024~Q1 2026 기준이며, 12개 분기 GAAP 시계열 일부는 "데이터 없음".</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 조정 EBITDA·FCF 추이</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Talen 분기 8-K·보도자료, stockanalysis 교차확인. 핵심 지표는 조정 EBITDA·조정 FCF. GAAP은 MtM·일회성으로 왜곡.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 조정 EBITDA · 조정 FCF (백만 USD)</p>
+      <canvas id="chartQ" height="100"></canvas>
+      <p class="chart-note">Q2'25는 Susquehanna 연장 정비로 EBITDA $90M·FCF -$78M로 저점. Q1'26 EBITDA $473M·FCF $350M으로 급증(Freedom·Guernsey + 용량/ROR + AWS ramp). 출처: 각 분기 8-K.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② 연간 조정 EBITDA · 조정 FCF (백만 USD)</p>
+      <canvas id="chartA" height="90"></canvas>
+      <p class="chart-note">FY2024 $770M/$283M → FY2025 $1,035M/$524M → 2026E 중간 ~$1,900M/~$1,080M(가이던스). 출처: 각 연도 보도자료.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 (단위: 백만 USD, EPS $)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>기간</th><th>매출</th><th>GAAP 순이익</th><th>GAAP EPS</th><th>조정 EBITDA</th><th>조정 FCF</th></tr></thead>
+      <tbody>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2024</td><td class="num">데이터 없음</td><td class="num up">998*</td><td class="num">–</td><td class="num">770</td><td class="num">283</td></tr>
+        <tr><td>Q1 2025</td><td class="num">1,130</td><td class="num dn">-135</td><td class="num dn">-2.94</td><td class="num">200</td><td class="num">87</td></tr>
+        <tr><td>Q2 2025</td><td class="num">630</td><td class="num up">72</td><td class="num">0.72</td><td class="num">90</td><td class="num dn">-78</td></tr>
+        <tr><td>Q3 2025</td><td class="num">데이터 없음</td><td class="num up">207</td><td class="num">데이터 없음</td><td class="num">363</td><td class="num">223</td></tr>
+        <tr><td>Q4 2025</td><td class="num">데이터 없음</td><td class="num">데이터 없음</td><td class="num">–</td><td class="num">382</td><td class="num">292</td></tr>
+        <tr style="background:#fafafa;font-weight:700;"><td>FY2025</td><td class="num">~2,600</td><td class="num dn">-219**</td><td class="num">–</td><td class="num up">1,035</td><td class="num up">524</td></tr>
+        <tr style="background:#f0fdfa;font-weight:700;"><td>Q1 2026</td><td class="num">1,130</td><td class="num up">63</td><td class="num">1.33</td><td class="num up">473</td><td class="num up">350</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ GAAP 왜곡</div>* FY2024 GAAP 순이익 $998M은 Cumulus·ERCOT 매각 차익 ~$888M으로 부풀려짐. ** FY2025 GAAP 순손실 -$219M은 2024 매각차익 부재 + Q4 $501M 비현금 주식보상 회계 변경(영업과 무관). 분석은 조정 EBITDA·FCF 기준. 2026 가이던스: 조정 EBITDA $1.75~2.05B, 조정 FCF $980M~1.18B(Cornerstone 미포함). 출처: Talen 8-K.</div>
+  </section>
+
+  <!-- 3. 함대·발전 -->
+  <section id="fleet">
+    <h2 class="sec">3. 함대 &amp; 발전</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Talen 포트폴리오·FY2024/2025 보도자료. 인수 반영(~13.1GW). 연료별 용량은 개략값.</p>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">연료별 용량 (개략값, GW)</p>
+        <canvas id="chartFleet" height="180"></canvas>
+        <p class="chart-note">원자력 ~2.3GW(Susquehanna), 가스/오일 ~9GW(Freedom·Guernsey 포함), 석탄/RMR ~2GW(2029까지). 총 ~13.1GW. ※ 개략값. 출처: talenenergy.com.</p>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px;">
+        <p class="chart-title">발전·운영 지표</p>
+        <canvas id="chartGen" height="180"></canvas>
+        <p class="chart-note">FY2024 총발전 36.3TWh(~50% 무탄소), FY2025 ~40TWh(+10%). FY2024 강제정지율 2.2%, FY2025 4.7%. 출처: 보도자료.</p>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:13px;margin:0;"><strong>핵심:</strong> Susquehanna가 연 발전량의 약 50%·무탄소. 2025년 봄 Susquehanna 2호기 연장 정비로 Q2/Q3 조정 EBITDA·FCF 압박(단일 자산 집중 리스크). 2026년 봄 1호기 정비 예정. PJM 용량가격 $329.17/MW-day(이전 $270 대비 상승)가 직접 수혜.</p>
+    </div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 &amp; 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (~2026-06-10)</span><span class="v">~$338.55</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$15.5B (~45.7M주)</span></div>
+        <div class="kv-item"><span class="k">P/E (TTM, GAAP)</span><span class="v">~54x (왜곡)</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA</span><span class="v">~67x (TTM, 왜곡)</span></div>
+        <div class="kv-item"><span class="k">배당</span><span class="v">없음</span></div>
+        <div class="kv-item"><span class="k">자사주 잔여</span><span class="v">$2B (2028까지)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">③ 주가 추이 (개략값, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. AWS 거래·데이터센터 테마로 급등. 애널리스트 평균 목표가 ~$474.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>GAAP 기반 P/E(~54x)·EV/EBITDA(~67x)는 MtM·fresh-start·일회성으로 왜곡 — 시장은 전향 조정 EBITDA·FCF와 AWS 계약으로 평가. 배당 없음, FCF 전액을 자사주(~24% 발행주식 $2B@$149 매입)·M&A에 투입. 2027 ~$34 FCF/주·11% FCF 수익률 전망. 1년 +63% 상승으로 AWS/데이터센터 옵셔널리티가 상당 부분 반영, 애널리스트 목표가 $474(+~30%).</div>
+  </section>
+
+  <!-- 5. AWS·데이터센터 -->
+  <section id="aws">
+    <h2 class="sec">5. AWS · 데이터센터 (핵심 논지)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Talen IR·FERC·언론. behind-the-meter co-location 분쟁 → front-of-meter PPA 재구조화 타임라인.</p>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>시점</th><th>이벤트</th><th>내용</th><th>성격</th></tr></thead>
+      <tbody>
+        <tr><td>2024-03</td><td>Cumulus 캠퍼스 매각</td><td>AWS에 $650M, Susquehanna 인접 960MW 캠퍼스</td><td class="up">구속(완료)</td></tr>
+        <tr><td>2024(원)</td><td>ISA 300MW</td><td>co-location 부하 300MW, 480MW 증설 시도</td><td>—</td></tr>
+        <tr><td>2024-11-01</td><td>FERC, 증설 ISA 기각</td><td>2-1 기각(300→480MW). 기존 300MW로는 개발 가능</td><td class="dn">기각</td></tr>
+        <tr style="background:#f0fdfa;"><td>2025-06-11</td><td>AWS PPA 확대·재구조화</td><td>최대 1,920MW <strong>front-of-the-meter</strong> PPA, 2042년까지. ≤2032 풀 ramp. ~$18B 보도</td><td class="up">구속 PPA</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 구조 전환의 핵심</div>원 2024 거래는 behind-the-meter/co-location(FERC ISA 기각으로 300MW 제한)이었으나, <strong>2025년 6월 확대 거래는 front-of-the-meter(그리드 연계 PPA, 최대 1,920MW, 2042년까지)</strong>로 FERC co-location 분쟁을 우회했다. 이는 Talen의 머천트 노출을 크게 낮추고 원자력 PTC 의존을 줄인다. AWS 풀 ramp 시 총마진의 35%가 장기 계약화(AA 신용 Amazon이 최대 매출원), 다음 1GW PPA면 50% 도달. <em>(근거: Talen IR 2025-06-11, Q1 2026 콜. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약(구속)</span>Amazon AWS — Susquehanna 최대 1,920MW PPA (2042까지)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-06-11 확대. front-of-the-meter, 최대 1,920MW 무탄소 원자력, 2042년까지(연장 옵션), ≤2032 풀 ramp. ~$18B 규모 보도. (원 2024 co-location 300MW→480MW 증설은 FERC가 2024-11 기각, 이후 front-of-meter로 재구조화.) 펜실베이니아 SMR·Susquehanna uprate 탐색 병행(비구속).</p>
+      <div class="deal-meta">출처: Talen IR · Utility Dive · PowerMag · 2025-06-11</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(완료)</span>Moxie Freedom + Guernsey — 가스 ~2.8GW</div>
+      <p style="font-size:13px;margin:6px 0;">PJM 가스 2기, 2025년 11월 마감. $1.2B TLB + $2.7B 선순위 무담보채로 자금. "2026 FCF/주 40%+ accretive". Susquehanna(Freedom 근접)·오하이오(Guernsey) 입지.</p>
+      <div class="deal-meta">출처: Talen Q3/Q4 2025 보도자료 · 2025-11</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">M&amp;A(서명·진행)</span>Cornerstone — 가스 ~2.6GW ($3.45B)</div>
+      <p style="font-size:13px;margin:6px 0;">2026-01-15 서명. Waterford(869MW CCGT, OH) + Darby(480MW CT, OH) + Lawrenceburg(1,218MW CCGT, IN), Energy Capital Partners로부터. $3.45B(현금 ~$2.55B + Talen 주식 ~$900M), 약 2027E EBITDA 6.6배. "2030까지 연 조정 FCF/주 15%+ accretive". 올여름(2026) 마감 예상.</p>
+      <div class="deal-meta">출처: Talen IR · StockTitan · 2026-01-15</div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">자본환원</span>자사주 $2B (2028까지)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-09 한도 $995M→$2B로 증액(2028까지). 누적 약 $2B(초기 발행주식의 약 24%)를 평균 ~$149/주에 매입. 배당 없음 — FCF 전액 자사주·M&A.</p>
+      <div class="deal-meta">출처: Talen 8-K · 2025-09</div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">MOU/탐색</span>Eos Energy 배터리 · SMR · uprate</div>
+      <p style="font-size:13px;margin:6px 0;">Eos Energy와 배터리 개발 MOU(비리튬, 4~12시간). 펜실베이니아 SMR·Susquehanna uprate 탐색(AWS 합의 하, 10~15년·비구속).</p>
+      <div class="deal-meta">출처: Talen Q3 2025 콜 · 2025-11</div>
+    </div>
+  </section>
+
+  <!-- 7. 핵심·리스크 -->
+  <section id="alpha">
+    <h2 class="sec">7. 핵심 시그널 &amp; 리스크</h2>
+
+    <h3 class="sub">긍정·과소평가 신호 (근거 기반)</h3>
+    <div class="insight">
+      <div class="h">💡 신호 1 — AWS PPA 재구조화가 머천트 모델을 디리스크</div>
+      가장 논쟁적이던 behind-the-meter co-location(FERC 기각)을 front-of-the-meter PPA(최대 1,920MW, 2042까지)로 전환 — 경영진은 "시장 리스크를 크게 줄이고 원자력 PTC 의존을 최소화"한다고 명시. 풀 ramp 시 총마진 35% 계약화. <em>(근거: Talen IR. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 2 — 현금창출 계단식 점프</div>
+      조정 EBITDA $770M(2024) → $1,035M(2025) → $1.75~2.05B 가이던스(2026); 조정 FCF $283M → $524M → ~$1.6B(2027E). 2026 가이던스가 2025를 거의 2배. <em>(근거: 가이던스. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 신호 3 — 저배수 accretive M&A + 자사주</div>
+      Cornerstone ~6.6x 2027E EBITDA, 2030까지 FCF/주 15%+ accretive(일부 주식 funded). 발행주식 ~24%를 $2B에 소각, $2B 추가 — 45.7M주 기반에서 강한 주당 가치 증대(무배당, FCF 전액 환원·M&A). <em>(근거: 딜 공시. 추론: 논리적 도출)</em>
+    </div>
+    <div class="warn"><div class="h">⚠ 리스크</div>① GAAP 왜곡·불투명(FY2025 GAAP -$219M vs 조정 EBITDA $1,035M, P/E ~54x·EV/EBITDA ~67x 착시). ② 단일 자산 집중(Susquehanna ~50% 발전, 2025 연장 정비가 Q2/Q3 타격). ③ 규제(FERC의 2024-11 co-location 기각 — PJM 데이터센터 부하 규정이 경제성에 영향, SMR·uprate는 비구속 탐색). ④ 레버리지(부채 funded M&A로 이자비용↑, Cornerstone 마감 리스크). ⑤ 밸류에이션($338 vs 목표 $474 — AWS 옵셔널리티 상당 부분 반영, 1년 +63%).</div>
+  </section>
+
+  <!-- 8. IR 이벤트 -->
+  <section id="calls">
+    <h2 class="sec">8. IR 이벤트 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Talen 분기 8-K·보도자료·어닝콜. 각 블록 "전문 보기"는 새 탭으로 열립니다.</p>
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q1 2026</span>
+        <span class="ctitle">2026-05-05 · 조정 EBITDA $473M, Cornerstone 서명, 2027~28 전망</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$1,130M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$473M (2배+ YoY)</span></div>
+          <div><span class="k">조정 FCF</span><span class="v">$350M (4배)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$1.33</span></div>
+          <div><span class="k">순레버리지</span><span class="v">3.1x (목표 <3.5x)</span></div>
+          <div><span class="k">2026 가이던스</span><span class="v">EBITDA $1.75~2.05B 유지</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Cornerstone(~2.6GW 가스) 서명 — 올여름 마감 예상, FCF/주 "$4+" 가산.</li>
+          <li>$4B 선순위 무담보채 발행, $1.2B 담보채(8.58%) 상환(연 $40M 절감). 담보채 60%→30%.</li>
+          <li>2027~28 전망: 자사주 포함 2028 ~$41 FCF/주(1월 대비 +30%), ~11% FCF 수익률.</li>
+          <li>AWS 풀 ramp 시 총마진 35% 계약화. 개발 파이프라인 1GW+ PPA 다수, 부지 3~4GW.</li>
+        </ul>
+        <div class="src">출처: Talen Q1 2026 8-K·어닝콜 · 2026-05-05 · <a href="https://www.sec.gov/Archives/edgar/data/0001622536/000162253626000035/a20260505q12026earningsrel.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/tln-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q4 2025</span>
+        <span class="ctitle">2026-02-26 · FY 조정 EBITDA $1,035M, Freedom·Guernsey 마감</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">FY 조정 EBITDA</span><span class="v">$1,035M</span></div>
+          <div><span class="k">FY 조정 FCF</span><span class="v">$524M</span></div>
+          <div><span class="k">Q4 조정 EBITDA</span><span class="v">$382M</span></div>
+          <div><span class="k">Q4 조정 FCF</span><span class="v">$292M</span></div>
+          <div><span class="k">발전</span><span class="v">~40TWh (+10%)</span></div>
+          <div><span class="k">순레버리지</span><span class="v">3.0x</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Freedom·Guernsey(~2.8GW) 11월 마감, FCF/주 40%+ accretive. 2026 가이던스 재확인.</li>
+          <li>AWS: PPL zone ~2GW 계약, Susquehanna 2028까지 최대 960MW.</li>
+          <li>자사주 누적 $2B(~24% 발행주식, 평균 $149). Cornerstone이 2028→2027로 당겨짐.</li>
+          <li>2027 ~$1.6B FCF, ~$34/주 base. 2026 봄 PTC 미수령(Susquehanna 정비) 영향은 2025에 반영.</li>
+        </ul>
+        <div class="src">출처: Talen Q4/FY2025 8-K·IR · 2026-02-26 · <a href="https://ir.talenenergy.com/news-releases/news-release-details/talen-energy-reports-fourth-quarter-and-full-year-2025-results" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/tln-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q3 2025</span>
+        <span class="ctitle">2025-11-05 · 조정 EBITDA $363M, Freedom·Guernsey 자금조달</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">GAAP 순이익</span><span class="v">$207M</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$363M</span></div>
+          <div><span class="k">조정 FCF</span><span class="v">$223M</span></div>
+          <div><span class="k">PJM 용량가</span><span class="v">$329.17/MW-day</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>$2.7B 무담보채 + $1.2B TLB(Freedom/Guernsey). 자사주 $2B(2028까지), 연 $500M 목표.</li>
+          <li>AWS 1,920MW PPA 진행, 무탄소 300MW 잔여. Eos 배터리 MOU.</li>
+          <li>2025 가이던스 저단으로 좁힘(Q3 저변동성·Susquehanna 연장 정비), 2026 재확인.</li>
+          <li>원자력 PTC $190M 현금화. 순레버리지 ~2.6x.</li>
+        </ul>
+        <div class="src">출처: Talen Q3 2025 8-K·IR · 2025-11-05 · <a href="https://ir.talenenergy.com/news-releases/news-release-details/talen-energy-reports-third-quarter-2025-results-narrows-2025" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/tln-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag" style="background:#2563a8">Q2 2025</span>
+        <span class="ctitle">2025-08-07 · AWS PPA 확대(1,920MW), Freedom·Guernsey 합의</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$630M (+61% YoY)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$0.72</span></div>
+          <div><span class="k">조정 EBITDA</span><span class="v">$90M (정비 영향)</span></div>
+          <div><span class="k">조정 FCF</span><span class="v">-$78M (정비 capex)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>AWS PPA 확대(2025-06): front-of-meter 최대 1,920MW, 2042까지(원계약 2배).</li>
+          <li>Freedom·Guernsey(~3GW 가스) 인수 합의, 2026 FCF/주 40% accretive.</li>
+          <li>PJM 용량경매 $329.17/MW-day(underwriting $270 초과). Susquehanna 2호기 정비로 75MW 회복.</li>
+          <li>ITC "갭 0"(Safe harbor). 자사주 ~23%($2B@$150). 2025 가이던스 재확인.</li>
+        </ul>
+        <div class="src">출처: Talen Q2 2025 8-K·IR · 2025-08-07 · <a href="https://www.sec.gov/Archives/edgar/data/0001622536/000162828025038538/a20250807q22025earningsrel.htm" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/tln-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+new Chart(document.getElementById('chartQ'),{type:'bar',data:{labels:["Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],datasets:[
+  {label:'조정 EBITDA ($M)',data:[200,90,363,382,473],backgroundColor:'rgba(15,118,110,.75)'},
+  {label:'조정 FCF ($M)',data:[87,-78,223,292,350],backgroundColor:'rgba(21,128,61,.6)'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartA'),{type:'bar',data:{labels:["FY2024","FY2025","2026E"],datasets:[
+  {label:'조정 EBITDA ($M)',data:[770,1035,1900],backgroundColor:'rgba(15,118,110,.75)'},
+  {label:'조정 FCF ($M)',data:[283,524,1080],backgroundColor:'rgba(21,128,61,.6)'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+new Chart(document.getElementById('chartFleet'),{type:'doughnut',data:{labels:['원자력 ~2.3GW','가스/오일 ~9GW','석탄/RMR ~2GW'],datasets:[{data:[2.3,9,2],backgroundColor:['#15803d','#0f766e','#9ca3af']}]},options:{plugins:{legend:{position:'bottom'}}}});
+
+new Chart(document.getElementById('chartGen'),{type:'bar',data:{labels:['FY2024','FY2025'],datasets:[{label:'발전량 (TWh)',data:[36.3,40],backgroundColor:'rgba(15,118,110,.75)'}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,title:{display:true,text:'TWh'}}}}});
+
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jul'24","Sep'24","Nov'24","Jan'25","Mar'25","Jun'25","Sep'25","Dec'25","Mar'26","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[100,180,200,210,200,290,340,360,330,339],borderColor:'#0f766e',backgroundColor:'rgba(15,118,110,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
