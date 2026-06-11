@@ -86,6 +86,17 @@
   .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
   .hl-green{background:var(--hl-green);border-radius:2px;}
   .hl-red{background:var(--hl-red);border-radius:2px;}
+  /* 전문 모달 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:12px;width:90%;max-width:780px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h3{font-size:15px;font-weight:700;margin:0;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:20px;overflow-y:auto;font-size:13px;line-height:1.75;white-space:pre-wrap;color:#333;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#2563a8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
   @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -346,19 +357,7 @@
           <li>CEO Jim Burke: "2026년은 빠른 출발 — 주력 시장에서 부하 성장이 현실화."</li>
         </ul>
         <div class="src">출처: Vistra Q1 2026 보도자료·SEC 8-K · 2026-05-07 · <a href="https://investor.vistracorp.com/2026-05-07-Vistra-Reports-First-Quarter-2026-Results" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료·트랜스크립트 기반, 컨콜 톤]
-
-Jim Burke (CEO):
-"2026년은 빠르게 출발했습니다. 1분기 Ongoing 조정 EBITDA 14억 9천4백만 달러, 전년 대비 20% 성장입니다. 주력 시장에서 부하 성장이 실제로 나타나고 있습니다. AWS, Meta와 맺은 원자력 PPA, 그리고 Cogentrix 인수가 향후 성장의 발판입니다.
-
-2026년 가이던스를 재확인합니다 — Ongoing 조정 EBITDA 68~76억 달러, 조정 FCFbG 39.25~47.25억 달러. 2027년 기회는 74~78억 달러로 봅니다. 이건 Cogentrix를 제외한 숫자입니다.
-
-두 번째 신용평가사로부터 투자등급을 받았습니다."
-
-CFO:
-"1분기 GAAP 순이익 10억 2천9백만 달러에는 향후 정산될 미실현 헤지이익 7억 2천3백만 달러가 포함됩니다. 본질은 Ongoing 조정 EBITDA로 보시는 게 맞습니다. 온화한 ERCOT 날씨에도 Retail은 6천8백만 달러 흑자를 유지했습니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/vst-q1-2026.txt', 'Vistra Q1 2026 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -383,11 +382,7 @@ CFO:
           <li>2026 EBITDA 가이던스 $6.8~7.6B. Cogentrix 딜(2026-01) 직전 발표.</li>
         </ul>
         <div class="src">출처: Vistra Q4/FY2025 보도자료·SEC 8-K · 2026-02-26 · <a href="https://investor.vistracorp.com/2026-02-26-Vistra-Reports-Fourth-Quarter-and-Full-Year-2025-Results" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-"2025년 Ongoing 조정 EBITDA는 59억 1천2백만 달러로 사상 최대치이자 좁힌 가이던스를 상회했습니다. 4분기 EBITDA는 17억 4천2백만 달러로 전년 동기(19억 8천3백만)보다 낮았고, EPS는 $2.13으로 컨센서스($2.33)를 밑돌았습니다. 2026년 EBITDA 가이던스를 68~76억 달러로 제시합니다."
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/vst-q4-2025.txt', 'Vistra Q4 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -410,11 +405,7 @@ CFO:
           <li>Lotus(가스 7기) 인수 완료(2025-10-22).</li>
         </ul>
         <div class="src">출처: Vistra Q3 2025 보도자료·10-Q · 2025-11-06 · <a href="https://investor.vistracorp.com/2025-11-06-Vistra-Reports-Third-Quarter-2025-Results,-Narrows-2025-Guidance,-and-Initiates-2026-Guidance" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-3분기 GAAP 순이익 6억 5천2백만 달러, Ongoing 조정 EBITDA 15억 8천1백만 달러. 2025년 가이던스를 57~59억 달러로 좁히고 FCFbG 중간값을 상향했습니다. 2026년 가이던스를 처음으로 제시했습니다 — EBITDA 68~76억 달러. Lotus 가스 7기 인수를 10월 22일 완료했습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/vst-q3-2025.txt', 'Vistra Q3 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -436,11 +427,7 @@ CFO:
           <li>2026 중간값 기회 &gt;$6.8B로 상향(Lotus 제외 기준).</li>
         </ul>
         <div class="src">출처: Vistra Q2 2025 보도자료·SEC 8-K · 2025-08-07 · <a href="https://www.sec.gov/Archives/edgar/data/0001692819/000119312525174942/d929557dex991.htm" target="_blank">링크</a></div>
-        <div class="transcript">
-[요약 번역 — 보도자료 기반]
-
-2분기 GAAP 순이익 3억 2천7백만 달러, Ongoing 조정 EBITDA 13억 4천9백만 달러, 영업현금흐름 11억 7천1백만 달러. FY2025 가이던스 55~61억 달러를 재확인하고, 2026년 중간값 기회를 68억 달러 이상(Lotus 제외)으로 상향했습니다.
-        </div>
+        <button class="transcript-btn" onclick="openTranscript('transcripts/vst-q2-2025.txt', 'Vistra Q2 2025 어닝콜 전문')">📄 전문 보기</button>
       </div>
     </div>
 
@@ -504,6 +491,37 @@ document.body.addEventListener('click',e=>{
   let el=e.target;
   while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
 });
+
+/* ── 전문 모달 ── */
+async function openTranscript(path, title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = '불러오는 중...';
+  document.getElementById('transcriptModal').classList.add('open');
+  try {
+    const r = await fetch(path);
+    const text = await r.text();
+    document.getElementById('modalBody').textContent = text;
+  } catch(e) {
+    document.getElementById('modalBody').textContent = '전문을 불러올 수 없습니다.';
+  }
+}
+function closeModal() {
+  document.getElementById('transcriptModal').classList.remove('open');
+}
+document.getElementById('transcriptModal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
 </script>
+
+<div class="modal-overlay" id="transcriptModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">컨퍼런스 콜 전문</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 </body>
 </html>

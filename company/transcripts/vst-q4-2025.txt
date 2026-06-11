@@ -1,0 +1,46 @@
+출처: earningscall.ai (Vistra Q4/FY2025 어닝콜) · 2026-02-26 · https://www.earningscall.ai/stock/transcript/VST-2025-Q4
+
+※ 번역 안내: 아래는 위 전문을 한국어 컨퍼런스 콜 톤으로 충실히 옮긴 것입니다. 발언·수치·질의응답은 실제 콜에 근거하며 가공·날조는 없습니다. 추출 특성상 일부는 verbatim이 아닌 의미 충실 번역입니다.
+※ 발표자: Eric Weissig(IR 부사장) · Jim Burke(대표·CEO) · Chris Moldovan(EVP·CFO). Q&A 패널: Moldovan · Stacey Dore(수석임원) · Scott Hudson · Sean Stuckey.
+
+────────────────────────────────────────
+재무 실적 (FY2025 / Q4)
+────────────────────────────────────────
+- FY2025 조정 EBITDA: $5.912B (사상 최대) — Generation $4.290B, Retail $1.622B.
+- 조정 FCFbG: 약 $3.6B.
+- 2026 가이던스: 조정 EBITDA $6.8~7.6B.
+
+────────────────────────────────────────
+주요 거래·전략
+────────────────────────────────────────
+- Cogentrix 인수(2026-01 발표): 현대식 가스 10기, 5,500MW, 순가격 약 $730/kW. 2027 mid-single-digit FCF accretion, 2027~29 평균 high single-digit. 2026 하반기 마감 목표.
+- Lotus(2025-10 마감): 가스 7기, 2,600MW(PJM·뉴잉글랜드·뉴욕·캘리포니아).
+- 원자력 PPA 총 3.8GW(업계 선두): Amazon-Comanche Peak 1,200MW 20년(초기 가동 2027 4Q), Meta-PJM 2,176MW 가동분 + 433MW 업레이트 20년. Perry 인도 2026-12, Davis-Besse 2027-12 개시.
+- 수요: 2025 미국 전력소비 약 4,200TWh(+2.5%). 2007년 이후 첫 4년 연속 성장 기대. 피크 부하 ERCOT 3~5%, PJM low-single-digit(2030까지).
+- Winter Storm Fern: 피크 수요 시 ERCOT 그리드 전력의 약 93%가 화력.
+
+════════════════════════════════════════
+[Q&A 세션]
+════════════════════════════════════════
+
+[Q1] Char Perez (Wells Fargo) — PJM 규제 영향
+- Stacey Dore: Meta 딜은 PJM 규칙 변경에 영향받지 않음. 행정부·FERC가 인터커넥션 가속에 협조. 가스 계약은 하이퍼스케일러가 "궁극적으로 가스 리스크를 부담"하는 구조(대형 고정 용량요금 + 변동분).
+
+[Q2] Angie Straczynski (Seaport) — 계약 전략
+- Stacey: 기존 자산 계약의 강점 — 신규 건설 대비 "speed-to-market", co-location은 더 빠른 배치. 완공+개발 중 용량 3,600MW 이상.
+
+[Q3] Jeremy Tonet (J.P. Morgan) — 2027 가이던스·장기 전망
+- Chris Moldovan: Cogentrix 마감 후 가이던스 업데이트 예정. 최근 거래의 2027 EBITDA 예시 기여 "$700~750M". 규율 있는 자본 배분 가정 시 장기 주당 FCF "$22~25" 경로.
+
+[Q4] Steve Fleishman (Wolfe) — EPC/장비 역량
+- Stacey: 강한 터빈 OEM 관계, EPC 접근이 개발을 제약하지 않음, 고압 장비 충분 확보.
+
+[Q5] Andrew Wiesel (Scotiabank) — 원자력 업레이트 범위
+- Chris: Meta 433MW 업레이트 + Comanche Peak 약 200MW 잠재가 식별된 원자력 업레이트를 커버. 신규 원전 탐색도 지속.
+
+[Q6] David Arcaro (Morgan Stanley) — 다음 발표 시점
+- Stacey: 구체 시점 예측 자제 — "실제 계약·합의가 있을 때 발표". 고객 동기는 여전히 높음.
+
+[자본 배분/대차대조표] 2021-11 이후 약 1.67억 주 매입(평균 <$36), 주주가치 $20B+ 전달, 잔여 한도 $1.8B. 2027말 순부채/조정EBITDA 약 2.3x 목표. 주당 FCF: 2026 >$12.50, 거래 후 중간값 ~$16, 장기 경로 $22~25.
+[전망] Miami Fort 석탄→가스, PJM 증설(~300MW), Permian 신규, Beaver Valley·Comanche Peak 3.2GW 원자력 계약화 기회.
+(FY2025 조정 EBITDA $5,912M, Q4 EPS $2.13 — SEC 8-K.)
