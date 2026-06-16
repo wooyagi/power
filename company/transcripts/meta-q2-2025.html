@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta 2025 2분기(Q2 2025) 어닝콜 정리</title>
+<style>
+  :root{--ink:#13171e;--paper:#f9f9f7;--text:#1a1f29;--muted:#6b7280;--line:#e6e9ee;--accent:#1877f2;
+    --hl-yellow:rgba(255,220,0,.45);--hl-green:rgba(72,199,116,.38);--hl-red:rgba(255,100,100,.35);
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.8;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-info{flex:1;}
+  .hdr-info h1{font-size:16px;font-weight:800;margin:0;}
+  .hdr-info p{font-size:12px;color:#9aa6b7;margin:2px 0 0;font-family:var(--mono);}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 24px 120px;}
+  .transcript{font-size:14px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word;}
+  .memo-section{position:fixed;bottom:70px;right:24px;width:280px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:12px;z-index:50;}
+  .memo-section h4{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--ink);}
+  .memo-section textarea{width:100%;height:100px;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;font-family:var(--sans);resize:vertical;line-height:1.5;}
+  .memo-section textarea:focus{outline:2px solid var(--accent);border-color:transparent;}
+  .memo-status{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+  .memo-status.saved{color:#1f7a4d;}
+  .hl-toolbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  b,strong{color:#0b3d91;}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../meta.html">← Meta 리포트</a>
+  <div class="hdr-info">
+    <h1>Meta Platforms 2025 2분기(Q2 2025) 어닝콜</h1>
+    <p>2025-07-30 · Meta IR 공식 전문(full transcript) 기반 한국어 정리</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="transcript" id="transcript">※ 안내: 본 페이지는 Meta Platforms 2025년 2분기 어닝콜의 Meta IR 공식 전문(q4cdn 호스팅 PDF)을 확보하여 한국어 컨퍼런스 콜 톤으로 충실히 정리한 것입니다. 전력·에너지·데이터센터·CapEx·기가와트·클러스터 관련 발언은 굵게 표기했습니다. 통화 USD.
+
+[개요]
+- 일시: 2025년 7월 30일
+- 참석자: Mark Zuckerberg (CEO), Susan Li (CFO), Kenneth Dorell (IR 디렉터, 진행)
+- 출처: Meta Investor Relations 공식 어닝콜 전문(PDF) · https://s21.q4cdn.com/399680738/files/doc_financials/2025/q2/META-Q2-2025-Earnings-Call-Transcript.pdf
+
+══════════════════════════════════════════
+[준비된 발언 — Mark Zuckerberg, CEO]
+══════════════════════════════════════════
+강한 분기였습니다. 매일 34억 명 이상이 우리 앱 중 하나 이상을 사용하고 있으며, 견조한 비즈니스 덕분에 AI에 공격적으로 투자할 여력이 생깁니다.
+
+"지난 몇 달간 우리 AI 시스템이 스스로를 개선하는 조짐(glimpses of our AI systems improving themselves)을 보기 시작했습니다. 아직 개선 속도는 느리지만 분명합니다. 모든 면에서 인간 지능을 능가하는 AI로 정의하는 초지능(superintelligence)이 이제 시야에 들어왔다(now in sight)고 봅니다."
+
+Meta의 비전은 모든 사람에게 개인 초지능(personal superintelligence)을 제공하는 것입니다. 이를 위해 foundations·product·FAIR 팀과 차세대 모델 개발 신규 랩을 묶은 Meta Superintelligence Labs(MSL)를 신설했습니다. Llama 4.1·4.2를 향해 순항 중이며, 동시에 향후 1년 내 프런티어를 밀어붙일 차세대 모델도 개발 중입니다. 리더십은 전체 Alexandr Wang, AI 제품·응용연구 Nat Friedman, 신규 노력 Chief Scientist Shengjia Zhao입니다.
+
+★ 컴퓨트·데이터센터·전력 핵심 발언:
+"합류하는 사람들은 우리가 구축 중인 여러 멀티-GW 클러스터(several multi-GW clusters) 덕분에 전례 없는 컴퓨트에 접근하게 됩니다. 우리의 Prometheus 클러스터는 내년(2026년)에 가동되며, 세계 최초의 1GW+ 클러스터가 될 것입니다. 또한 Hyperion을 구축 중인데, 이는 수년에 걸쳐 5GW까지 확장 가능합니다(scale up to 5GW over several years). 추가로 여러 개의 titan 클러스터도 개발 중입니다."
+
+사업 기회 다섯 가지를 점검합니다: ① 광고 개선 ② 더 몰입도 높은 경험 ③ 비즈니스 메시징 ④ Meta AI ⑤ AI 디바이스.
+- 광고: AI 추천 모델 확대로 Instagram 광고 전환 +5%, Facebook +3%.
+- 몰입 경험: 추천 시스템 개선으로 이번 분기에만 Facebook 체류시간 +5%, Instagram +6%.
+- Meta AI: 월 10억 명 이상 사용. 이제 최고의 개인 AI로 만드는 데 집중.
+- AI 디바이스: Ray-Ban Meta 판매 가속, 스포츠용 Oakley Meta HSTN 출시. "AI 글래스가 초지능을 일상에 통합하는 주된 방식이 될 것."
+
+══════════════════════════════════════════
+[준비된 발언 — Susan Li, CFO]
+══════════════════════════════════════════
+[매출·이익]
+- Q2 총매출 $47.5B, +22% (보고·고정환율 동일).
+- 총비용 $27.1B (+12%). 영업이익 $20.4B, 영업이익률 43%.
+- 세율 11%. 순이익 $18.3B, EPS $7.14.
+- Family of Apps 매출 $47.1B (+22%), 광고 매출 $46.6B (+21%, 고정환율 +22%). 광고 노출 +11%, 평균 광고단가 +9%.
+- Reality Labs 매출 $370M (+5%), 영업손실 $4.5B (AI 글래스 판매 증가, Quest 판매 감소로 일부 상쇄).
+
+★ CapEx·인프라:
+- Q2 CapEx(금융리스 원금 포함) $17.0B로, 서버·데이터센터·네트워크 인프라 투자에 기인.
+- Scale AI 소수 지분 투자 포함 비시장성 지분투자 $15.1B 집행. 자사주 $9.8B 매입, 배당 $1.3B.
+
+[가이던스]
+- Q3 매출 가이던스 $47.5–50.5B.
+- 2025 총비용 $114–118B(기존 $113–118B에서 좁힘).
+- ★ 2025 CapEx 가이던스를 $66–72B로 상향 (기존 $64–72B), 중간값 기준 전년 대비 약 +$300억.
+- ★ "2026년에도 비슷하게 큰 폭의 CapEx 달러 증가가 또 한 해 이어질 것으로 예상"하며, AI 수요 충족을 위해 공격적으로 capacity를 추가 확보.
+- 2026 비용 증가율은 2025보다 높을 것. 최대 동인은 인프라(감가상각 급가속·에너지 비용 등 운영비), 그다음이 인건비.
+
+══════════════════════════════════════════
+[주요 Q&A]
+══════════════════════════════════════════
+■ Eric Sheridan (Goldman Sachs) — AI 전략 학습과 OpEx/CapEx 함의
+Zuckerberg: "지금까지 매 단계에서 가장 공격적인(가장 빠른) 가정이 실제를 가장 정확히 예측해왔다"며 진척이 빠른 쪽에 베팅.
+★ Li: 2026 인프라 비용 증가의 단일 최대 동인은 감가상각 급가속이며, 단기 수명 자산(shorter-lived assets) 비중 확대, 그리고 에너지 비용·리스·유지보수 등 운영비와 클라우드 서비스 지출 증가도 더해진다. 2026 CapEx 증가의 큰 동인은 GenAI 학습 capacity 확장(서버·네트워킹·데이터센터).
+
+■ Doug Anmuth (JPMorgan) — 오픈소스 & 2026 CapEx $1,000억+ 자체 조달 여부
+Zuckerberg: 오픈소스 기조 유지하되 "모델이 너무 커져 경쟁사만 도울 우려"와 초지능 안전 우려 언급. ★ "이건 막대한 자본을 다수의 기가와트 컴퓨트(many gigawatts of compute)로 전환하는 거대한 베팅."
+★ Li: "상당 부분은 자체 조달하되, 데이터센터를 공동 개발(co-develop)하기 위해 금융 파트너와 협력하는 방안도 모색 중이다. 확정된 거래는 없지만 대규모 데이터센터 프로젝트에 상당한 외부 자금을 끌어들이는 모델이 있을 것이라 본다."
+
+■ Justin Post (BofA) — capacity의 외부 활용 가능성 & ROI
+★ Li: "현재는 내부 사용(코어 AI 추천·광고 랭킹, 프런티어 모델 학습 capacity, 향후 추론 수요)에 충분한 capacity 확보에 집중. 외부 활용은 지금 고려하지 않는다." 코어 AI는 강한 ROI, GenAI는 리턴 커브상 훨씬 초기로 올해·내년 매출 기여 미미. 인프라는 fungibility(전용 가능성)를 염두에 두고 구축하며, CapEx의 가장 큰 비중인 서버는 필요할 때 발주해 capacity 배분 결정을 미룬다.
+
+■ Mark Shmulik (Bernstein) — 초지능 KPI & 투자-매출 관계
+Zuckerberg: "팀의 인재 질, 모델 질, 다른 AI 시스템 개선 속도"를 본다. ★ "초지능을 만든다면 모든 GPU를 고객에게 더 잘 서비스하는 데 써야 한다고 믿으며, 이는 인프라를 단순 임대/리스하는 것보다 훨씬 높은 리턴을 낼 것."
+
+■ Youssef Squali (Truist) — 글래스 & SBC 희석
+Zuckerberg: "AI에 글래스가 이상적 폼팩터"라며 강한 확신. Li: SBC 증가를 가이던스에 반영했고 자사주 매입으로 희석을 상쇄한다.
+
+[데스크 주]
+- 이 콜이 Prometheus(2026 가동 1GW+)·Hyperion(5GW 확장)·titan 클러스터를 공식 명명한 분기. ("한 클러스터가 맨해튼 대부분을 덮는다"는 표현은 본 콜 전문이 아니라 Zuckerberg의 별도 Threads 게시글 발언으로, 콜 자체에는 없음 — 출처 구분 주의.)
+- Li가 "데이터센터를 금융 파트너와 공동 개발(JV)" 모색을 처음 언급 → 이후 Q3에 Blue Owl 루이지애나 JV로 구체화.</div>
+</div>
+<div class="memo-section">
+  <h4>📝 메모</h4>
+  <textarea id="memoTA" placeholder="이 전문에서 중요한 내용 메모..."></textarea>
+  <div class="memo-status" id="memoStatus"></div>
+</div>
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+<script>
+const KEY = 'memo-' + location.pathname;
+const ta = document.getElementById('memoTA');
+const st = document.getElementById('memoStatus');
+const saved = localStorage.getItem(KEY);
+if(saved) ta.value = saved;
+let timer;
+ta.addEventListener('input', () => {
+  st.textContent = '저장 중...'; st.className = 'memo-status';
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.setItem(KEY, ta.value);
+    st.textContent = '✓ 저장됨'; st.className = 'memo-status saved';
+  }, 600);
+});
+let cc='yellow', em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+const HLKEY = 'hl-' + location.pathname;
+function saveHL(){const d=[];document.querySelectorAll('mark[data-hlid]').forEach(m=>d.push({id:m.dataset.hlid,color:m.dataset.color,text:m.textContent}));localStorage.setItem(HLKEY,JSON.stringify(d));}
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();m.dataset.color=cc;r.surroundContents(m);s.removeAllRanges();saveHL();}catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();saveHL();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

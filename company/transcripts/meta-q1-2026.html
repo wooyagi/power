@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta 2026 1분기(Q1 2026) 어닝콜 정리</title>
+<style>
+  :root{--ink:#13171e;--paper:#f9f9f7;--text:#1a1f29;--muted:#6b7280;--line:#e6e9ee;--accent:#1877f2;
+    --hl-yellow:rgba(255,220,0,.45);--hl-green:rgba(72,199,116,.38);--hl-red:rgba(255,100,100,.35);
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.8;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-info{flex:1;}
+  .hdr-info h1{font-size:16px;font-weight:800;margin:0;}
+  .hdr-info p{font-size:12px;color:#9aa6b7;margin:2px 0 0;font-family:var(--mono);}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 24px 120px;}
+  .transcript{font-size:14px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word;}
+  .memo-section{position:fixed;bottom:70px;right:24px;width:280px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:12px;z-index:50;}
+  .memo-section h4{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--ink);}
+  .memo-section textarea{width:100%;height:100px;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;font-family:var(--sans);resize:vertical;line-height:1.5;}
+  .memo-section textarea:focus{outline:2px solid var(--accent);border-color:transparent;}
+  .memo-status{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+  .memo-status.saved{color:#1f7a4d;}
+  .hl-toolbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+  b,strong{color:#0b3d91;}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../meta.html">← Meta 리포트</a>
+  <div class="hdr-info">
+    <h1>Meta Platforms 2026 1분기(Q1 2026) 어닝콜</h1>
+    <p>2026-04-29 · Meta IR 공식 전문(full transcript) 기반 한국어 정리</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="transcript" id="transcript">※ 안내: 본 페이지는 Meta Platforms 2026년 1분기(역년 1~3월) 어닝콜의 Meta IR 공식 전문(q4cdn 호스팅 PDF)을 확보하여 한국어 컨퍼런스 콜 톤으로 충실히 정리한 것입니다. 전력·에너지·데이터센터·CapEx·기가와트·실리콘 관련 발언은 굵게 표기했습니다. 통화 USD.
+
+[개요]
+- 일시: 2026년 4월 29일
+- 참석자: Mark Zuckerberg (CEO), Susan Li (CFO), Kenneth Dorell (IR 디렉터, 진행)
+- 출처: Meta Investor Relations 공식 어닝콜 전문(PDF) · https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf (Motley Fool 게시본 동일: https://www.fool.com/earnings/call-transcripts/2026/04/29/meta-meta-q1-2026-earnings-call-transcript/)
+
+══════════════════════════════════════════
+[준비된 발언 — Mark Zuckerberg, CEO]
+══════════════════════════════════════════
+커뮤니티·사업·AI 모두 강한 분기였습니다. 매일 35억 명 이상이 우리 앱 중 하나를 사용합니다. 이란 인터넷 장애와 러시아 차단의 영향으로 전체 패밀리 일간 활성이 소폭 감소했지만, 그 외 추세는 견조합니다. Instagram·Facebook의 일·월간 활성 성장이 지속되고 있고, 영상이 사상 최고 인게이지먼트를 견인하고 있습니다. WhatsApp은 미국을 포함해 호조이며, Threads는 카테고리 1위 궤도에 올라 있습니다.
+
+올해 최대 마일스톤은 Muse 모델 패밀리와 그 첫 모델 Muse Spark, 그리고 대폭 업그레이드된 신버전 Meta AI 출시입니다. 이는 Meta Superintelligence Labs(MSL)의 첫 결과물로, 선도 연구소를 구축한다는 우리 목표가 궤도에 있음을 입증합니다. 지난 10개월간 업계에서 가장 강력한 연구팀을 구축했습니다. Spark는 시각 이해, 건강, 쇼핑, 소셜 콘텐츠, 로컬, 게임 생성 등에서 선도하는 세계적 수준의 어시스턴트로 Meta AI를 끌어올렸고, 이미 더 발전된 차기 모델을 훈련 중입니다.
+
+업계 통념은 "AI가 사람을 대체한다"는 것이지만, 저는 AI가 사람의 능력을 증폭(amplify)한다고 봅니다. 미래에 사람은 덜 중요해지는 게 아니라 더 중요해집니다. 우리는 개인 에이전트(personal agent)와 비즈니스 에이전트(business agent)를 함께 구축해 양자가 생태계를 형성하게 하고 있습니다. 비즈니스 AI 초기 버전을 테스트 중인데, 주간 대화량이 연초 대비 10배로 증가했습니다.
+
+★ 인프라·CapEx·실리콘 관련 핵심 발언:
+"그런 의미에서, 우리는 올해 인프라 CapEx 전망치를 상향합니다. 그 대부분은 부품 비용 상승, 특히 메모리 가격(memory pricing) 때문입니다. 하지만 우리 자체 작업과 업계 전반에서 보는 모든 신호가 이 투자에 대한 확신을 줍니다."
+
+"우리는 투자 효율을 높이는 데 매우 집중하고 있습니다. 그 일환으로, Broadcom과 함께 개발 중인 자체 맞춤형 실리콘(custom silicon)을 1GW 이상(more than 1GW) 배치하고 있으며, 새로 도입하는 Nvidia 시스템을 보완하기 위해 상당량의 AMD 칩도 함께 배치하고 있습니다."
+
+"Meta Compute 이니셔티브의 주요 목표 중 하나는 컴퓨트 구축 효율에서 업계를 선도하는 것이며, 이것이 시간이 지나며 전략적 이점이 될 것으로 기대합니다."
+
+글래스(안경)는 일일 사용자 수가 전년 대비 3배입니다. 종일 착용용 Ray-Ban Meta Optics를 출시했고, Oakley에 이어 올해 추가 브랜드·스타일 파트너십을 예정하고 있습니다.
+
+효율 측면에서는, 인프라 지출을 늘리면서도 효율적으로 운영하겠다고 약속드립니다. 5월에 직원 규모를 축소할 계획을 내부적으로 공유했습니다. 더 가벼운 운영 모델이 빠른 실행을 가능케 하고 막대한 투자를 상쇄하는 데 도움이 됩니다.
+
+══════════════════════════════════════════
+[준비된 발언 — Susan Li, CFO]
+══════════════════════════════════════════
+[활성·매출]
+- 3월 기준 Family of Apps 일간 활성 35.6억 명(이란·러시아 영향으로 12월 대비 소폭 감소, 그 외엔 전분기 대비 플러스).
+- Q1 총 FoA 매출 $55.9B (+33% YoY). FoA 광고 매출 $55.0B (+33%, 환율조정 +29%). 광고 노출 +19%, 광고당 단가 +12%.
+- FoA 기타 매출 $885M (+74%).
+- Reality Labs 매출 $402M (-2% YoY) — Quest 헤드셋 판매 감소를 AI 글래스 매출 성장이 일부 상쇄.
+- Q1 총 매출 $56.3B (+33%, 환율조정 +29%). 2021년 이후 가장 빠른 성장.
+
+[비용·이익]
+- Q1 총 비용 $33.4B (+35% YoY) — 인프라 비용(감가상각, 데이터센터 운영비, 서드파티 클라우드)과 인건비(특히 AI 인재)가 견인.
+- 직원 수 77,900명 이상 (-1% QoQ).
+- Q1 영업이익 $22.9B, 영업이익률 41%.
+- 세율 -23%: 미국 R&D 자본화 관련 $8.03B 세금 환입이 발생해(Q3 2025의 $15.93B 비현금 세금 부담을 일부 상쇄) 마이너스 세율 시현. 환입 제외 시 세율은 14% 수준.
+- 순이익 $26.8B, 희석 EPS $10.44. (세금 환입 제외 시 순이익 $18.7B, EPS $7.31)
+- ★ CapEx(금융리스 원금 포함) $19.8B — 서버·데이터센터·네트워크.
+- 잉여현금흐름 $12.4B, 현금·유가증권 $81.2B, 부채 $58.7B.
+
+[사업 성과]
+- Instagram 랭킹 개선으로 Reels 체류시간 +10%, Facebook 영상 시간 글로벌 +8%(4년래 최대 QoQ).
+- 광고 측면 GEM/Lattice 개선으로 전환율 상승. 파트너십 광고 런레이트 전년 대비 2배 이상 → $10B. Value Optimization 스위트 런레이트 $20B 초과.
+
+★ 자본 배분 관련 핵심 발언:
+"컴퓨트는 점점 더 중요해지고 있습니다. 우리는 인프라 수요를 충족하고 향후 수년간 전략적 유연성을 극대화하기 위해 공격적으로 투자하고 있습니다. 여기에는 자체 데이터센터 풋프린트의 대폭 확장과, 미래 용량에 필요한 부품을 확보하기 위해 공급망 전반에서 계약을 체결하는 것이 포함됩니다. 또한 올해와 2027년에 걸쳐 온라인화될 클라우드 계약도 체결하고 있습니다. 이러한 다년 클라우드 계약과 인프라 구매 약정으로 이번 분기 계약상 약정(contractual commitments)이 $107B 증가했습니다."
+
+[가이던스 — ★ CapEx 상향]
+- Q2 2026 총 매출 가이던스 $58–61B (환율 약 +2%p 순풍 가정).
+- 2026 연간 총 비용 $162–169B (기존 전망 유지, 변동 없음).
+- 2026 영업이익은 2025 영업이익을 상회 전망 유지.
+- ★ 2026 CapEx(금융리스 원금 포함) 가이던스 $125–145B로 상향 (기존 $115–135B). 상향 사유는 올해 부품 가격 상승 전망, 그리고 그보다 작은 폭으로 향후 연도 용량 지원을 위한 추가 데이터센터 비용.
+- 잔여 분기 세율 13–16% 전망.
+- 규제: EU·미국 법률/규제 역풍 지속 모니터링. 청소년 관련 재판이 올해 예정되어 중대한 손실로 이어질 수 있음.
+
+══════════════════════════════════════════
+[주요 Q&A]
+══════════════════════════════════════════
+■ Brian Nowak (Morgan Stanley) — Muse/제품의 ROIC 시그널
+Zuckerberg: ① 기술적 품질 ② 제품 스케일링 ③ 수익화·효율화 순으로 본다. Muse Spark는 고품질 모델로 Meta AI를 세계적 어시스턴트로 만들었으며, 차기 훈련·제품 파이프라인을 추적하겠다.
+
+■ Mark Shmulik (Bernstein) — 팀 포커스 & 2027 CapEx
+Zuckerberg: 연구팀(스케일링)과 제품팀(자체 모델 위 제품 구축)의 두 루프가 지속된다.
+★ Li: "2027 CapEx에 대한 구체적 전망은 제공하지 않습니다. 우리 스스로도 향후 수년간의 용량 수요를 두고 매우 역동적인 계획 수립 과정을 거치고 있습니다. 지금까지 우리는 용량을 상당히 램프업했음에도 컴퓨트 수요를 계속 과소추정해왔습니다. 컴퓨트는 앞으로 사업에 더욱 중심적이 될 것입니다. 우리는 유연성을 염두에 두고 인프라를 계속 구축할 것이며, 예상만큼 필요하지 않다면 더 천천히 온라인화하거나 향후 지출을 줄일 수 있습니다."
+
+■ Eric Sheridan (Goldman Sachs) — 에이전틱 컴퓨트 기회
+Li: 단기적으로 인게이지먼트 심화·광고 개인화·SMB 지원이 가장 직관적 기회. 중장기적으로 에이전트 간 상호작용 기반 커머스 생태계를 지향. 비즈니스 AI 주간 대화 1,000만 건 이상(연초 100만 건). 향후 커미션 구조·프리미엄 등 수익화 모델 모색.
+
+■ Youssef Squali (Truist) — 글래스 추가 브랜드 & 인력 감축
+Li: AI 글래스 수요 강세, 신세대로의 판매 이동, Meta Ray-Ban Display + Neural Band에 대한 소비자 관심. 인력은 AI 도구로 생산성을 높여 효율적으로 운영하며 회사 최적 규모를 계속 평가하겠다.
+
+■ Justin Post (BofA) — Muse Spark 출시 후 제품 케이던스
+Zuckerberg: 연구소 설립부터 강력 모델까지 가장 빠른 속도라고 자평. 다만 경쟁 민감성과 품질 우선주의로 구체 일정은 비공개.
+
+■ Ross Sandler (Barclays) — 신규 소비자 앱 & 자기개선(self-improvement)
+Zuckerberg: OpenClaw 등은 거칠지만 가능성을 보여준다. 수십억 명에게 매끄럽게 작동하는 개인 초지능 제공이 목표. 자기개선은 선도 모델 유지를 위한 "테이블 스테이크"이며, 코딩은 그 한 요소일 뿐 개발자 도구 회사가 되려는 것은 아니다.
+
+■ Ron Josey (Citi) — 개인 에이전트 타임라인 & 추천 개선
+Zuckerberg: 단기 버전과 함께 모델 지능 향상에 막대한 상방이 있다. Li: 데이터 인프라 개선, 더 긴 상호작용 이력, 콘텐츠 검색 시스템 재설계, LLM 기반 자연어 피드백 등 추천 개선 로드맵이 크게 남아 있다.
+
+■ Doug Anmuth (JPMorgan) — 광고 소형모델→LLM 전환 & Manus
+Li: Manus 관련 업데이트 없음. 광고는 밀리초 지연 제약 때문에 GEM 같은 대형 아키텍처를 직접 추론에 쓰지 않고 지식 전이 방식을 쓰지만, 2025 하반기 도입한 1조 파라미터급 Adaptive Ranking Model로 LLM 규모 복잡성을 서브초 속도로 활용하며 전환 확률이 높을 때 컴퓨트 집약 모델로 라우팅한다.
+
+■ Ken Gawrelski (Wells Fargo) — 쇼핑·커머스 & 핵심사업 가시성
+Zuckerberg: "AI 에이전트는 스택을 완전히 최적화할 때 더 좋아진다 → 그래서 프런티어 모델 + 에이전트 + 인프라를 top-to-bottom으로 구축하는 대규모 투자를 한다." 다른 어떤 연구소도 "쇼핑 잘하는 AI"를 말하지 않지만, 이는 개인을 역량화하는 personal superintelligence 비전의 한 요소다. Li: ROI 기반 예산 프로세스로 광고 성장 투자를 견조하게 집행 중.
+
+[데스크 주]
+- 매출 +33%로 2021년 이후 최고 성장, 그러나 시장의 시선은 2026 CapEx $125–145B 상향에 집중 — 발표 직후 시간외 주가 하락. "성장 가속(매출·광고)"과 "자본 부담(CapEx·메모리 가격)"의 줄다리기가 핵심.
+- ★ 전력·에너지를 직접 "제약"이라 표현한 발언은 본 콜 전문에 없음(상향 사유는 부품·메모리). 에너지 전략은 별도 "Meta Compute" 발표·전력 조달 딜에서 확인 필요(데이터 없음 — 컨콜 직접 인용 기준).</div>
+</div>
+<div class="memo-section">
+  <h4>📝 메모</h4>
+  <textarea id="memoTA" placeholder="이 전문에서 중요한 내용 메모..."></textarea>
+  <div class="memo-status" id="memoStatus"></div>
+</div>
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+<script>
+const KEY = 'memo-' + location.pathname;
+const ta = document.getElementById('memoTA');
+const st = document.getElementById('memoStatus');
+const saved = localStorage.getItem(KEY);
+if(saved) ta.value = saved;
+let timer;
+ta.addEventListener('input', () => {
+  st.textContent = '저장 중...'; st.className = 'memo-status';
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.setItem(KEY, ta.value);
+    st.textContent = '✓ 저장됨'; st.className = 'memo-status saved';
+  }, 600);
+});
+let cc='yellow', em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+const HLKEY = 'hl-' + location.pathname;
+function saveHL(){const d=[];document.querySelectorAll('mark[data-hlid]').forEach(m=>d.push({id:m.dataset.hlid,color:m.dataset.color,text:m.textContent}));localStorage.setItem(HLKEY,JSON.stringify(d));}
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();m.dataset.color=cc;r.surroundContents(m);s.removeAllRanges();saveHL();}catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();saveHL();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

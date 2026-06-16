@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Platforms (META) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#1877f2; --accent2:#0b3d91;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#eef4ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#0b3d91;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent2);text-decoration:none;} .src a:hover{text-decoration:underline;}
+
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#0b3d91;background:#eef4ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#dde9ff;}
+
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- 하이라이트 툴바 -->
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>Meta Platforms, Inc.</h1>
+      <p>NASDAQ: META · 소셜·디지털 광고(Family of Apps)·AI 인프라·Reality Labs · Menlo Park, CA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#1877f2;">하이퍼스케일러</span>
+      <span class="badge" style="background:#0b3d91;">AI 데이터센터</span>
+      <span class="badge" style="background:#7c3aed;">원자력·가스 PPA</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부별</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">백로그·Capex</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#power">전력·데이터센터</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">컨콜 정리</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">핵심 사업</span><span class="v">디지털 광고(Family of Apps)·AI·XR</span></div>
+        <div class="kv-item"><span class="k">회계연도</span><span class="v">12월 31일 종료(역년)</span></div>
+        <div class="kv-item"><span class="k">최근 분기 매출</span><span class="v up">$56.31B (Q1 2026, +33% YoY)</span></div>
+        <div class="kv-item"><span class="k">FY2025 매출</span><span class="v up">$218.96B (4개 분기 합산)</span></div>
+        <div class="kv-item"><span class="k">Family DAP</span><span class="v">35.6억 명/일 (2026-03)</span></div>
+        <div class="kv-item"><span class="k">2026 Capex 가이던스</span><span class="v">$125–145B</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Menlo Park, CA</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">NASDAQ: META</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Meta Platforms는 Facebook·Instagram·WhatsApp·Threads·Messenger를 묶은 <strong>Family of Apps(FoA)</strong>의 디지털 광고로 매출의 사실상 전부를 창출하는 세계 최대 소셜·광고 플랫폼이다. 매일 35억 명 이상이 앱을 사용하며(Family DAP), 이 거대 사용자 기반 위의 AI 기반 추천·광고 랭킹이 핵심 수익 엔진이다. 두 번째 부문인 <strong>Reality Labs(RL)</strong>는 AR/VR 헤드셋(Quest)·AI 글래스(Ray-Ban Meta)·메타버스(Horizon)를 담당하며, 12개 분기 연속 분기당 $3.7B~$6.0B의 영업손실을 내는 대규모 선행투자 부문이다.</p>
+    <p>본 데스크 관점에서 Meta는 <strong>전력 수요측(데이터센터 디벨로퍼)</strong> 플레이어다. "개인 초지능(personal superintelligence)" 비전 하에 GW 단위 AI 데이터센터(Prometheus·Hyperion 등)를 짓고, 2026년 capex 가이던스를 $125–145B(2025년 실제 $72.2B의 약 2배)로 끌어올렸다. 전력 조달은 가스(즉시성)·원자력(베이스로드)·태양광+저장(포트폴리오 본체)을 병행하며, 2026년 1월 "Meta Compute" 조직을 출범시켜 데이터센터 엔지니어링·자체 실리콘·<strong>에너지 조달</strong>을 단일 전략으로 통합했다.</p>
+
+    <h3 class="sub">사업부별 상세 · 해자(근거 기반)</h3>
+    <div class="card">
+      <strong>① Family of Apps(FoA) — 광고 네트워크 효과</strong>
+      <p>매출의 ~98%가 광고. 35억 명/일이라는 사용자 규모와 다년간 축적된 행동 데이터, 그리고 AI 광고 랭킹(GEM·Andromeda·Advantage+)이 결합해 광고주 ROI를 높이는 구조적 해자를 형성. <em>근거:</em> 엔드투엔드 AI 광고 도구 연환산 런레이트 $60B 돌파(Q3 2025 콜), 파트너십 광고 런레이트 YoY 2배 → $10B(Q1 2026 콜). 광고당 단가가 Q1 2026 +12% YoY로 상승하며 노출 증가(+19%)와 동반 성장 — 가격결정력의 직접 증거.</p>
+    </div>
+    <div class="card">
+      <strong>② Reality Labs(RL) — 차세대 폼팩터 베팅</strong>
+      <p>Quest VR과 Ray-Ban Meta·Oakley·Display 등 AI 글래스. 분기당 수십억 달러 손실이 지속되나(누적 약 $52B+), 경영진은 "글래스 일일 사용자 YoY 3배", "안경 판매 작년 3배 이상", "RL 손실은 2026년이 정점(peak)일 가능성" 등을 제시. <em>주의:</em> RL은 흑자 전환 시점이 미확정인 옵션성 투자로, 본질 수익성은 FoA가 전적으로 떠받친다.</p>
+    </div>
+    <div class="card">
+      <strong>③ AI 인프라 — 수요측 컴퓨트 빌더</strong>
+      <p>Meta Superintelligence Labs(MSL)·자체 실리콘(MTIA, Broadcom 공동개발 1GW+)·GW급 데이터센터. 광고·추천 코어와 프런티어 모델 학습 양쪽에서 "만성적 컴퓨트 부족(compute-starved)"이라 표현할 만큼 수요가 공급을 초과(Q3~Q4 2025 콜). 이 컴퓨트 수요가 곧 전력 수요로 직결된다.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의 — GAAP 손익 변동성</div>Meta GAAP 순이익은 일회성 세금 항목으로 분기별 큰 변동을 보였다. <strong>Q3 2025 순이익 $2.7B(EPS $1.05)</strong>는 OBBBA(One Big Beautiful Bill Act) 관련 약 $15.9B 비현금 세금충당 탓이며 조정 순이익은 $18.6B(EPS $7.25). 반대로 <strong>Q1 2026 순이익 $26.8B(EPS $10.44)</strong>는 $8.03B 세금 환입으로 부풀려진 수치(환입 제외 시 EPS $7.31). 영업이익·OPM이 영업 본질에 더 가깝다. 또한 Capex는 "금융리스 원금 포함" 헤드라인 정의를 사용한다.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Meta 분기 8-K Exhibit 99.1(SEC EDGAR, CIK 1326801) 및 IR 보도자료. 최근 12개 분기(Q2 2023 ~ Q1 2026). GAAP 기준, 단위 $M. 회계연도 12월 31일 종료.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 영업이익 ($M)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">출처: SEC 8-K 각 분기. Q1 2026 매출 +33% YoY로 2021년 이후 최고 성장.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② OPM · NPM 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">GAAP 영업이익률(OPM)·순이익률(NPM). ※ Q3'25 NPM 5.3%는 OBBBA 약 $15.9B 비현금 세금충당, Q1'26 NPM 47.5%는 $8.03B 세금 환입에 따른 일회성 — OPM이 영업 본질. 출처: SEC 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 테이블 (GAAP, 단위: $M)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>분기</th><th>매출</th><th>YoY</th><th>영업이익</th><th>OPM</th><th>순이익</th><th>NPM</th><th>희석 EPS</th><th>Capex</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Q2 2023</td><td class="num">31,999</td><td class="num up">+11%</td><td class="num">9,392</td><td class="num">29%</td><td class="num">7,788</td><td class="num">24.3%</td><td class="num">2.98</td><td class="num">6,354</td></tr>
+        <tr><td>Q3 2023</td><td class="num">34,146</td><td class="num up">+23%</td><td class="num">13,748</td><td class="num">40%</td><td class="num">11,583</td><td class="num">33.9%</td><td class="num">4.39</td><td class="num">6,763</td></tr>
+        <tr><td>Q4 2023</td><td class="num">40,111</td><td class="num up">+25%</td><td class="num">16,384</td><td class="num">41%</td><td class="num">14,017</td><td class="num">34.9%</td><td class="num">5.33</td><td class="num">7,899</td></tr>
+        <tr><td>Q1 2024</td><td class="num">36,455</td><td class="num up">+27%</td><td class="num">13,818</td><td class="num">38%</td><td class="num">12,369</td><td class="num">33.9%</td><td class="num">4.71</td><td class="num">6,720</td></tr>
+        <tr><td>Q2 2024</td><td class="num">39,071</td><td class="num up">+22%</td><td class="num">14,847</td><td class="num">38%</td><td class="num">13,465</td><td class="num">34.5%</td><td class="num">5.16</td><td class="num">8,470</td></tr>
+        <tr><td>Q3 2024</td><td class="num">40,589</td><td class="num up">+19%</td><td class="num">17,350</td><td class="num">43%</td><td class="num">15,688</td><td class="num">38.6%</td><td class="num">6.03</td><td class="num">9,200</td></tr>
+        <tr><td>Q4 2024</td><td class="num">48,385</td><td class="num up">+21%</td><td class="num">23,365</td><td class="num">48%</td><td class="num">20,838</td><td class="num">43.1%</td><td class="num">8.02</td><td class="num">14,840</td></tr>
+        <tr><td>Q1 2025</td><td class="num">42,314</td><td class="num up">+16%</td><td class="num">17,555</td><td class="num">41%</td><td class="num">16,644</td><td class="num">39.4%</td><td class="num">6.43</td><td class="num">13,690</td></tr>
+        <tr><td>Q2 2025</td><td class="num">47,516</td><td class="num up">+22%</td><td class="num">20,441</td><td class="num">43%</td><td class="num">18,337</td><td class="num">38.6%</td><td class="num">7.14</td><td class="num">17,010</td></tr>
+        <tr><td>Q3 2025</td><td class="num">51,242</td><td class="num up">+26%</td><td class="num">20,535</td><td class="num">40%</td><td class="num dn">2,709*</td><td class="num">5.3%*</td><td class="num">1.05*</td><td class="num">19,370</td></tr>
+        <tr><td>Q4 2025</td><td class="num">59,893</td><td class="num up">+24%</td><td class="num">24,745</td><td class="num">41%</td><td class="num">22,768</td><td class="num">38.0%</td><td class="num">8.88</td><td class="num">22,137</td></tr>
+        <tr style="background:#eef4ff;font-weight:700;"><td>Q1 2026</td><td class="num">56,311</td><td class="num up">+33%</td><td class="num">22,872</td><td class="num">41%</td><td class="num">26,773†</td><td class="num">47.5%†</td><td class="num">10.44†</td><td class="num">19,840</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 수치 출처·주의</div>전 분기 GAAP 매출·영업이익·순이익·EPS·Capex는 Meta 8-K Exhibit 99.1(SEC EDGAR, CIK 1326801)에서 직접 추출. OPM은 Meta 공시 정수 반올림 표기. <strong>*Q3 2025 순이익·NPM·EPS는 OBBBA 약 $15.9B 비현금 세금충당으로 일시 급감</strong>(조정 EPS $7.25). <strong>†Q1 2026 순이익·NPM·EPS는 $8.03B 세금 환입으로 일시 급등</strong>(환입 제외 EPS $7.31). Capex는 "금융리스 원금 포함" 헤드라인 정의. 2023년 Capex는 PP&E 기준 표기치 사용.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 — FoA vs Reality Labs</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Meta 분기 8-K Exhibit 99.1 세그먼트 표. FoA = Family of Apps, RL = Reality Labs.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ FoA 매출·영업이익 vs RL 영업손실 ($M)</p>
+      <canvas id="chartSeg" height="110"></canvas>
+      <p class="chart-note">출처: Meta 8-K 세그먼트. FoA 영업이익이 RL 손실을 전액 흡수하고도 전사 OPM 40%대 유지. RL은 매 분기 적자.</p>
+    </div>
+
+    <h3 class="sub">세그먼트 상세 테이블 ($M)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>FoA 매출</th><th>FoA 영업이익</th><th>RL 매출</th><th>RL 영업손실</th><th>Family DAP</th></tr></thead>
+      <tbody>
+        <tr><td>Q2 2023</td><td class="num">31,723</td><td class="num">13,131</td><td class="num">276</td><td class="num dn">(3,739)</td><td class="num">3.07B</td></tr>
+        <tr><td>Q3 2023</td><td class="num">33,936</td><td class="num">17,490</td><td class="num">210</td><td class="num dn">(3,742)</td><td class="num">3.14B</td></tr>
+        <tr><td>Q4 2023</td><td class="num">39,040</td><td class="num">21,030</td><td class="num">1,071</td><td class="num dn">(4,646)</td><td class="num">3.19B</td></tr>
+        <tr><td>Q1 2024</td><td class="num">36,015</td><td class="num">17,664</td><td class="num">440</td><td class="num dn">(3,846)</td><td class="num">3.24B</td></tr>
+        <tr><td>Q2 2024</td><td class="num">38,718</td><td class="num">19,335</td><td class="num">353</td><td class="num dn">(4,488)</td><td class="num">3.27B</td></tr>
+        <tr><td>Q3 2024</td><td class="num">40,319</td><td class="num">21,778</td><td class="num">270</td><td class="num dn">(4,428)</td><td class="num">3.29B</td></tr>
+        <tr><td>Q4 2024</td><td class="num">47,302</td><td class="num">28,332</td><td class="num">1,083</td><td class="num dn">(4,967)</td><td class="num">3.35B</td></tr>
+        <tr><td>Q1 2025</td><td class="num">41,902</td><td class="num">21,765</td><td class="num">412</td><td class="num dn">(4,210)</td><td class="num">3.43B</td></tr>
+        <tr><td>Q2 2025</td><td class="num">47,146</td><td class="num">24,971</td><td class="num">370</td><td class="num dn">(4,530)</td><td class="num">3.48B</td></tr>
+        <tr><td>Q3 2025</td><td class="num">50,772</td><td class="num">24,967</td><td class="num">470</td><td class="num dn">(4,432)</td><td class="num">3.54B</td></tr>
+        <tr><td>Q4 2025</td><td class="num">58,938</td><td class="num">30,766</td><td class="num">955</td><td class="num dn">(6,021)</td><td class="num">3.58B</td></tr>
+        <tr style="background:#eef4ff;font-weight:700;"><td>Q1 2026</td><td class="num">55,909</td><td class="num">26,900</td><td class="num">402</td><td class="num dn">(4,028)</td><td class="num">3.56B</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 사업부 해석</div>RL은 12개 분기 누적 약 $52B 영업손실을 기록. 매출은 Q4(홀리데이 Quest)에만 ~$1B로 튀고 나머지 분기는 $0.3~0.5B에 그친다. 반면 FoA 영업이익률은 50~60%대로, RL 손실을 전부 흡수하고도 전사 OPM 40%대를 유지 — Meta의 수익성은 전적으로 FoA 광고가 떠받친다. RL 손실이 "2026년 정점" 가이던스대로 줄어드는지가 향후 EPS 레버리지 포인트. <em>(근거: Q4 2025 콜 Zuckerberg 발언. 추론: 단정 금지)</em></div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 & 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06 기준)</span><span class="v">~$596</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$1.51T</span></div>
+        <div class="kv-item"><span class="k">PER (후행)</span><span class="v">~21.6x</span></div>
+        <div class="kv-item"><span class="k">PER (선행)</span><span class="v">~18.1x</span></div>
+        <div class="kv-item"><span class="k">PBR</span><span class="v">~6.2x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA (TTM)</span><span class="v">~13.8x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">~0.35% (DPS $2.10)</span></div>
+        <div class="kv-item"><span class="k">PSR</span><span class="v">~7.0x</span></div>
+      </div>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>밸류에이션 지표는 stockanalysis.com 2026년 6월 기준(자료별 편차 존재). 후행 PER은 Q3 2025 일회성 세금충당이 TTM 순이익을 왜곡해 자료마다 20.6~21.6x로 편차가 있음. 핵심 변수는 ① 2026 capex $125–145B의 ROI 실현 여부와 감가상각 부담, ② RL 손실 축소 경로, ③ EU 규제(Less Personalized Ads·청소년 재판) 역풍. 본 세션에서 macrotrends 직접 접근이 제한되어 stockanalysis.com 단일 출처 중심임을 명시.</div>
+  </section>
+
+  <!-- 5. 백로그·Capex -->
+  <section id="backlog">
+    <h2 class="sec">5. 백로그 / Capex 약정</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Meta 분기 8-K·어닝콜. ※ Meta는 Oracle식 RPO(잔여이행의무) 수주 백로그를 공시하지 않는다(Meta는 수요측 사업자). 대신 capex 집행·가이던스와 계약상 약정(contractual commitments)을 추적한다.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">④ 분기 Capex 추이 ($M) — AI 데이터센터 투자 급증</p>
+      <canvas id="chartCapex" height="100"></canvas>
+      <p class="chart-note">출처: Meta 8-K(금융리스 원금 포함 정의). 분기 capex가 2023년 ~$6B대에서 2025년 $17~22B대로 급증. 2026 연간 가이던스 $125–145B.</p>
+    </div>
+
+    <h3 class="sub">Capex 가이던스 추이 (반복적 상향)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>시점</th><th>대상 연도</th><th>가이던스</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>2025-01 (Q4'24 콜)</td><td>FY2025</td><td class="num">$60–65B</td><td>최초 제시</td></tr>
+        <tr><td>2025-04 (Q1'25)</td><td>FY2025</td><td class="num">$64–72B</td><td>상향</td></tr>
+        <tr><td>2025-07 (Q2'25)</td><td>FY2025</td><td class="num">$66–72B</td><td>하단 상향</td></tr>
+        <tr><td>2025-10 (Q3'25)</td><td>FY2025</td><td class="num">$70–72B</td><td>재상향</td></tr>
+        <tr style="font-weight:700;"><td>실제</td><td>FY2025</td><td class="num">$72.2B</td><td>확정</td></tr>
+        <tr><td>2026-01 (Q4'25 콜)</td><td>FY2026</td><td class="num">$115–135B</td><td>최초 제시(2025의 ~2배)</td></tr>
+        <tr style="background:#eef4ff;font-weight:700;"><td>2026-04 (Q1'26 콜)</td><td>FY2026</td><td class="num">$125–145B</td><td>상향 — 부품·메모리 가격 + DC 비용</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 약정 단서</div>Meta는 RPO를 공시하지 않으나, Q1 2026 콜에서 Susan Li는 "다년 클라우드 계약과 인프라 구매 약정으로 이번 분기 <strong>계약상 약정(contractual commitments)이 $107B 증가</strong>"했다고 언급 — 이것이 Meta가 제시하는 "백로그에 준하는" 미래 지출 약정 지표다. 또한 Q3 2025에는 Blue Owl과 루이지애나 데이터센터 JV(지분 20%)를 체결해 일부 건설비를 오프밸런스시트로 처리하는 구조를 도입했다. <em>(근거: Q1 2026·Q3 2025 콜. 추론: 논리적 도출)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜 (구속력 구분)</h2>
+    <p style="font-size:12px;color:var(--muted);">초록 태그 = 구속력 있는 계약/PPA, 갈색 태그 = LOI/MOU/프레임워크/RFP(비구속·개발단계). 에너지 딜 상세는 7장 「전력·데이터센터 동향」 참조.</p>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Constellation Clinton — 원자력 1,121MW, 20년 PPA</div>
+      <p style="font-size:13px;margin:6px 0;">일리노이 Clinton Clean Energy Center 원전 1,121MW + 우프레이트 30MW. 20년 PPA, 2027년 6월 개시. Meta 최초의 대형 원자력 PPA로 구속력 있는 계약.</p>
+      <div class="deal-meta">출처: Constellation IR · <a href="https://investors.constellationenergy.com/news-releases/news-release-details/constellation-meta-sign-20-year-deal-clean-reliable-nuclear" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Vistra — 원자력 2,609MW, 20년 PPA (PJM)</div>
+      <p style="font-size:13px;margin:6px 0;">Perry·Davis-Besse 원전 2,176MW + 우프레이트 433MW = 2,609MW. 20년 PPA, 2026년 말~2034 단계 개시. 2026-01-09 발표.</p>
+      <div class="deal-meta">출처: Vistra IR(2026-01-09) · <a href="https://investor.vistracorp.com/2026-01-09-Vistra-and-Meta-Announce-Agreements-to-Support-Nuclear-Plants-in-PJM-and-Add-New-Nuclear-Generation-to-the-Grid" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Entergy Louisiana — Hyperion 온사이트 가스 2.26GW (승인분)</div>
+      <p style="font-size:13px;margin:6px 0;">루이지애나 Hyperion DC용 신규 CCGT 3기 2.26GW. LPSC 4-1 승인(2025-08-20), ~$3.7B, 수소 30% 혼소 + 향후 CCS. <strong>추가 7기(+5.2GW, 총 ~7.5GW) 확장은 LPSC 심사 중(최종 결정 2026년 12월 예정) — 미승인.</strong></p>
+      <div class="deal-meta">출처: Entergy PR · Fortune(확장) · <a href="https://fortune.com/2026/03/27/meta-hyperion-10-gas-power-plants-louisiana-entergy/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>태양광+저장 PPA 다수 — NextEra/ENGIE/Zelestra/RWE/Enbridge</div>
+      <p style="font-size:13px;margin:6px 0;">NextEra ~2.5GW(태양광 2.29GW+저장), ENGIE 1.3GW+, Zelestra ~1.4GWdc, RWE 누적 872MW, Enbridge 600MW(Clear Fork). 모두 구속력 PPA. Meta는 2025년 신규 청정에너지 계약 10.24GW로 세계 최대 기업 구매자(BNEF).</p>
+      <div class="deal-meta">출처: NextEra/ENGIE/Zelestra/RWE/Enbridge PR · ESG Today/BNEF · <a href="https://newsroom.nexteraenergy.com/2025-12-08-NextEra-Energy-Resources-and-Meta-Strengthen-American-Energy-Leadership" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Blue Owl — 루이지애나 데이터센터 JV (오프밸런스시트)</div>
+      <p style="font-size:13px;margin:6px 0;">외부 자본 제공자(Blue Owl)와 루이지애나 데이터센터 공동개발 JV. Meta 지분 20%, JV 설립 후 건설비는 Meta capex에 미기록(기타 투자활동으로 인식). 미래 capacity 옵션 확보 + 자본 부담 분산.</p>
+      <div class="deal-meta">출처: Meta Q3 2025 어닝콜 · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>TerraPower(Natrium) — 최대 8기 ~2.8GW</div>
+      <p style="font-size:13px;margin:6px 0;">Natrium SMR 345MWe × 최대 8기(저장 시 ~4GW). 초기 2기 자금지원 확정 + 최대 6기 권리. <strong>firm PPA 아님</strong>(개발·자금지원 프레임워크). 초기 2032년 목표.</p>
+      <div class="deal-meta">출처: TerraPower · POWER Magazine · <a href="https://www.terrapower.com/terrapower-announces-deal-with-meta" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Oklo(Aurora) — 최대 1.2GW · 지열(Sage/XGS)</div>
+      <p style="font-size:13px;margin:6px 0;">Oklo Aurora 최대 1.2GW 자금지원·선불 프레임워크(2026-01-09, firm PPA 아님). 지열: Sage Geosystems 최대 150MW(2027 목표), XGS Energy 150MW(뉴멕시코, 2030 목표) — 모두 개발단계. 2024-12 원자력 RFP(목표 1–4GW)의 결과로 2026-01 다수 체결.</p>
+      <div class="deal-meta">출처: Businesswire(Oklo) · Meta Newsroom(지열) · <a href="https://www.businesswire.com/news/home/20260109127781/en/Oklo-Meta-Announce-Agreement-in-Support-of-1.2-GW-Nuclear-Energy-Development-in-Southern-Ohio" target="_blank">링크</a></div>
+    </div>
+
+    <div class="warn"><div class="h">⚠ 혼동 주의</div>Fervo Energy·Bloom Energy는 <strong>Meta의 상대가 아니다</strong>(각각 Google·Brookfield/Oracle). Meta 온사이트 발전은 가스 터빈·엔진이며 연료전지가 아니다. 또한 "원자력 6.6GW", "가스 7.5GW" 등 헤드라인 합산치는 대부분 프레임워크/미승인 — firm 약정은 원자력 2건(~3.7GW)·가스 승인분(~3GW)·태양광 PPA(~6GW)에 한정.</div>
+  </section>
+
+  <!-- 7. 전력·데이터센터 동향 (NEW) -->
+  <section id="power">
+    <h2 class="sec">7. 전력·데이터센터 동향 ★</h2>
+    <p style="font-size:12px;color:var(--muted);">본 데스크의 핵심 섹션. Meta의 capex 궤적, GW급 데이터센터 빌드아웃(Hyperion·Prometheus 등), 전력 조달 믹스(원자력·가스·태양광·지열), 그리드 병목 코멘터리를 종합한다.</p>
+
+    <div class="card">
+      <strong>핵심 한 줄:</strong> Meta는 "compute = power"를 명시적 전략으로 삼아 데이터센터를 GW 단위로 짓고 전력을 직접 조달한다. 조달 믹스는 <strong>가스(behind-the-meter, 즉시성) + 원자력(베이스로드, 2027~2032) + 태양광·저장(구속력 PPA의 본체) + 차세대 지열(옵션)</strong>. 단, 헤드라인 GW의 상당 부분은 미승인/프레임워크 단계다.
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑤ 연간 Capex 궤적 & 2026 가이던스 ($B)</p>
+      <canvas id="chartCapexYr" height="100"></canvas>
+      <p class="chart-note">출처: Meta 8-K(연간 합산)·어닝콜 가이던스. FY24 $39.2B → FY25 $72.2B → FY26 가이던스 $125–145B(중간값 ~$135B, 점선=가이던스 레인지). AI 데이터센터·서버가 견인.</p>
+    </div>
+
+    <h3 class="sub">① Capex 궤적 & 빌드아웃 내러티브</h3>
+    <div class="card">
+      <p>Zuckerberg는 컴퓨트 목표를 "이번 decade에 <strong>tens of gigawatts</strong>, 장기적으로 <strong>hundreds of gigawatts or more</strong>"로 제시했다. 2026년 1월 <strong>"Meta Compute"</strong> 조직을 출범시켜 데이터센터 엔지니어링·자체 실리콘·<strong>에너지 조달</strong>을 단일 전략으로 통합했고, Dina Powell McCormick를 President 겸 Vice Chairman으로 영입해 정부·국부펀드·전략 자본 파트너십을 통한 장기 용량 확보를 맡겼다. 자체 실리콘은 Broadcom 공동개발 1GW+ 규모를 배치 중이며, "기술·공급망 최적화로 <strong>기가와트당 비용(cost per gigawatt)이 시간이 지나며 상당히 감소</strong>할 것"이라 전망했다.</p>
+      <div class="src">출처: Meta Q4'25·Q1'26 어닝콜, DCD, Axios(Meta Compute 2026-01-12)</div>
+    </div>
+
+    <h3 class="sub">② 주요 데이터센터 프로젝트</h3>
+    <div class="card">
+      <strong>Prometheus — 오하이오 New Albany (첫 1GW 클러스터)</strong>
+      <p style="font-size:13px;margin:6px 0;">1GW, 2026년 가동 예정. Zuckerberg는 "세계 최초의 1GW+ 클러스터"로 명명. 부지 740에이커. 건설 가속을 위해 알루미늄+패브릭 <strong>"rapid deployment structures"(텐트)</strong> 5동(각 ~125,000 sqft)을 채택, 건설을 ~3개월로 단축. 전력은 behind-the-meter 가스(Williams Socrates 200MW × 2 = 400MW, 오프그리드).</p>
+    </div>
+    <div class="card">
+      <strong>Hyperion — 루이지애나 Richland Parish (5GW 캠퍼스)</strong>
+      <p style="font-size:13px;margin:6px 0;">최종 ~5GW(수년 스케일업), 근시일 ~2GW(2030년). 부지 ~2,250–4,000에이커, 건물 4M sqft. Zuckerberg는 한 클러스터의 footprint가 <strong>"맨해튼 대부분을 덮을 만큼 크다"</strong>고 표현(※ 이 표현은 어닝콜이 아닌 Threads 게시글 발언). 전력은 Entergy 그리드 연계 + 신규 가스 다수.</p>
+    </div>
+    <div class="card">
+      <strong>기타</strong>
+      <p style="font-size:13px;margin:6px 0;">El Paso, TX(목표 1GW, 투자 $1.5B→$10B 상향, behind-the-meter 가스 McCloud 366MW) · Beaver Dam, WI($1B+, 30번째 글로벌 DC) · 오하이오·테네시 텐트 DC(~400MW 오프그리드 가스 백업). 테네시 가스 발전 상세는 데이터 없음.</p>
+      <div class="src">출처: TechCrunch·DCD·Meta Newsroom·NBC4·Tom's Hardware</div>
+    </div>
+
+    <h3 class="sub">③ 전력 조달 믹스 (firm vs 프레임워크)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>구분</th><th>딜</th><th>용량</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="4">원자력</td><td>Constellation Clinton</td><td class="num">1,121MW</td><td>✅ 20년 PPA(구속)</td></tr>
+        <tr><td>Vistra (Perry·Davis-Besse)</td><td class="num">2,609MW</td><td>✅ 20년 PPA(구속)</td></tr>
+        <tr><td>TerraPower Natrium</td><td class="num">~2.8GW</td><td>⚠ 프레임워크(초기 2기만 확정)</td></tr>
+        <tr><td>Oklo Aurora</td><td class="num">~1.2GW</td><td>⚠ 자금지원 프레임워크</td></tr>
+        <tr><td rowspan="3">가스</td><td>LA Hyperion 1차 3기</td><td class="num">2.26GW</td><td>✅ LPSC 승인</td></tr>
+        <tr><td>LA Hyperion 확장 7기</td><td class="num">+5.2GW</td><td>⚠ LPSC 심사중(2026-12 결정)</td></tr>
+        <tr><td>OH Socrates / TX El Paso</td><td class="num">0.4 / 0.37GW</td><td>✅ 승인(오프그리드)</td></tr>
+        <tr><td rowspan="2">태양광·저장</td><td>NextEra/ENGIE/Zelestra/RWE/Enbridge</td><td class="num">~6GW+</td><td>✅ 구속 PPA</td></tr>
+        <tr><td>2025 신규 청정 계약 합계</td><td class="num">10.24GW</td><td>✅ 세계 1위(BNEF)</td></tr>
+        <tr><td>지열</td><td>Sage Geosystems / XGS Energy</td><td class="num">~0.3GW</td><td>⚠ 개발단계</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 class="sub">④ 그리드·전력 병목 코멘터리</h3>
+    <div class="card">
+      <p>Meta가 오하이오 Socrates·엘파소 McCloud 등에서 <strong>behind-the-meter/오프그리드 가스</strong>를 택한 것은 인터커넥션 큐 적체(2026년 초 미국 큐 ~2,600GW, ERCOT 대형부하 신청 ~198GW)를 우회하려는 행동으로 해석된다. 어닝콜에서 경영진은 Meta가 광고·코어 사업을 "만성적으로 <strong>compute-starved</strong>" 상태로 운영한다고 표현했고, "용량 제약(capacity constrained) 상태가 2026년 상당 기간 지속"될 것이라 밝혔다.</p>
+      <div class="warn" style="margin-top:8px;"><div class="h">⚠ 데이터 없음 — 직접 인용</div>"power/energy가 AI의 제약"이라는 직접 표현은 Q1 2026 공식 어닝콜 전문에 등장하지 않는다(capex 상향 명시 사유는 부품·메모리 가격). 해당 프레이밍은 주로 매체 분석·"Meta Compute" 발표 맥락에서 나온다 — 어닝콜 직접 인용으로는 데이터 없음.</div>
+    </div>
+  </section>
+
+  <!-- 8. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">8. 핵심 포인트 & 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (12개 분기 펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>매출 성장 재가속:</strong> YoY 성장률이 2024년 +16~27% 박스권에서 Q1 2026 <strong>+33%</strong>로 점프(2021년 이후 최고). AI 광고 랭킹(GEM·Advantage+)이 노출·단가 동반 상승을 견인. (출처: 각 분기 8-K)</li>
+        <li><strong>Capex 폭증:</strong> 연간 $39.2B(FY24) → $72.2B(FY25) → 가이던스 <strong>$125–145B</strong>(FY26). 분기 capex가 $6B대(2023)에서 $20B대로. AI 데이터센터·서버가 핵심. (출처: 8-K·어닝콜)</li>
+        <li><strong>RL 손실 지속 & "정점" 가이던스:</strong> 12개 분기 누적 약 $52B 손실. Q4'25 손실 $6.0B로 확대됐으나 경영진은 "2026년이 정점"이라 전망. (출처: Q4'25 콜)</li>
+        <li><strong>GAAP 마진 안정 + 세금 일회성 주의:</strong> OPM 38~48% 박스권 유지. Q3'25(세금충당 $15.9B)·Q1'26(환입 $8.03B)의 순이익 변동은 비영업 일회성. (출처: 각 분기 8-K)</li>
+        <li><strong>전력 조달의 전략화:</strong> 원자력 2건(~3.7GW 구속 PPA)·가스 승인분(~3GW)·태양광 PPA(세계 1위 10.24GW/년)로 전력을 직접 확보. "Meta Compute"로 에너지 조달을 조직화. (출처: 7장 출처 일체)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — "기가와트당 비용 하락" + 오프밸런스시트가 capex 공포를 완화</div>
+      시장은 $125–145B capex를 AI 버블 리스크로 우려한다. 그러나 Zuckerberg는 자체 실리콘(Broadcom 1GW+)·공급망 최적화로 "<strong>기가와트당 비용이 시간이 지나며 상당히 감소</strong>"할 것이라 했고, Blue Owl 루이지애나 JV(지분 20%)처럼 건설비 일부를 오프밸런스시트로 처리하는 구조를 도입했다. 단위 비용 하락과 자본 분산이 실제로 작동하면 capex 부담이 헤드라인보다 작을 수 있다. <em>(근거: Q4'25·Q3'25 콜. 추론: 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — "compute-starved" = 코어 사업의 숨은 상방</div>
+      경영진은 광고·코어 사업을 "만성적으로 컴퓨트가 부족한" 상태로 운영한다고 명시했다. 즉 신규 capex가 단지 미래 AGI 베팅이 아니라 <strong>즉시 수익화 가능한 코어 광고/추천 컴퓨트</strong>로도 쓰인다는 뜻 — "오버슈팅해도 코어 사업이 흡수한다"는 하방 방어 논리. GEM 1조 파라미터 광고 모델, Reels $50B·AI 광고도구 $60B 런레이트가 이를 뒷받침. <em>(근거: Q3'25 콜. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — 전력 수요측 본 데스크 관점: Meta capex ↔ 발전 수주 연동</div>
+      Meta는 그리드 큐 적체를 우회해 온사이트 가스(Williams·Entergy)와 원자력 PPA(Constellation·Vistra)를 직접 잡는다. Meta의 capex/데이터센터 일정은 곧 <strong>가스터빈·원전·태양광 공급측 수주의 선행지표</strong>다. Hyperion 확장(7기 +5.2GW)의 LPSC 결정(2026-12)이 가스터빈 수요의 분기점이 될 수 있다. <em>(근거: 7장 출처. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 4 — 헤드라인 GW 인플레이션 vs firm 약정의 괴리</div>
+      "원자력 6.6GW", "가스 7.5GW" 헤드라인은 대부분 프레임워크/미승인이다. 실제 firm은 원자력 ~3.7GW(Clinton+Vistra)·가스 승인분 ~3GW·태양광 PPA ~6GW에 그친다. 시장이 헤드라인 GW를 액면 그대로 반영했다면, <strong>실제 승인·착공 전환율</strong>이 재평가 트리거가 된다(상·하방 양면). <em>(근거: 7장 출처. 추론: 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 5 — Q1 2026 업데이트: 매출 +33% 가속 vs capex 상향의 줄다리기</div>
+      Q1 2026 매출이 +33%(2021년 이후 최고)로 가속됐으나, 동시에 2026 capex 가이던스를 $125–145B로 상향(부품·메모리 가격)하며 발표 직후 시간외 주가가 하락했다. "성장 가시성(광고)"과 "자본 부담(capex·감가상각)"의 줄다리기가 META 주가의 핵심 논쟁으로, 2026년 영업이익이 2025년을 상회한다는 가이던스가 유지되는지가 분기점. <em>(근거: Q1'26 8-K·콜. 추론: 단정 금지)</em>
+    </div>
+  </section>
+
+  <!-- 9. 컨콜 정리 -->
+  <section id="calls">
+    <h2 class="sec">9. 컨콜 정리 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Meta IR 공식 어닝콜 전문(q4cdn PDF) 및 8-K. 각 분기 「전문 보기」로 한국어 전문 정리 페이지 이동. 전력·에너지·capex 발언은 전문 페이지에서 굵게 표기.</p>
+
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q1 2026</span>
+        <span class="ctitle">2026-04-29 · 매출 $56.3B(+33%), 2026 Capex $125–145B로 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$56,311M (+33% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$22,872M (OPM 41%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$10.44† (조정 $7.31)</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$19,840M</span></div>
+          <div><span class="k">RL 영업손실</span><span class="v">$(4,028)M</span></div>
+          <div><span class="k">Family DAP</span><span class="v">35.6억/일</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>매출 +33%로 2021년 이후 최고 성장. 광고 노출 +19%, 광고당 단가 +12%.</li>
+          <li><strong>2026 Capex 가이던스 $125–145B로 상향</strong>(기존 $115–135B) — 부품·메모리 가격 상승이 주 사유.</li>
+          <li>자체 맞춤 실리콘(Broadcom) 1GW+ 배치 + AMD 칩 보완. "Meta Compute 효율이 전략적 이점."</li>
+          <li><strong>다년 클라우드·인프라 약정으로 계약상 약정 $107B 증가.</strong> 5월 인력 축소 계획 내부 공유.</li>
+          <li>†순이익 $26.8B는 $8.03B 세금 환입 포함 — 영업 본질은 OPM 41%.</li>
+        </ul>
+        <div class="src">출처: Meta Q1 2026 어닝콜·8-K(2026-04-29) · <a href="https://www.prnewswire.com/news-releases/meta-reports-first-quarter-2026-results-302757852.html" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/meta-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q4 2025</span>
+        <span class="ctitle">2026-01-28 · 매출 $59.9B(+24%), 2026 Capex $115–135B 첫 제시, Meta Compute</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$59,893M (+24% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$24,745M (OPM 41%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$8.88</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$22,137M</span></div>
+          <div><span class="k">RL 영업손실</span><span class="v">$(6,021)M</span></div>
+          <div><span class="k">Family DAP</span><span class="v">35.8억/일</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>2025년 강한 마감. 기록적 홀리데이 광고 수요 + AI 성과 개선.</li>
+          <li><strong>"Meta Compute" 발표 — 실리콘+에너지 장기 투자 통합. "기가와트당 비용 하락 기대."</strong></li>
+          <li>Dina Powell McCormick 영입(정부·국부펀드·전략 자본 파트너십, 장기 용량 확장).</li>
+          <li><strong>2026 Capex 가이던스 $115–135B 첫 제시</strong>(2025 실제 $72.2B의 ~2배). 순부채 전환 가능성 시사.</li>
+          <li>RL 손실 $6.0B로 확대됐으나 "2026년이 정점" 전망. 안경 판매 작년 3배 이상.</li>
+        </ul>
+        <div class="src">출처: Meta Q4 2025 어닝콜·8-K(2026-01-28) · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q4/META-Q4-2025-Earnings-Call-Transcript.pdf" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/meta-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q3 2025</span>
+        <span class="ctitle">2025-10-29 · 매출 $51.2B(+26%), OBBBA 세금충당으로 GAAP 순이익 급감</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$51,242M (+26% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$20,535M (OPM 40%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$1.05* (조정 $7.25)</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$19,370M</span></div>
+          <div><span class="k">RL 영업손실</span><span class="v">$(4,432)M</span></div>
+          <div><span class="k">2025 Capex 가이던스</span><span class="v">$70–72B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>*GAAP 순이익 $2.7B(EPS $1.05)는 OBBBA 약 $15.9B 비현금 세금충당 탓 — 조정 순이익 $18.6B(EPS $7.25).</strong></li>
+          <li>Zuckerberg: "capacity를 공격적으로 <strong>front-load</strong>. 코어 사업이 만성적으로 <strong>compute-starved</strong>."</li>
+          <li><strong>2025 Capex $70–72B 상향. 2026 Capex "notably larger" 예고.</strong></li>
+          <li><strong>Blue Owl 루이지애나 데이터센터 JV(지분 20%, 오프밸런스시트 건설) 공개.</strong></li>
+          <li>Reels 런레이트 $50B, AI 광고도구 $60B 돌파. Meta Ray-Ban Display 48시간 내 매진.</li>
+        </ul>
+        <div class="src">출처: Meta Q3 2025 어닝콜·8-K(2025-10-29) · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/meta-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q2 2025</span>
+        <span class="ctitle">2025-07-30 · 매출 $47.5B(+22%), Prometheus 1GW·Hyperion 5GW 공식 명명</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$47,516M (+22% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$20,441M (OPM 43%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$7.14</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$17,010M</span></div>
+          <div><span class="k">RL 영업손실</span><span class="v">$(4,530)M</span></div>
+          <div><span class="k">2025 Capex 가이던스</span><span class="v">$66–72B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Meta Superintelligence Labs(MSL) 신설. "초지능이 시야에 들어왔다(now in sight)."</li>
+          <li><strong>여러 멀티-GW 클러스터 건설. Prometheus 2026 가동 1GW+(세계 최초). Hyperion 5GW로 확장.</strong></li>
+          <li><strong>2025 Capex $66–72B 상향. 2026도 큰 폭 capex 증가 예고. 인프라 비용·에너지 비용이 주동인.</strong></li>
+          <li><strong>"막대한 자본을 다수의 기가와트 컴퓨트로 전환하는 거대한 베팅." 금융 파트너와 DC 공동개발 모색.</strong></li>
+          <li>AI 광고 추천으로 Instagram 전환 +5%, Facebook +3%. AI 글래스가 초지능의 일상 통합 폼팩터.</li>
+        </ul>
+        <div class="src">출처: Meta Q2 2025 어닝콜·8-K(2025-07-30) · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q2/META-Q2-2025-Earnings-Call-Transcript.pdf" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/meta-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+/* ── 차트 공통 ── */
+const q = ["Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const rev = [31999,34146,40111,36455,39071,40589,48385,42314,47516,51242,59893,56311];
+const opi = [9392,13748,16384,13818,14847,17350,23365,17555,20441,20535,24745,22872];
+const opm = [29,40,41,38,38,43,48,41,43,40,41,41];
+const npm = [24.3,33.9,34.9,33.9,34.5,38.6,43.1,39.4,38.6,5.3,38.0,47.5];
+const capexQ = [6354,6763,7899,6720,8470,9200,14840,13690,17010,19370,22137,19840];
+const foaRev = [31723,33936,39040,36015,38718,40319,47302,41902,47146,50772,58938,55909];
+const foaOpi = [13131,17490,21030,17664,19335,21778,28332,21765,24971,24967,30766,26900];
+const rlLoss = [3739,3742,4646,3846,4488,4428,4967,4210,4530,4432,6021,4028];
+
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+/* ① 매출 + 영업이익 */
+new Chart(document.getElementById('chartRevOp'),{type:'bar',data:{labels:q,datasets:[
+  {label:'매출 (좌축, $M)',data:rev,backgroundColor:'rgba(24,119,242,.7)',yAxisID:'y'},
+  {label:'영업이익 (우축, $M)',data:opi,type:'line',borderColor:'#0b3d91',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:'#0b3d91',tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'매출 $M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'영업이익 $M'}}}}});
+
+/* ② OPM + NPM */
+new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'OPM %',data:opm,borderColor:'#1877f2',backgroundColor:'rgba(24,119,242,.1)',fill:true,tension:.3,pointRadius:4},
+  {label:'NPM %',data:npm,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.1)',fill:true,tension:.3,pointRadius:4,borderDash:[5,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ③ 세그먼트 */
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:q,datasets:[
+  {label:'FoA 매출 ($M)',data:foaRev,backgroundColor:'rgba(24,119,242,.65)',yAxisID:'y'},
+  {label:'FoA 영업이익 ($M)',data:foaOpi,backgroundColor:'rgba(31,122,77,.7)',yAxisID:'y'},
+  {label:'RL 영업손실 ($M)',data:rlLoss.map(v=>-v),type:'line',borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,.1)',fill:true,pointRadius:4,tension:.3,yAxisID:'y'}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: $${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ④ 분기 Capex */
+new Chart(document.getElementById('chartCapex'),{type:'bar',data:{labels:q,datasets:[
+  {label:'분기 Capex ($M)',data:capexQ,backgroundColor:capexQ.map(v=>v>=15000?'rgba(24,119,242,.85)':'rgba(24,119,242,.45)'),borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ⑤ 연간 Capex + 가이던스 */
+new Chart(document.getElementById('chartCapexYr'),{type:'bar',data:{labels:["FY2023","FY2024","FY2025","FY2026(가이던스)"],datasets:[
+  {label:'연간 Capex ($B)',data:[28.1,39.2,72.2,null],backgroundColor:'rgba(24,119,242,.7)',borderRadius:4},
+  {label:'2026 가이던스 하단 $125B',data:[null,null,null,125],backgroundColor:'rgba(124,58,237,.45)',borderRadius:4,stack:'g'},
+  {label:'2026 가이던스 상단 +$20B(→$145B)',data:[null,null,null,20],backgroundColor:'rgba(124,58,237,.8)',borderRadius:4,stack:'g'}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>ctx.raw==null?'':`${ctx.dataset.label}: $${ctx.raw}B`}}},scales:{x:{stacked:true},y:{stacked:true,grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+
+/* ── 네비 활성화 ── */
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+
+/* ── 하이라이트 ── */
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+
+</body>
+</html>
