@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amazon (AMZN) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#131a22; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#e88a00; --accent2:#146eb4;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#fff7ed;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#7c3a00;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent2);text-decoration:none;} .src a:hover{text-decoration:underline;}
+
+  .deal-item{border-left:3px solid var(--accent);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#146eb4;background:#eef6fc;border:1px solid #c7e0f4;border-radius:6px;padding:5px 13px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#dcecf8;}
+
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>Amazon.com, Inc.</h1>
+      <p>NASDAQ: AMZN · 클라우드(AWS)·이커머스·광고·디바이스 · Seattle, WA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#e88a00;">하이퍼스케일러</span>
+      <span class="badge" style="background:#146eb4;">AWS 클라우드</span>
+      <span class="badge" style="background:#3f7d3a;">원자력 SMR</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">백로그</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#power">전력·데이터센터</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">컨콜 정리</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">핵심 사업</span><span class="v">AWS 클라우드·이커머스·광고</span></div>
+        <div class="kv-item"><span class="k">회계연도</span><span class="v">12월 31일 종료(역년)</span></div>
+        <div class="kv-item"><span class="k">최근 분기 매출</span><span class="v up">$181.5B (Q1 2026, +17% YoY)</span></div>
+        <div class="kv-item"><span class="k">AWS 매출(최근)</span><span class="v up">$37.6B (+28%, 15분기래 최고)</span></div>
+        <div class="kv-item"><span class="k">AWS 백로그(RPO)</span><span class="v up">$364B (Q1 2026)</span></div>
+        <div class="kv-item"><span class="k">2026 Capex 가이던스</span><span class="v dn">~$200B</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Seattle, WA</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">NASDAQ: AMZN</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Amazon은 ① <strong>AWS</strong>(Amazon Web Services, 세계 1위 퍼블릭 클라우드 인프라), ② <strong>North America</strong>(북미 이커머스·물류·구독), ③ <strong>International</strong>(해외 이커머스)의 3개 보고 부문으로 구성된다. 여기에 광고($17.2B/분기, +22~24%), Prime 구독, 디바이스(Alexa·Echo), Prime Video, 그리고 위성 광대역 <strong>Amazon LEO</strong>(구 Project Kuiper)가 부문 안에 포함된다. 본 데스크 관점에서 Amazon은 <strong>전력 수요측(데이터센터 디벨로퍼)</strong>의 최대 플레이어로, AWS의 AI·클라우드 수요를 충족하기 위해 2026년 단일 회사 기준 <strong>약 $200B 규모 capex</strong>를 집행하며, 전력 조달(원자력 PPA·SMR 투자·재생에너지)을 공격적으로 확대하고 있다.</p>
+    <p>경영진(Andy Jassy CEO)은 최근 4개 분기 컨콜에서 일관되게 <strong>"전력이 AWS의 단일 최대 제약(single biggest constraint)"</strong>이라고 밝혀, Amazon이 전력 인프라의 핵심 수요 주체임을 직접 확인했다. AWS 성장률은 2025년 Q2 +17.5% 저점에서 Q3 +20%, Q4 +24%, Q1 2026 +28%로 4개 분기 연속 가속되며 AI 사이클의 최대 수혜를 입증하고 있다.</p>
+
+    <h3 class="sub">사업부별 상세 (근거 기반 해자)</h3>
+    <div class="card">
+      <strong>① AWS — 세계 1위 클라우드 인프라</strong>
+      <p>AWS는 IaaS/PaaS 글로벌 점유율 1위 사업자로, 연환산 매출 런레이트 ~$150B(Q1 2026). 해자: (a) <em>규모·선점 효과</em> — Olsavsky CFO는 "2025년 AWS가 세계 어느 기업보다 많은 데이터센터 용량을 추가했다"고 언급(출처: Q4 2025 컨콜), (b) <em>커스텀 실리콘 수직계열화</em> — 자체 AI 칩 Trainium·CPU Graviton 보유로 GPU 의존도·원가를 통제(아래 ③), (c) <em>RPO $364B 백로그</em>로 향후 수년 매출 가시성 확보. 다만 절대 성장률은 한때 Azure·Google Cloud 대비 둔화 논란이 있었으나 FY2026 들어 재가속.</p>
+    </div>
+    <div class="card">
+      <strong>② North America — 북미 이커머스·물류 해자</strong>
+      <p>Q1 2026 매출 $104.1B(+12%), 영업이익률 7.9%로 사상 최고 수준 수익성. 해자: 세계 최대 풀필먼트·라스트마일 물류망. Jassy는 "당일·익일 배송 10억 개 돌파(연초 누계)", "유닛 성장 +15%(코로나 이후 최고)"를 언급하며 배송속도·비용효율 개선을 강조(출처: Q1 2026 컨콜). 출고운임 +12%·풀필먼트비 +9%로 유닛성장(+15%)을 하회 → 운영 레버리지 발생.</p>
+    </div>
+    <div class="card">
+      <strong>③ 커스텀 실리콘 — Trainium / Graviton (해자 강화 요소)</strong>
+      <p>자체 AI 학습칩 <strong>Trainium</strong>과 ARM 기반 CPU <strong>Graviton</strong>. Q1 2026 컨콜에서 Jassy: "칩 사업이 분기 +40% 성장, 연환산 런레이트 $20B 초과. 독립 칩 회사였다면 $50B 런레이트." <strong>Trainium 매출 약정 $225B 초과</strong>, Trainium2는 "비교 GPU 대비 ~30% 우월한 가격성능으로 사실상 매진(largely sold out)", Trainium3는 "거의 완판". Graviton은 상위 1,000 EC2 고객의 98%가 사용. <em>(출처: Q1 2026 Motley Fool 컨콜)</em></p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의 — 손익 표시 & 일회성</div>Amazon GAAP 손익계산서에는 <strong>매출총이익(Gross Profit) 항목이 별도 표기되지 않으므로 GPM은 "데이터 없음"</strong>으로 처리한다. 또한 Amazon 순이익은 <strong>Rivian·Anthropic 등 지분투자 평가손익(비영업)</strong>의 영향을 크게 받는다 — 예: Q3 2025·Q1 2026 순이익이 영업이익을 초과하는 분기는 평가차익 반영. 영업 본질은 <strong>영업이익(operating income)</strong> 기준으로 판단해야 한다. 회계연도는 역년(12월 종료)이며 따라서 "Q1 2026"은 2026-03-31 종료 분기다.</div>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Amazon 분기 8-K Exhibit 99.1 / IR 보도자료(ir.aboutamazon.com), 교차검증 stockanalysis.com. 최근 12개 분기(Q2 2023 ~ Q1 2026). GAAP 기준. 회계연도 12월 종료(역년).</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 영업이익 (백만 USD)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">출처: 각 분기 8-K/IR. Q1 2026 영업이익률 13.1%로 사상 최고. Q3 2025 영업이익은 FTC 합의금 $2.5B·구조조정 $1.8B 일회성으로 일시 하락.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② OPM · NPM 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">GAAP 영업이익률(OPM)·순이익률(NPM). ※ Q3 2025·Q1 2026 NPM이 OPM을 상회하는 것은 지분투자(Rivian·Anthropic 등) 평가차익 등 비영업손익 때문 → 영업이익률이 영업 본질에 가까움. GPM은 Amazon 미공시.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 테이블 (GAAP, 단위: 백만 USD)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>분기</th><th>분기말</th><th>매출</th><th>YoY</th><th>영업이익</th><th>OPM</th><th>순이익</th><th>NPM</th><th>희석 EPS</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Q2 2023</td><td>'23-06</td><td class="num">134,383</td><td class="num up">+11%</td><td class="num up">7,681</td><td class="num">5.7%</td><td class="num up">6,759</td><td class="num">5.0%</td><td class="num">0.65</td></tr>
+        <tr><td>Q3 2023</td><td>'23-09</td><td class="num">143,083</td><td class="num up">+13%</td><td class="num up">11,188</td><td class="num">7.8%</td><td class="num up">9,879</td><td class="num">6.9%</td><td class="num">0.94</td></tr>
+        <tr><td>Q4 2023</td><td>'23-12</td><td class="num">169,961</td><td class="num up">+14%</td><td class="num up">13,209</td><td class="num">7.8%</td><td class="num up">10,624</td><td class="num">6.3%</td><td class="num">1.00</td></tr>
+        <tr><td>Q1 2024</td><td>'24-03</td><td class="num">143,313</td><td class="num up">+13%</td><td class="num up">15,307</td><td class="num">10.7%</td><td class="num up">10,431</td><td class="num">7.3%</td><td class="num">0.98</td></tr>
+        <tr><td>Q2 2024</td><td>'24-06</td><td class="num">147,977</td><td class="num up">+10%</td><td class="num up">14,672</td><td class="num">9.9%</td><td class="num up">13,485</td><td class="num">9.1%</td><td class="num">1.26</td></tr>
+        <tr><td>Q3 2024</td><td>'24-09</td><td class="num">158,877</td><td class="num up">+11%</td><td class="num up">17,411</td><td class="num">11.0%</td><td class="num up">15,328</td><td class="num">9.6%</td><td class="num">1.43</td></tr>
+        <tr><td>Q4 2024</td><td>'24-12</td><td class="num">187,792</td><td class="num up">+10%</td><td class="num up">21,203</td><td class="num">11.3%</td><td class="num up">20,004</td><td class="num">10.7%</td><td class="num">1.86</td></tr>
+        <tr><td>Q1 2025</td><td>'25-03</td><td class="num">155,667</td><td class="num up">+9%</td><td class="num up">18,405</td><td class="num">11.8%</td><td class="num up">17,127</td><td class="num">11.0%</td><td class="num">1.59</td></tr>
+        <tr><td>Q2 2025</td><td>'25-06</td><td class="num">167,702</td><td class="num up">+13%</td><td class="num up">19,171</td><td class="num">11.4%</td><td class="num up">18,159</td><td class="num">10.8%</td><td class="num">1.68</td></tr>
+        <tr><td>Q3 2025</td><td>'25-09</td><td class="num">180,169</td><td class="num up">+12%</td><td class="num up">17,422</td><td class="num">9.7%*</td><td class="num up">21,190</td><td class="num">11.8%</td><td class="num">1.95</td></tr>
+        <tr><td>Q4 2025</td><td>'25-12</td><td class="num">213,386</td><td class="num up">+14%</td><td class="num up">24,977</td><td class="num">11.7%</td><td class="num up">21,659</td><td class="num">10.1%</td><td class="num">1.95</td></tr>
+        <tr style="background:#fff7ed;font-weight:700;"><td>Q1 2026</td><td>'26-03</td><td class="num">181,519</td><td class="num up">+17%</td><td class="num up">23,852</td><td class="num">13.1%</td><td class="num up">30,274</td><td class="num">16.7%</td><td class="num">2.78</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 수치 출처·주의</div>전 분기 GAAP 매출·영업이익·순이익·EPS는 Amazon 8-K Exhibit 99.1(SEC EDGAR, CIK 1018724) 및 IR 보도자료에서 추출, stockanalysis.com과 교차검증. OPM/NPM은 (이익÷매출) 계산값. <strong>*Q3 2025 영업이익은 FTC 합의금 $2.5B·구조조정비 $1.8B(합계 ~$4.3B) 일회성 비용 포함</strong> — 제외 시 영업이익 ~$21.7B(OPM ~12%)로 정상화. Q3 2025·Q1 2026 순이익(NPM)은 지분투자 평가차익 등 비영업손익으로 부풀려진 측면이 있어 영업이익 기준 해석 권장. GPM은 Amazon 손익계산서에 별도 항목이 없어 "데이터 없음".</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 매출 · AWS 디테일</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Amazon 분기 8-K Ex-99.1 부문 정보 및 IR 보도자료 하이라이트. 부문: North America / International / AWS.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 부문별 분기 매출 ($B) — NA / International / AWS</p>
+      <canvas id="chartSeg" height="110"></canvas>
+      <p class="chart-note">출처: Amazon 분기 IR. AWS는 절대 규모는 작지만 영업이익의 대부분을 창출하는 핵심 가치동인.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">④ AWS 매출 성장률 YoY (%) — 4개 분기 연속 가속</p>
+      <canvas id="chartAWSgr" height="90"></canvas>
+      <p class="chart-note">출처: Amazon 분기 IR. Q2 2025 +17.5% 저점 → Q3 +20% → Q4 +24% → Q1 2026 +28%(15분기래 최고).</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑤ AWS 영업이익($B) & 영업이익률(%)</p>
+      <canvas id="chartAWSop" height="100"></canvas>
+      <p class="chart-note">출처: Amazon 분기 IR. AWS 영업이익률은 30%대 중반에서 변동 — 신규 데이터센터 감가상각 증가가 마진 압박, 동시에 AI 매출 확대가 상쇄.</p>
+    </div>
+
+    <h3 class="sub">부문별 매출·영업이익 테이블 ($M)</h3>
+    <div class="card" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>분기</th><th>NA 매출</th><th>NA 영업이익</th><th>Intl 매출</th><th>Intl 영업이익</th><th>AWS 매출</th><th>AWS YoY</th><th>AWS 영업이익</th><th>AWS OPM</th></tr></thead>
+        <tbody>
+          <tr><td>Q1 2024</td><td class="num">86,341</td><td class="num">4,983</td><td class="num">31,935</td><td class="num">903</td><td class="num">25,037</td><td class="num up">+17%</td><td class="num">9,421</td><td class="num">37.6%</td></tr>
+          <tr><td>Q2 2024</td><td class="num">90,033</td><td class="num">5,065</td><td class="num">31,663</td><td class="num">273</td><td class="num">26,281</td><td class="num up">+19%</td><td class="num">9,334</td><td class="num">35.5%</td></tr>
+          <tr><td>Q3 2024</td><td class="num">95,537</td><td class="num">5,663</td><td class="num">35,888</td><td class="num">1,302</td><td class="num">27,452</td><td class="num up">+19%</td><td class="num">10,447</td><td class="num">38.1%</td></tr>
+          <tr><td>Q4 2024</td><td class="num">115,586</td><td class="num">9,261</td><td class="num">43,420</td><td class="num">1,304</td><td class="num">28,786</td><td class="num up">+19%</td><td class="num">10,632</td><td class="num">36.9%</td></tr>
+          <tr><td>Q1 2025</td><td class="num">92,887</td><td class="num">5,841</td><td class="num">33,513</td><td class="num">1,016</td><td class="num">29,267</td><td class="num up">+17%</td><td class="num">11,547</td><td class="num">39.5%</td></tr>
+          <tr><td>Q2 2025</td><td class="num">100,065</td><td class="num">7,500</td><td class="num">36,761</td><td class="num">1,477</td><td class="num">30,873</td><td class="num up">+17.5%</td><td class="num">10,168</td><td class="num">32.9%</td></tr>
+          <tr><td>Q3 2025</td><td class="num">106,300</td><td class="num">~3,500*</td><td class="num">40,900</td><td class="num">~2,500</td><td class="num">33,000</td><td class="num up">+20%</td><td class="num">11,430</td><td class="num">34.6%</td></tr>
+          <tr><td>Q4 2025</td><td class="num">127,100</td><td class="num">11,500</td><td class="num">50,700</td><td class="num">1,000</td><td class="num">35,600</td><td class="num up">+24%</td><td class="num">12,500</td><td class="num">35.1%</td></tr>
+          <tr style="background:#fff7ed;font-weight:700;"><td>Q1 2026</td><td class="num">104,100</td><td class="num">8,200</td><td class="num">39,800</td><td class="num">1,400</td><td class="num">37,600</td><td class="num up">+28%</td><td class="num">~13,300</td><td class="num">~35%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warn"><div class="h">⚠</div>2023년 분기는 일부 부문 영업이익 표기를 생략(상단 12분기 전사 표 참조). *Q3 2025 NA/Intl 영업이익은 FTC 합의·구조조정 일회성 비용이 주로 NA에 귀속되어 일시 하락(개략값, 데이터 없음에 가까운 추정). Q1 2026 AWS 영업이익은 보도/슬라이드 기반 개략값(~$13.3B, OPM ~35%) — 정확 수치는 10-Q 확인 권장.</div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 & 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06-15)</span><span class="v">~$238</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$2.56T</span></div>
+        <div class="kv-item"><span class="k">PER (후행)</span><span class="v">~29x</span></div>
+        <div class="kv-item"><span class="k">PER (선행)</span><span class="v">~31x</span></div>
+        <div class="kv-item"><span class="k">PBR</span><span class="v">~6.5x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA (TTM)</span><span class="v">~17x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">없음 (무배당)</span></div>
+        <div class="kv-item"><span class="k">PSR</span><span class="v">~3.4x</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">⑥ 주가 추이 (월별, USD) — 참고용·개략값</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 2026-02 Q4 실적 후 $200B capex 발표로 변동성 확대, 6월 ~$238.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>밸류에이션 지표는 financecharts.com / macrotrends / morningstar 2026-06 기준 개략값으로, 소스간 편차가 있어 정밀 수치는 증권사 플랫폼 확인 권장(특히 PER은 비영업 평가손익으로 분기별 변동 큼). PBR·EV/EBITDA·PSR은 단일 소스 개략값(데이터 정밀도 낮음). 핵심 변수: ① $200B capex의 잉여현금흐름 압박(FCF TTM이 capex 급증으로 축소), ② AWS 재가속의 지속성, ③ RPO $364B의 매출 전환 속도, ④ 메모리 등 부품 원가 급등이 capex·마진에 미치는 영향.</div>
+  </section>
+
+  <!-- 5. 백로그 -->
+  <section id="backlog">
+    <h2 class="sec">5. 백로그 (AWS RPO) & Capex</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Amazon 컨콜·10-Q 주석. AWS는 "remaining performance obligations(RPO, 잔여이행의무)"를 공시 — 계약 기반 미인식 약정.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑦ AWS 백로그(RPO) 추이 ($B)</p>
+      <canvas id="chartRPO" height="100"></canvas>
+      <p class="chart-note">출처: Amazon 분기 컨콜. Q2'25 $195B → Q3'25 $200B → Q4'25 $244B → Q1'26 $364B(+93% YoY). Q1'26 수치는 Anthropic과의 신규 >$100B 약정을 제외한 값.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑧ 분기 Capex (현금, 백만 USD) — 데이터센터 투자 급증</p>
+      <canvas id="chartCapex" height="100"></canvas>
+      <p class="chart-note">출처: Amazon 컨콜 cash capex 언급 및 현금흐름표. 연간 capex 2023 ~$53B → 2024 ~$83B → 2025 ~$132B → 2026 가이던스 ~$200B. Q1 2026 단독 $43.2B.</p>
+    </div>
+
+    <h3 class="sub">AWS RPO & Capex 상세 테이블</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>AWS RPO</th><th>YoY</th><th>분기 Capex</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>Q2 2025</td><td class="num">$195B</td><td class="num up">+25%</td><td class="num">$31.4B</td><td>"수요가 용량 초과" — Jassy</td></tr>
+        <tr><td>Q3 2025</td><td class="num">$200B</td><td class="num up">—</td><td class="num">$34.2B</td><td>"10월 미발표 신규딜이 Q3 전체 딜량 초과" 언급</td></tr>
+        <tr><td>Q4 2025</td><td class="num">$244B</td><td class="num up">+40%</td><td class="num">~$41B</td><td>QoQ +22%. 2026 capex ~$200B 가이던스 제시</td></tr>
+        <tr style="background:#fff7ed;font-weight:700;"><td>Q1 2026</td><td class="num">$364B</td><td class="num up">+93%</td><td class="num">$43.2B</td><td>Anthropic >$100B 신규약정 제외한 값</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ RPO 해석 주의</div>Amazon의 AWS RPO는 컨콜에서 구두로 언급되는 경우가 많고, 분기별 정확 수치·인식 타임라인 분해는 10-Q 주석 확인이 필요(일부 분기 정밀도 제한). 2023~Q1 2025 분기 RPO는 본 세션에서 일관 수치 미확보로 차트에서 제외(데이터 없음). Q1 2026 $364B는 "Anthropic >$100B 약정 제외" 기준임에 유의 — 포함 시 실질 백로그는 더 큼.</div>
+    <div class="insight"><div class="h">💡 백로그 해석 포인트</div>AWS RPO가 $195B(Q2'25)→$364B(Q1'26)로 3개 분기 만에 +$169B(+87%) 급증한 것은 AI 컴퓨트 약정(Anthropic·OpenAI 모델 채택, 엔터프라이즈 Bedrock 확산)이 핵심 동인. Oracle($638B)에 비하면 절대액은 작지만, Amazon RPO는 단일 초대형 고객 집중도가 상대적으로 낮고(Jassy: "합리적 폭의 다양성"), AWS의 코어 클라우드 매출 기반이 두터워 백로그의 질(質)이 양호한 편. <em>(근거: Q1 2026 컨콜. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜 (전력·AI 중심)</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Talen Energy — Susquehanna 원자력 17년 PPA, 최대 1,920MW (~$18B)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-06 확장 계약. 펜실베이니아 2.5GW Susquehanna 원전에서 <strong>최대 1,920MW 무탄소 전력</strong>을 AWS 데이터센터에 17년 공급(약 $18B 규모). 구속력 있는 장기 PPA(그리드 연계 IPP 모델). 앞서 2024년 AWS는 Talen의 960MW 데이터센터 캠퍼스를 $650M에 인수. 추가로 양사는 Susquehanna 부지 내 <strong>SMR 신설·출력증강(uprate)</strong>도 공동 검토.</p>
+      <div class="deal-meta">출처: Talen Energy 8-K/IR(2025-06-11) · World Nuclear News · POWER Magazine · <a href="https://ir.talenenergy.com/news-releases/news-release-details/talen-energy-expands-nuclear-energy-relationship-amazon" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>X-energy — $500M 투자 + SMR, 미국 5GW+ 신규 원자력(2039까지)</div>
+      <p style="font-size:13px;margin:6px 0;">Amazon이 차세대 SMR·HALEU 연료 개발사 X-energy 투자라운드($500M)를 주도. X-energy 설계를 Energy Northwest 프로젝트에 적용. Amazon은 <strong>2039년까지 미국 그리드에 5GW+ 신규 원자력 추가</strong> 목표(약 380만 가구분).</p>
+      <div class="deal-meta">출처: POWER Magazine · DataCenterDynamics · Energy Digital · <a href="https://www.powermag.com/amazon-backs-massive-nuclear-smr-deployment-5-gw-with-x-energy-agreements-with-energy-northwest-dominion/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Energy Northwest (워싱턴) — Cascade Advanced Energy Facility, SMR 최대 12기</div>
+      <p style="font-size:13px;margin:6px 0;">워싱턴주 공영전력사 Energy Northwest·X-energy와 협력, Columbia Generating Station 인근에 <strong>X-energy SMR 최대 12기</strong> 건설(Cascade Advanced Energy Facility). 무탄소 전력을 Amazon 운영·그리드에 공급.</p>
+      <div class="deal-meta">출처: GeekWire · Utility Dive · World Nuclear News · <a href="https://www.utilitydive.com/news/washington-nuclear-facility-smrs-cascade-amazon-modular/802967/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>재생에너지 — 700+ 프로젝트 / 40GW+ / 28개국 (세계 1위 기업 구매자)</div>
+      <p style="font-size:13px;margin:6px 0;">BloombergNEF 기준 Amazon은 <strong>세계 최대 무탄소 에너지 기업 구매자</strong>. 누적 28개국 700개+ 프로젝트, 40GW+ 무탄소 용량 약정(풍력·태양광 중심). 원자력은 이 위에 더해지는 베이스로드 옵션.</p>
+      <div class="deal-meta">출처: Amazon 지속가능성 IR · BloombergNEF · <a href="https://www.aboutamazon.com/news/sustainability/amazon-renewable-energy-updates" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>Anthropic — AI 컴퓨트 약정 >$100B + Project Rainier (Trainium2 ~50만개)</div>
+      <p style="font-size:13px;margin:6px 0;">Amazon의 핵심 AI 파트너. Q3 2025 컨콜에서 <strong>Project Rainier</strong>(다수 미국 데이터센터에 걸친 ~50만 개 Trainium2 칩 클러스터) 가동 발표 — Anthropic이 Claude 학습에 사용. Q1 2026 컨콜에서 Jassy는 "최근 발표한 Anthropic과의 >$100B 딜"을 언급(Q1 RPO $364B에는 미포함).</p>
+      <div class="deal-meta">출처: Amazon Q3 2025·Q1 2026 컨콜(Motley Fool) · <a href="https://www.fool.com/earnings/call-transcripts/2026/04/29/amazon-amzn-q1-2026-earnings-call-transcript/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">계약</span>OpenAI — Bedrock 모델 탑재 (GPT-5.4/5.5) + AWS 컴퓨트</div>
+      <p style="font-size:13px;margin:6px 0;">Q1 2026: AWS Bedrock에 <strong>OpenAI GPT-5.4 모델 탑재(5.5 임박)</strong> 및 "OpenAI 구동 Bedrock managed agents" 프리뷰 개시. 별도로 OpenAI-AWS 대규모 컴퓨트 계약 보도 존재(금액·구속력 세부는 소스간 상이 → 일부 데이터 없음).</p>
+      <div class="deal-meta">출처: Amazon Q1 2026 컨콜(Motley Fool) · <a href="https://www.fool.com/earnings/call-transcripts/2026/04/29/amazon-amzn-q1-2026-earnings-call-transcript/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">검토</span>Talen/Dominion — 추가 SMR 신설·출력증강 (검토 단계)</div>
+      <p style="font-size:13px;margin:6px 0;">Talen 펜실베이니아 부지 내 SMR 신설 및 원전 출력증강은 <strong>공동 "검토(explore)" 단계</strong>로, 확정 EPC·용량·금액 약관은 미발표. Dominion(버지니아)과의 SMR 개발 협력도 초기 단계. 구속 약정 아님.</p>
+      <div class="deal-meta">출처: Talen IR · POWER Magazine · <a href="https://www.powermag.com/talen-amazon-launch-18b-nuclear-ppa-a-grid-connected-ipp-model-for-the-data-center-era/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="warn"><div class="h">⚠ 구속력 메모</div><strong>구속(계약):</strong> Talen 1,920MW PPA, X-energy $500M 투자, Anthropic >$100B 약정, 재생 700+ 프로젝트는 발표·약정된 거래. <strong>검토(LOI/MOU):</strong> Talen/Dominion 추가 SMR 신설·uprate는 "explore" 단계로 구속력·세부약관 미확정(데이터 없음). 원자력 SMR은 대부분 2030년대 가동 목표로 실현 타임라인이 길다.</div>
+  </section>
+
+  <!-- 7. 전력·데이터센터 동향 (NEW — 본 데스크 핵심) -->
+  <section id="power">
+    <h2 class="sec">7. 전력·데이터센터 동향 ★</h2>
+    <p style="font-size:12px;color:var(--muted);">본 전력 데스크의 핵심 섹션. Amazon은 4대 하이퍼스케일러 중 <strong>capex 절대규모 1위(~$200B/2026)</strong>이자 전력 조달 최대 수요처. 아래는 capex 궤적·데이터센터 증설·에너지 조달·전력 병목·커스텀 실리콘을 종합한다.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑨ 연간 Capex 궤적 ($B) — 2026 가이던스 ~$200B</p>
+      <canvas id="chartCapexYr" height="90"></canvas>
+      <p class="chart-note">출처: Amazon 현금흐름표·컨콜 가이던스. 2023 ~$53B → 2024 ~$83B → 2025 ~$132B → 2026E ~$200B. "주로 AWS·생성형 AI 인프라"(Jassy).</p>
+    </div>
+
+    <h3 class="sub">① Capex 궤적 & 가이던스 — 4대 중 최대</h3>
+    <p>Amazon의 연간 capex는 2023년 ~$53B에서 2026년 <strong>~$200B</strong>로 4배 가까이 급증한다. Olsavsky CFO는 "주로 AWS와 생성형 AI 인프라"라고 명시했고, Jassy는 "AWS는 과금 6~24개월 <em>전에</em> 데이터센터·인프라를 선구축해야 한다"며 선행투자의 구조적 성격을 설명했다. Q4 2025 실적에서 ~$200B 가이던스가 공식화되며 잉여현금흐름 압박 우려로 주가 변동성이 확대됐다(2026-02). <em>(출처: Q4 2025·Q1 2026 컨콜)</em></p>
+
+    <h3 class="sub">② 데이터센터 증설 — "2027년까지 용량 2배"</h3>
+    <p>Q3 2025 컨콜에서 Jassy: "지난 12개월간 <strong>3.8GW+ 전력을 추가</strong>했다 — 어떤 클라우드 사업자보다 많다." Q4 2025: "(연간) <strong>3.99GW 추가, 2022년 보유량의 2배. 2027년까지 다시 2배로 늘릴 것</strong>." Olsavsky: "2025년 AWS가 세계 어느 기업보다 많은 데이터센터 용량을 추가했다." 즉 Amazon은 전력 용량(GW)을 KPI처럼 관리하는 단계에 진입했다.</p>
+
+    <h3 class="sub">③ 전력 병목 — Jassy "전력이 단일 최대 제약"</h3>
+    <div class="insight"><div class="h">💡 핵심 인용 (4개 분기 일관)</div>
+    <strong>Q2 2025:</strong> "AWS의 <strong>단일 최대 제약은 전력</strong>(single biggest constraint is power)이다... 필요한 용량을 두 분기 안에 다 해결하긴 어렵고 <strong>여러 분기(several quarters)</strong>가 걸릴 것."<br>
+    <strong>Q3 2025:</strong> "산업 전반으로 보면 <strong>병목은 전력</strong>일 수 있다." (이후 칩이 제약이 될 수도 있다고 부연)<br>
+    → Amazon이 전력 인프라(원자력·재생·온사이트)의 핵심 수요 주체임을 경영진이 직접 확인. 전력 조달 속도 = AWS 매출 실현 속도. <em>(출처: Q2·Q3 2025 컨콜, Latitude Media)</em></div>
+
+    <h3 class="sub">④ 에너지 조달 포트폴리오 — 원자력 + 재생 동시 확대</h3>
+    <p><strong>원자력(베이스로드):</strong> ① Talen Susquehanna 17년 PPA 최대 1,920MW(~$18B, 구속), ② X-energy $500M 투자 + 2039년까지 5GW+ SMR, ③ Energy Northwest Cascade 시설 X-energy SMR 최대 12기, ④ Talen/Dominion 추가 SMR·uprate(검토). <strong>재생에너지:</strong> BloombergNEF 기준 <strong>세계 1위 기업 무탄소 구매자</strong> — 28개국 700+ 프로젝트, 40GW+. Amazon은 풍력·태양광(변동성)을 베이스, 원자력(안정성)을 보강하는 이중 전략으로 데이터센터 전력을 조달한다.</p>
+
+    <h3 class="sub">⑤ 커스텀 실리콘 — 전력·원가 효율의 또 다른 축 (Trainium/Graviton)</h3>
+    <p>전력 제약 환경에서 <strong>와트당 성능</strong>이 핵심 경쟁력이 된다. Jassy(Q1 2026): 칩 사업 분기 +40% 성장, 연환산 런레이트 $20B 초과, <strong>Trainium 매출 약정 $225B+</strong>. Trainium2는 비교 GPU 대비 ~30% 우월한 가격성능으로 "사실상 매진", Trainium3 "거의 완판". Olsavsky: "2025년 Trainium2 토큰 처리량 4배 개선, Bedrock 워크로드의 과반이 Trainium에서 구동." Graviton은 상위 1,000 EC2 고객의 98%가 사용, x86 대비 ~40% 우월한 가격성능. <strong>커스텀 실리콘은 GPU 의존·전력원가를 동시에 낮추는 수직계열화 해자</strong>다. <em>(출처: Q1 2026 컨콜)</em></p>
+
+    <div class="warn"><div class="h">⚠ 신규 리스크 — 메모리 원가 급등</div>Q1 2026 컨콜에서 Jassy: "부품, 특히 <strong>메모리 원가가 폭등(skyrocketed)</strong>했다. 수요 대비 용량이 부족한 국면." 이는 capex 효율·공급망에 변수이나, 동시에 "온프레미스 인프라를 클라우드로 미는 추가 동인"이라는 양면성도 언급. 데이터센터 전력뿐 아니라 메모리·부품 공급도 병목으로 부상.</div>
+  </section>
+
+  <!-- 8. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">8. 핵심 포인트 & 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (12개 분기 펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>AWS 4개 분기 연속 재가속:</strong> +17.5%(Q2'25)→+20%(Q3)→+24%(Q4)→<strong>+28%(Q1'26, 15분기래 최고)</strong>. 연환산 런레이트 ~$150B. AI 사이클 최대 수혜 입증. (출처: 각 분기 IR)</li>
+        <li><strong>전사 영업이익률 사상 최고:</strong> Q1 2026 OPM 13.1%로 역대 최고. NA 7.9%·물류 운영레버리지 + AWS 고마진의 합작. (출처: Q1 2026 IR)</li>
+        <li><strong>AWS RPO 급증:</strong> $195B(Q2'25)→$244B(Q4'25)→<strong>$364B(Q1'26, +93%, Anthropic >$100B 제외)</strong>. (출처: 각 분기 컨콜)</li>
+        <li><strong>Capex 4배 급증 & FCF 압박:</strong> 연 capex 2023 ~$53B→2026E ~$200B. 잉여현금흐름 축소가 핵심 논쟁점. (출처: 현금흐름표·가이던스)</li>
+        <li><strong>커스텀 실리콘 부상:</strong> 칩 사업 연환산 $20B+ 런레이트, Trainium 약정 $225B+. GPU 의존·전력원가 동시 통제. (출처: Q1 2026 컨콜)</li>
+        <li><strong>일회성·비영업손익 주의:</strong> Q3'25 영업이익은 FTC $2.5B·구조조정 $1.8B로 일시 하락, Q3'25·Q1'26 순이익은 지분평가차익으로 부풀려짐 → 영업이익 기준 해석. (출처: 각 분기 IR)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — 전력 병목 = AWS 매출의 선행 제약 (수요측 시그널)</div>
+      Jassy가 4개 분기 연속 "전력이 단일 최대 제약"이라 명시한 것은, AWS 매출 성장의 상한이 칩이 아니라 <strong>전력 조달 속도</strong>에 의해 결정된다는 뜻이다. 즉 AWS RPO($364B)와 capex(~$200B)의 매출 전환 속도는 Talen·X-energy·재생 PPA의 가동 시점에 연동된다. <strong>Amazon 백로그 ↔ 전력 공급측(원전·SMR·연료전지) 수주의 교차 모니터링</strong>이 본 데스크의 핵심 트래킹 포인트. <em>(근거: Q2~Q3 2025 컨콜. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — 커스텀 실리콘이 "와트당 성능" 경쟁의 비대칭 무기</div>
+      전력이 제약인 환경에서 GPU보다 ~30% 우월한 가격성능의 Trainium은 <strong>같은 전력으로 더 많은 AI 연산</strong>을 의미한다. Trainium 약정 $225B+, Trainium2 매진/Trainium3 거의 완판은 단순 비용절감을 넘어, 전력 제약하에서 AWS의 실질 공급능력을 확장하는 레버다. 시장이 AWS를 "GPU 재판매상"으로 보는 사이, 수직계열화된 칩이 마진·공급의 이중 해자를 형성. <em>(근거: Q1 2026 컨콜. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — RPO의 질: 집중도 낮고 코어 기반 두터움</div>
+      Oracle(RPO $638B)이 OpenAI 단일고객 ~54% 집중인 반면, Amazon RPO $364B는 Anthropic·OpenAI·엔터프라이즈 Bedrock(Fortune 100의 ~80% 사용) 등으로 분산되고, AWS 코어 클라우드 매출 기반이 두텁다. Jassy는 백로그가 "합리적 폭의 다양성(reasonable breadth)"을 갖는다고 언급. <strong>백로그의 절대액은 작아도 질은 우월</strong>할 수 있다는 점은 상대적으로 덜 부각된 요소. <em>(근거: Q1 2026 컨콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 4 — Capex 공포 vs 운영레버리지의 줄다리기</div>
+      ~$200B capex가 FCF를 압박하는 것은 사실이나, 동시에 NA 영업이익률이 7.9%로 개선되고 전사 OPM이 13.1% 사상 최고를 찍은 것은 <strong>물류·AWS의 운영효율이 capex 부담을 일부 상쇄</strong>하고 있음을 시사. Jassy는 2026 capex가 "잘 수익화될 것이라는 높은 확신"을 언급. 시장이 capex 절대액에 과민반응할 때, 매출 재가속+마진 개선의 결합이 재평가 트리거가 될 수 있다. <em>(근거: Q1 2026 컨콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 5 — 메모리 원가 급등의 양면성</div>
+      Q1 2026 신규 리스크로 메모리 원가 폭등이 부상 — capex 효율·공급망에 부담. 그러나 Jassy는 이를 "온프레미스를 클라우드로 미는 추가 동인"으로 해석. 부품 인플레가 단기 마진엔 역풍이나, 중기적으로 AWS 수요를 강화하는 역설적 구조일 수 있다. 전력에 이어 <strong>메모리도 병목</strong>으로 부상한 점은 트래킹 필요. <em>(근거: Q1 2026 컨콜. 추론: 논리적 도출)</em>
+    </div>
+  </section>
+
+  <!-- 9. 컨콜 정리 -->
+  <section id="calls">
+    <h2 class="sec">9. 컨콜 정리 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Amazon IR 분기 보도자료(8-K Ex-99.1) 및 The Motley Fool 어닝콜 트랜스크립트. 각 블록의 "전문 보기"는 별도 한국어 전문/요약 페이지로 연결.</p>
+
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q1 2026</span>
+        <span class="ctitle">2026-04-29 · 매출 $181.5B(+17%), AWS +28%(15분기래 최고), OPM 13.1% 사상최고</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$181,519M (+17% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$23,852M (OPM 13.1%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$2.78</span></div>
+          <div><span class="k">AWS 매출</span><span class="v">$37.6B (+28%)</span></div>
+          <div><span class="k">AWS RPO</span><span class="v">$364B (+93%)</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$43.2B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>AWS +28% YoY로 15분기래 최고 성장</strong>, QoQ +$2B(역대 최대 Q4→Q1 증가). 연환산 런레이트 ~$150B.</li>
+          <li>전사 <strong>OPM 13.1% 사상 최고</strong>. NA 영업이익률 7.9%, Intl 3.6%.</li>
+          <li>커스텀 칩 분기 +40%, 연환산 $20B+. <strong>Trainium 약정 $225B+</strong>, Trainium2 매진/Trainium3 거의 완판.</li>
+          <li>AWS RPO $364B(Anthropic >$100B 딜 제외). Bedrock에 OpenAI GPT-5.4 탑재.</li>
+          <li><strong>리스크: 메모리 등 부품 원가 폭등</strong> — capex·공급망 변수.</li>
+        </ul>
+        <div class="src">출처: Amazon Q1 2026 IR(2026-04-29) · Motley Fool 트랜스크립트 · <a href="https://www.fool.com/earnings/call-transcripts/2026/04/29/amazon-amzn-q1-2026-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/amzn-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q4 2025</span>
+        <span class="ctitle">2026-02-05 · 매출 $213.4B(+14%), AWS +24%(13분기래 최고), 2026 capex ~$200B 발표</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$213,386M (+14% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$24,977M (OPM 11.7%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$1.95</span></div>
+          <div><span class="k">AWS 매출</span><span class="v">$35.6B (+24%)</span></div>
+          <div><span class="k">AWS RPO</span><span class="v">$244B (+40%)</span></div>
+          <div><span class="k">AWS 영업이익</span><span class="v">$12.5B (OPM ~35%)</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>AWS +24%로 13분기래 최고</strong>, 런레이트 ~$142B. AWS 영업이익 $12.5B.</li>
+          <li><strong>2026 capex ~$200B 가이던스 공식화</strong>(주로 AWS) — 발표 후 FCF 우려로 주가 변동성 확대.</li>
+          <li><strong>2025년 3.99GW 전력 추가(2022년의 2배), 2027년까지 다시 2배</strong>. "세계 최다 데이터센터 용량 추가"(Olsavsky).</li>
+          <li>AWS RPO $244B(+40% YoY, QoQ +22%). 광고 $21.3B(+22%).</li>
+          <li>FY2025 마감: 연매출 $716.9B, 영업이익 $80B, AWS 연매출 $128.7B(+20%).</li>
+        </ul>
+        <div class="src">출처: Amazon Q4 2025 IR(2026-02-05) · Motley Fool 트랜스크립트 · <a href="https://www.fool.com/earnings/call-transcripts/2026/02/05/amazon-amzn-q4-2025-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/amzn-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q3 2025</span>
+        <span class="ctitle">2025-10-30 · 매출 $180.2B(+12%), AWS +20%(11분기래 최고), 전력이 "산업 병목"</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$180,169M (+12% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$17,422M (OPM 9.7%*)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$1.95</span></div>
+          <div><span class="k">AWS 매출</span><span class="v">$33.0B (+20%)</span></div>
+          <div><span class="k">AWS RPO</span><span class="v">$200B</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$34.2B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>AWS +20%로 11분기래 최고 재가속</strong>, 런레이트 ~$132B. AWS 영업이익 $11.43B(OPM 34.6%).</li>
+          <li><strong>전력 병목 명시:</strong> "산업 전반으로 보면 병목은 전력." 지난 12개월 <strong>3.8GW+ 추가(클라우드 최다)</strong>, 2027년까지 2배.</li>
+          <li><strong>Project Rainier 가동</strong> — 다수 미국 DC에 ~50만 Trainium2, Anthropic Claude 학습.</li>
+          <li>*영업이익에 <strong>FTC 합의 $2.5B + 구조조정 $1.8B</strong> 일회성 포함 — 제외 시 ~$21.7B.</li>
+          <li>AWS RPO $200B. "10월 미발표 신규딜이 Q3 전체 딜량 초과" 언급.</li>
+        </ul>
+        <div class="src">출처: Amazon Q3 2025 IR(2025-10-30) · Investing.com/Motley Fool 트랜스크립트 · <a href="https://www.fool.com/earnings/call-transcripts/2025/10/31/amazon-amzn-q3-2025-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/amzn-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q2 2025</span>
+        <span class="ctitle">2025-07-31 · 매출 $167.7B(+13%), AWS +17.5%, Jassy "전력이 단일 최대 제약"</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$167,702M (+13% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$19,171M (OPM 11.4%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$1.68</span></div>
+          <div><span class="k">AWS 매출</span><span class="v">$30.9B (+17.5%)</span></div>
+          <div><span class="k">AWS RPO</span><span class="v">$195B (+25%)</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$31.4B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>AWS +17.5%($30.9B), 런레이트 ~$123B. AWS 영업이익 $10.2B(OPM 32.9%).</li>
+          <li><strong>Jassy "AWS 단일 최대 제약은 전력"</strong>, "수요>용량", 해소에 "여러 분기" 소요 전망.</li>
+          <li>Trainium2가 Anthropic 최신 모델·Bedrock의 "백본". Amazon Nova 부상.</li>
+          <li>분기 capex $31.4B, 하반기에도 유사 페이스 시사 → FY2025 capex $118B+ 전망.</li>
+          <li>AWS RPO $195B(+25%). Amazon LEO(Kuiper) 엔터프라이즈·정부 계약 진척.</li>
+        </ul>
+        <div class="src">출처: Amazon Q2 2025 IR(2025-07-31) · Investing.com/Motley Fool 트랜스크립트 · <a href="https://www.fool.com/earnings/call-transcripts/2025/08/01/amazon-amzn-q2-2025-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/amzn-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+const q = ["Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const rev = [134383,143083,169961,143313,147977,158877,187792,155667,167702,180169,213386,181519];
+const opi = [7681,11188,13209,15307,14672,17411,21203,18405,19171,17422,24977,23852];
+const opm = [5.7,7.8,7.8,10.7,9.9,11.0,11.3,11.8,11.4,9.7,11.7,13.1];
+const npm = [5.0,6.9,6.3,7.3,9.1,9.6,10.7,11.0,10.8,11.8,10.1,16.7];
+
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+/* ① 매출 + 영업이익 */
+new Chart(document.getElementById('chartRevOp'),{type:'bar',data:{labels:q,datasets:[
+  {label:'매출 (좌축, $M)',data:rev,backgroundColor:'rgba(232,138,0,.7)',yAxisID:'y'},
+  {label:'영업이익 (우축, $M)',data:opi,type:'line',borderColor:'#146eb4',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:'#146eb4',tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'매출 $M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'영업이익 $M'}}}}});
+
+/* ② OPM + NPM */
+new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'OPM %',data:opm,borderColor:'#e88a00',backgroundColor:'rgba(232,138,0,.1)',fill:true,tension:.3,pointRadius:4},
+  {label:'NPM %',data:npm,borderColor:'#146eb4',backgroundColor:'rgba(20,110,180,.1)',fill:true,tension:.3,pointRadius:4,borderDash:[5,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ③ 부문별 매출 */
+const naRev=[80098,87887,105514,86341,90033,95537,115586,92887,100065,106300,127100,104100];
+const intlRev=[29697,32137,40243,31935,31663,35888,43420,33513,36761,40900,50700,39800];
+const awsRev=[22140,23059,24204,25037,26281,27452,28786,29267,30873,33000,35600,37600];
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:q,datasets:[
+  {label:'North America',data:naRev.map(v=>v/1000),backgroundColor:'rgba(232,138,0,.65)',stack:'s'},
+  {label:'International',data:intlRev.map(v=>v/1000),backgroundColor:'rgba(150,150,150,.6)',stack:'s'},
+  {label:'AWS',data:awsRev.map(v=>v/1000),backgroundColor:'rgba(20,110,180,.8)',stack:'s'}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: $${ctx.raw.toFixed(1)}B`}}},scales:{x:{stacked:true},y:{stacked:true,grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ④ AWS 성장률 */
+const awsGr=[12,12,13,17,19,19,19,17,17.5,20,24,28];
+new Chart(document.getElementById('chartAWSgr'),{type:'line',data:{labels:q,datasets:[
+  {label:'AWS 매출 YoY %',data:awsGr,borderColor:'#146eb4',backgroundColor:'rgba(20,110,180,.12)',fill:true,tension:.3,pointRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ⑤ AWS 영업이익 + 마진 */
+const awsOp=[5365,6976,7167,9421,9334,10447,10632,11547,10168,11430,12500,13300];
+const awsOpm=[24.2,30.3,29.6,37.6,35.5,38.1,36.9,39.5,32.9,34.6,35.1,35.4];
+new Chart(document.getElementById('chartAWSop'),{type:'bar',data:{labels:q,datasets:[
+  {label:'AWS 영업이익 (좌축, $M)',data:awsOp,backgroundColor:'rgba(20,110,180,.75)',yAxisID:'y'},
+  {label:'AWS OPM (우축, %)',data:awsOpm,type:'line',borderColor:'#e88a00',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:'#e88a00',tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'$M'}},y2:{position:'right',grid:{display:false},min:0,max:50,title:{display:true,text:'OPM %'},ticks:{callback:v=>v+'%'}}}}});
+
+/* ⑦ AWS RPO */
+const rpoLabels=["Q2'25","Q3'25","Q4'25","Q1'26"];
+const rpo=[195,200,244,364];
+new Chart(document.getElementById('chartRPO'),{type:'bar',data:{labels:rpoLabels,datasets:[
+  {label:'AWS RPO ($B)',data:rpo,backgroundColor:rpo.map(v=>v>=300?'rgba(232,138,0,.9)':'rgba(232,138,0,.5)'),borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ⑧ 분기 Capex */
+const capexLabels=["Q2'25","Q3'25","Q4'25","Q1'26"];
+const capexQ=[31.4,34.2,41,43.2];
+new Chart(document.getElementById('chartCapex'),{type:'bar',data:{labels:capexLabels,datasets:[
+  {label:'분기 Capex ($B)',data:capexQ,backgroundColor:'rgba(20,110,180,.7)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ⑨ 연간 Capex */
+new Chart(document.getElementById('chartCapexYr'),{type:'bar',data:{labels:['2023','2024','2025','2026E'],datasets:[
+  {label:'연간 Capex ($B)',data:[53,83,132,200],backgroundColor:['rgba(20,110,180,.55)','rgba(20,110,180,.7)','rgba(20,110,180,.85)','rgba(232,138,0,.9)'],borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ⑥ 주가 (개략값) */
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jun'25","Jul","Aug","Sep","Oct","Nov","Dec","Jan'26","Feb","Mar","Apr","May","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[215,222,228,230,222,235,228,232,205,212,225,240,238],borderColor:'#e88a00',backgroundColor:'rgba(232,138,0,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+
+/* ── 네비 활성화 ── */
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+
+/* ── 하이라이트 ── */
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+
+</body>
+</html>
