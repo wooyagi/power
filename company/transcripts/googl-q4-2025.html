@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alphabet (GOOGL) 2025 4분기 어닝콜</title>
+<style>
+  :root{--ink:#13171e;--paper:#f9f9f7;--text:#1a1f29;--muted:#6b7280;--line:#e6e9ee;--accent:#4285f4;
+    --hl-yellow:rgba(255,220,0,.45);--hl-green:rgba(72,199,116,.38);--hl-red:rgba(255,100,100,.35);
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.8;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-info{flex:1;}
+  .hdr-info h1{font-size:16px;font-weight:800;margin:0;}
+  .hdr-info p{font-size:12px;color:#9aa6b7;margin:2px 0 0;font-family:var(--mono);}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 24px 120px;}
+  .transcript{font-size:14px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word;}
+  .memo-section{position:fixed;bottom:70px;right:24px;width:280px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:12px;z-index:50;}
+  .memo-section h4{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--ink);}
+  .memo-section textarea{width:100%;height:100px;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;font-family:var(--sans);resize:vertical;line-height:1.5;}
+  .memo-section textarea:focus{outline:2px solid var(--accent);border-color:transparent;}
+  .memo-status{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+  .memo-status.saved{color:#1f7a4d;}
+  .hl-toolbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../google.html">← Alphabet(GOOGL) 리포트</a>
+  <div class="hdr-info">
+    <h1>Alphabet 2025년 4분기 어닝콜</h1>
+    <p>2026-02-04 (ET) · Motley Fool 트랜스크립트·Alphabet IR 기반 한국어 정리</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="transcript" id="transcript">※ 안내: 본 페이지는 Alphabet 2025년 4분기(연간 마감) 어닝콜의 한국어 정리본입니다. 준비된 발언의 핵심 수치·문장은 The Motley Fool 트랜스크립트(2026-02-04) 및 Globe and Mail 미러에서 발췌해 컨퍼런스 콜 톤으로 번역했으며, Q&A는 핵심 질의응답을 충실히 요약했습니다(완전 verbatim 아님 — 일부 답변은 압축). 따옴표 안은 원문 인용, 가공·날조 없음. 통화 USD. 출처: https://www.fool.com/earnings/call-transcripts/2026/02/04/alphabet-googl-q4-2025-earnings-call-transcript/ · https://abc.xyz/investor/
+
+참석자: Sundar Pichai (CEO) · Philipp Schindler (CBO) · Anat Ashkenazi (CFO)
+
+══════════════════════════════════════════
+[실적 하이라이트 — Q4 2025 / FY2025]
+══════════════════════════════════════════
+- Q4 매출 1,138억 달러 (+17~18%) — FY2025 연매출 사상 첫 4,000억 달러 돌파
+- 영업이익 359억 달러 (+16%), 영업이익률 31.6%
+- 순이익 345억 달러 (+30%), 희석 EPS $2.82 (+31%)
+- 영업현금흐름 524억 달러(분기 사상 최대), FCF 246억 달러
+- Google Cloud 매출 177억 달러 (+48%), 클라우드 영업이익률 30.1% (전년 17.5%)
+- Cloud 백로그 2,400억 달러 (+55% QoQ, 전년比 2배+)
+- 2025 Capex ~914억 달러 / 2025 감가상각 211억 달러(+38%, 2024년 153억에서)
+
+══════════════════════════════════════════
+[준비된 발언 — Sundar Pichai (CEO)] ★전력 핵심
+══════════════════════════════════════════
+· "2025년 한 해 동안 Gemini 서빙 단가를 78% 낮췄습니다" (모델 최적화·효율·가동률 개선).
+· ★공급 제약: "올해 내내 공급 제약 상태(supply constrained)로 지나갈 것으로 예상합니다."
+· ★2026 Capex 가이던스: "2026년 Capex 투자는 1,750~1,850억 달러 범위로 예상됩니다."
+· Gemini 3 Pro는 전작 대비 일일 토큰 처리량 3배. Gemini Enterprise 유료 좌석 800만+. Gemini 앱 MAU 7.5억+. Waymo 누적 자율주행 2,000만 건+, 주당 40만 건+.
+
+══════════════════════════════════════════
+[준비된 발언 — Philipp Schindler (CBO)]
+══════════════════════════════════════════
+· Google Services 매출 960억 달러(+14%). 검색(Search & other) 630억 달러+. YouTube 연 광고매출 600억 달러 돌파.
+· "상위 20대 SaaS 기업의 95%, 상위 100대의 80% 이상이 Gemini를 사용합니다." 파트너 AI 솔루션 매출 전년 대비 약 +300%.
+
+══════════════════════════════════════════
+[준비된 발언 — Anat Ashkenazi (CFO)] ★전력·감가상각 핵심
+══════════════════════════════════════════
+· 백로그: "전분기 대비 55% 증가, 전년 대비 2배 이상으로 2,400억 달러에 도달했습니다."
+· ★감가상각: "감가상각비가 약 10억 달러, 즉 38% 증가해 2024년 153억 달러에서 2025년 211억 달러가 됐습니다."
+· ★전력/P&L: "기술 인프라 투자의 큰 폭 증가는 감가상각비 및 전력 등 데이터센터 운영비 형태로 P&L에 계속 압력을 가할 것입니다."
+· Capex 변동성: "부품 공급 가용성·가격, 현금 지급 시점이 보고 Capex 숫자에 일부 변동을 야기할 수 있습니다."
+
+══════════════════════════════════════════
+[Q&A — 핵심 질의응답]
+══════════════════════════════════════════
+Q. (Eric Sheridan, Goldman) 2026 capex 급증 vs 컴퓨트 캐파 격차, 효율 개선은?
+A. (Pichai) ★"수요가 예외적으로 강력합니다. 그래서 올해 내내 공급 제약 상태로 지나갈 것으로 예상합니다." (Ashkenazi) 코드의 약 50%가 코딩 에이전트에 의해 작성되고, 재무·인보이스 정산에도 에이전트를 배치 중.
+
+Q. (Mark Shmulik, AllianceBernstein) 무엇이 경영진을 잠 못 들게 합니까?
+A. (Pichai) ★"단연 최대 질문은 용량입니다 — 전력, 토지, 공급망 등 모든 제약입니다."
+
+Q. (Michael Nathanson, MoffettNathanson) capex 구성은?
+A. (Ashkenazi) "2025년 투자의 약 60%가 서버, 40%가 장기 자산인 데이터센터였습니다."
+
+Q. (Doug Anmuth, JPMorgan) TPU 외부 매출 스트림은?
+A. (Pichai) TPU 단독보다 "Cloud를 통해 제공하는 폭넓은 가속기 선택지"를 강조.
+
+Q. (Justin Post, BofA) Gemini 앱이 검색을 잠식하는가?
+A. (Pichai) "잠식 증거를 전혀 보지 못했습니다 — 오히려 확장적 순간을 만듭니다."
+
+[그 외] Brian Nowak(에이전틱 커머스/YouTube), Mark Mahaney(YouTube 광고 ~9%/SaaS 경제성), Ross Sandler(Gemini 앱 7.5억 MAU·분기 +1억·리텐션), Ken Gawrelski(검색 수익화 'direct offer' 파일럿·Apple 파트너십).
+
+══════════════════════════════════════════
+[데스크 코멘트]
+══════════════════════════════════════════
+· 연매출 $400B 돌파라는 상징적 마일스톤과 함께, ① Cloud +48% 가속·OPM 30%, ② 2026 capex $175~185B 첫 가이던스, ③ Pichai의 "용량 — 전력·토지·공급망이 최대 고민" 발언이 핵심.
+· CFO의 감가상각 +38%·전력비 P&L 압박 코멘트는 capex 급증의 손익 비용을 회사가 직접 수치화한 대목.</div>
+</div>
+<div class="memo-section">
+  <h4>📝 메모</h4>
+  <textarea id="memoTA" placeholder="이 전문에서 중요한 내용 메모..."></textarea>
+  <div class="memo-status" id="memoStatus"></div>
+</div>
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+<script>
+const KEY = 'memo-' + location.pathname;
+const ta = document.getElementById('memoTA');
+const st = document.getElementById('memoStatus');
+const saved = localStorage.getItem(KEY);
+if(saved) ta.value = saved;
+let timer;
+ta.addEventListener('input', () => {
+  st.textContent = '저장 중...'; st.className = 'memo-status';
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.setItem(KEY, ta.value);
+    st.textContent = '✓ 저장됨'; st.className = 'memo-status saved';
+  }, 600);
+});
+let cc='yellow', em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+const HLKEY = 'hl-' + location.pathname;
+function saveHL(){const d=[];document.querySelectorAll('mark[data-hlid]').forEach(m=>d.push({id:m.dataset.hlid,color:m.dataset.color,text:m.textContent}));localStorage.setItem(HLKEY,JSON.stringify(d));}
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();m.dataset.color=cc;r.surroundContents(m);s.removeAllRanges();saveHL();}catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();saveHL();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

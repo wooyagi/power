@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alphabet / Google (GOOGL) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#4285f4; --accent2:#188038;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* 헤더 */
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+
+  /* 네비 */
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+  /* 레이아웃 */
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+
+  /* 카드 */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+
+  /* 차트 */
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+
+  /* 텍스트 */
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#eef4ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#16335c;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+
+  /* 테이블 */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+
+  /* 컨콜 */
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#1a56db;background:#eef4ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+
+  /* 딜 */
+  .deal-item{border-left:3px solid var(--accent2);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+
+  /* 하이라이트 툴바 */
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- 하이라이트 툴바 -->
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>Alphabet Inc. (Google)</h1>
+      <p>NASDAQ: GOOGL / GOOG · 검색·광고·Google Cloud·AI 인프라(TPU) · Mountain View, CA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#4285f4;">하이퍼스케일러</span>
+      <span class="badge" style="background:#188038;">AI 인프라(TPU)</span>
+      <span class="badge" style="background:#7c3aed;">원자력·청정에너지</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">백로그</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#power">전력·데이터센터</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">컨콜 정리</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">핵심 사업</span><span class="v">검색·광고 · Google Cloud · AI(Gemini/TPU)</span></div>
+        <div class="kv-item"><span class="k">회계연도</span><span class="v">12월 31일 종료(역년)</span></div>
+        <div class="kv-item"><span class="k">최근 분기 매출</span><span class="v up">$109.9B (Q1 2026, +22% YoY)</span></div>
+        <div class="kv-item"><span class="k">Google Cloud 매출</span><span class="v up">$20.0B (+63% YoY)</span></div>
+        <div class="kv-item"><span class="k">Cloud 백로그(RPO)</span><span class="v up">$462B (Q1 2026)</span></div>
+        <div class="kv-item"><span class="k">분기 Capex</span><span class="v">$35.7B (Q1 2026)</span></div>
+        <div class="kv-item"><span class="k">FY2026 Capex 가이던스</span><span class="v">$180~190B</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">NASDAQ: GOOGL/GOOG</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Alphabet은 글로벌 검색·광고를 장악한 Google을 핵심으로, ① <strong>Google Services</strong>(검색, YouTube, 네트워크 광고, 구독·플랫폼·디바이스), ② <strong>Google Cloud</strong>(GCP 인프라 + Workspace), ③ <strong>Other Bets</strong>(Waymo 등)로 구성된 지주회사다. 본 데스크 관점에서 Alphabet은 AWS·Azure와 함께 <strong>전력 수요측(하이퍼스케일러)</strong> 최상위 플레이어이며, AI 학습·추론용 자체 가속기(TPU) 클러스터를 기가와트 규모로 구축하면서 전력 조달이 성장의 핵심 병목으로 부상하고 있다.</p>
+    <p>2026년 Q1 매출은 <strong>$109.9B(+22% YoY)</strong>로 11분기 연속 두 자릿수 성장을 기록했고, 특히 Google Cloud가 <strong>+63%</strong>로 가속하며 영업이익 $6.6B(전년 $2.2B의 3배)를 달성, Cloud 영업이익률이 33%까지 상승했다. Cloud 백로그(RPO)는 한 분기 만에 거의 2배인 <strong>$462B</strong>로 폭증해 AI 인프라 수요의 가시성을 드러냈다. 동시에 FY2026 capex 가이던스는 <strong>$180~190B</strong>로, 2025년 실적(~$91B)의 2배 이상으로 확대됐다.</p>
+
+    <h3 class="sub">사업부별 상세 (근거 기반 해자)</h3>
+    <div class="card">
+      <strong>① Google Services — 검색·YouTube·구독</strong>
+      <p>Google Search는 글로벌 일반 검색의 압도적 1위로, Q1 2026 Search & other 매출 $60.4B(+19% YoY). AI Overviews/AI Mode 도입 후에도 매출 성장이 가속됐으며, 경영진은 AI Overviews가 "기존 광고와 거의 동일한 수준(approximately the same rate)으로 수익화"된다고 밝혔다(출처: Q3 2025 컨콜). YouTube는 연 광고매출 $60B+를 돌파했고 미국 스트리밍 시청시간 1위(2025-06 TV 시청의 12.8%). <em>해자(근거):</em> 검색 점유율·데이터·분배(크롬·안드로이드·애플 기본검색) 결합. 단 정확한 점유율 단정은 조사기관별 편차로 자제.</p>
+    </div>
+    <div class="card">
+      <strong>② Google Cloud — GCP + Workspace</strong>
+      <p>Q1 2026 매출 $20.0B(+63%), 영업이익 $6.6B(영업이익률 ~33%). AWS·Azure에 이은 3위이나 성장률은 최상위권이며 이익률이 17.8%→33%로 급반전. <em>해자(근거):</em> Gemini 프런티어 모델 + 자체 실리콘(TPU) + 데이터센터까지 <strong>풀스택 수직통합</strong> — Pichai는 "프런티어 모델과 실리콘을 자체 보유한 수직 최적화 AI 스택으로 진정 차별화됐다"고 강조(출처: Q1 2026 컨콜).</p>
+    </div>
+    <div class="card">
+      <strong>③ Other Bets — Waymo 등</strong>
+      <p>자율주행 Waymo가 핵심으로 주당 50만+ 자율주행 운행(Q1 2026)을 기록. 매출은 $0.4B 수준으로 작고 지속 영업적자(Q4 2025 영업손실 -$3.6B은 일부 일회성 포함). 상업화 옵션 가치.</p>
+    </div>
+    <div class="card">
+      <strong>④ AI 인프라 — Gemini & TPU(Ironwood)</strong>
+      <p>7세대 TPU "Ironwood"(2025-11 발표, 2026-04 GA): 슈퍼팟당 9,216칩, 이전 세대 대비 전력효율 ~30배, "기가와트 스케일" 액체냉각. Anthropic에 최대 100만 TPU/5GW 공급 약정 등 외부 수요도 확대. 풀스택 수직통합이 Cloud 마진 개선과 AI 추론 단가 절감(2025년 Gemini 서빙 단가 -78%)의 핵심 동인.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의 — 순이익 변동성</div>Alphabet GAAP 순이익은 보유 지분증권 평가손익("Gain on equity securities, net")의 영향으로 분기별 변동이 크다. <strong>Q1 2026 순이익 $62.6B(NPM 57%)·EPS $5.11은 기타수익 $37.7B(주로 지분증권 평가차익)으로 크게 부풀려진 수치</strong>이며 영업 본질이 아니다 — <strong>영업이익(OPM 36.1%)이 본질에 가깝다.</strong> Q1 2025·Q3 2025 등도 동일 항목으로 순이익이 일시 급등했다. 본 리포트는 매출·영업이익을 중심으로 본다.</p>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Alphabet 분기 8-K Exhibit 99.1 (SEC EDGAR, CIK 0001652044) 보도자료. 최근 12개 분기 (Q2 2023 ~ Q1 2026). GAAP 기준. 회계연도 12월 31일 종료. EPS는 모두 2022년 20:1 분할 이후 기준.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 영업이익 (백만 USD)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">출처: SEC 8-K 각 분기. Q1 2026 매출 +22% YoY로 11분기 연속 두 자릿수 성장.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② OPM · NPM 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">GAAP 영업이익률(OPM)·순이익률(NPM). ※ NPM의 급등 분기(Q1 2025 38%·Q3 2025 34%·Q1 2026 57%)는 지분증권 평가차익 등 비영업 기타수익 효과 → OPM이 영업 본질에 가깝다. 출처: SEC 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 테이블 (GAAP, 단위: 백만 USD)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>분기</th><th>매출</th><th>YoY</th><th>영업이익</th><th>OPM</th><th>순이익</th><th>NPM</th><th>희석 EPS</th><th>Capex</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Q2 2023</td><td class="num">74,604</td><td class="num up">+7%</td><td class="num">21,838</td><td class="num">29.3%</td><td class="num">18,368</td><td class="num">24.6%</td><td class="num">1.44</td><td class="num">6,888</td></tr>
+        <tr><td>Q3 2023</td><td class="num">76,693</td><td class="num up">+11%</td><td class="num">21,343</td><td class="num">27.8%</td><td class="num">19,689</td><td class="num">25.7%</td><td class="num">1.55</td><td class="num">8,055</td></tr>
+        <tr><td>Q4 2023</td><td class="num">86,310</td><td class="num up">+13%</td><td class="num">23,697</td><td class="num">27.5%</td><td class="num">20,687</td><td class="num">24.0%</td><td class="num">1.64</td><td class="num">11,019</td></tr>
+        <tr><td>Q1 2024</td><td class="num">80,539</td><td class="num up">+15%</td><td class="num">25,472</td><td class="num">31.6%</td><td class="num">23,662</td><td class="num">29.4%</td><td class="num">1.89</td><td class="num">12,012</td></tr>
+        <tr><td>Q2 2024</td><td class="num">84,742</td><td class="num up">+14%</td><td class="num">27,425</td><td class="num">32.4%</td><td class="num">23,619</td><td class="num">27.9%</td><td class="num">1.89</td><td class="num">13,186</td></tr>
+        <tr><td>Q3 2024</td><td class="num">88,268</td><td class="num up">+15%</td><td class="num">28,521</td><td class="num">32.3%</td><td class="num">26,301</td><td class="num">29.8%</td><td class="num">2.12</td><td class="num">13,061</td></tr>
+        <tr><td>Q4 2024</td><td class="num">96,469</td><td class="num up">+12%</td><td class="num">30,972</td><td class="num">32.1%</td><td class="num">26,536</td><td class="num">27.5%</td><td class="num">2.15</td><td class="num">14,276</td></tr>
+        <tr><td>Q1 2025</td><td class="num">90,234</td><td class="num up">+12%</td><td class="num">30,606</td><td class="num">33.9%</td><td class="num">34,540</td><td class="num">38.3%*</td><td class="num">2.81*</td><td class="num">17,197</td></tr>
+        <tr><td>Q2 2025</td><td class="num">96,428</td><td class="num up">+14%</td><td class="num">31,271</td><td class="num">32.4%</td><td class="num">28,196</td><td class="num">29.2%</td><td class="num">2.31</td><td class="num">22,446</td></tr>
+        <tr><td>Q3 2025</td><td class="num">102,346</td><td class="num up">+16%</td><td class="num">31,228</td><td class="num">30.5%</td><td class="num">34,979</td><td class="num">34.2%*</td><td class="num">2.87*</td><td class="num">23,953</td></tr>
+        <tr><td>Q4 2025</td><td class="num">113,828</td><td class="num up">+18%</td><td class="num">35,934</td><td class="num">31.6%</td><td class="num">34,455</td><td class="num">30.3%</td><td class="num">2.82</td><td class="num">27,851</td></tr>
+        <tr style="background:#eef4ff;font-weight:700;"><td>Q1 2026</td><td class="num">109,896</td><td class="num up">+22%</td><td class="num">39,696</td><td class="num">36.1%</td><td class="num">62,578</td><td class="num">57.0%*</td><td class="num">5.11*</td><td class="num">35,674</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 수치 출처·주의</div>전 분기 GAAP 매출·영업이익·순이익·EPS·Capex(현금흐름표 "Purchases of property and equipment")는 Alphabet 8-K Exhibit 99.1(SEC EDGAR)에서 직접 추출. OPM/NPM은 (이익÷매출) 계산값. <strong>*표시(Q1·Q3 2025, Q1 2026)의 순이익·NPM·EPS는 지분증권 평가차익 등 비영업 기타수익으로 크게 부풀려진 수치</strong>로 영업 본질과 다르다 — 영업이익 기준으로 판단할 것. Q3 2025 영업이익에는 EU 반독점 과징금 $3.5B 비용이 반영되어 OPM이 일시 하락. Q4 2025 Other Bets 영업손실 확대(-$3.6B)는 Waymo 관련 등 일부 일회성 포함.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 매출 · Google Cloud 디테일</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Alphabet 분기 8-K Exhibit 99.1 세그먼트 손익 및 매출 보충정보. Cloud 영업이익은 2023년 흑자 전환 후 마진이 지속 확대.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 세그먼트별 매출 추이 ($B) — Services / Cloud / Other Bets</p>
+      <canvas id="chartSeg" height="110"></canvas>
+      <p class="chart-note">출처: Alphabet 분기 8-K. Google Cloud가 전사 성장률을 상회하며 매출 비중 상승(Q1 2026 Cloud $20.0B, 전체의 ~18%).</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">④ Google Cloud 매출 성장률(YoY) & 영업이익률(%)</p>
+      <canvas id="chartCloudMargin" height="100"></canvas>
+      <p class="chart-note">출처: Alphabet 분기 8-K. Cloud 영업이익률 4.9%(Q2'23) → 33%(Q1'26)로 마진 턴어라운드. 성장률은 +28%대 박스권에서 Q4'25 +48%, Q1'26 +63%로 재가속.</p>
+    </div>
+
+    <h3 class="sub">세그먼트 상세 테이블 ($M)</h3>
+    <div class="card" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>분기</th><th>Google Services</th><th>Google Cloud</th><th>Cloud YoY</th><th>Cloud 영업이익</th><th>Cloud OPM</th><th>Other Bets</th><th>OB 영업손실</th></tr></thead>
+        <tbody>
+          <tr><td>Q2 2023</td><td class="num">66,285</td><td class="num">8,031</td><td class="num up">+28%</td><td class="num">395</td><td class="num">4.9%</td><td class="num">285</td><td class="num dn">(813)</td></tr>
+          <tr><td>Q3 2023</td><td class="num">67,986</td><td class="num">8,411</td><td class="num up">+22%</td><td class="num">266</td><td class="num">3.2%</td><td class="num">297</td><td class="num dn">(1,194)</td></tr>
+          <tr><td>Q4 2023</td><td class="num">76,311</td><td class="num">9,192</td><td class="num up">+26%</td><td class="num">864</td><td class="num">9.4%</td><td class="num">657</td><td class="num dn">(863)</td></tr>
+          <tr><td>Q1 2024</td><td class="num">70,398</td><td class="num">9,574</td><td class="num up">+28%</td><td class="num">900</td><td class="num">9.4%</td><td class="num">495</td><td class="num dn">(1,020)</td></tr>
+          <tr><td>Q2 2024</td><td class="num">73,928</td><td class="num">10,347</td><td class="num up">+29%</td><td class="num">1,172</td><td class="num">11.3%</td><td class="num">365</td><td class="num dn">(1,134)</td></tr>
+          <tr><td>Q3 2024</td><td class="num">76,510</td><td class="num">11,353</td><td class="num up">+35%</td><td class="num">1,947</td><td class="num">17.1%</td><td class="num">388</td><td class="num dn">(1,116)</td></tr>
+          <tr><td>Q4 2024</td><td class="num">84,094</td><td class="num">11,955</td><td class="num up">+30%</td><td class="num">2,093</td><td class="num">17.5%</td><td class="num">400</td><td class="num dn">(1,174)</td></tr>
+          <tr><td>Q1 2025</td><td class="num">77,264</td><td class="num">12,260</td><td class="num up">+28%</td><td class="num">2,177</td><td class="num">17.8%</td><td class="num">450</td><td class="num dn">(1,226)</td></tr>
+          <tr><td>Q2 2025</td><td class="num">82,543</td><td class="num">13,624</td><td class="num up">+32%</td><td class="num">2,826</td><td class="num">20.7%</td><td class="num">373</td><td class="num dn">(1,246)</td></tr>
+          <tr><td>Q3 2025</td><td class="num">87,052</td><td class="num">15,157</td><td class="num up">+34%</td><td class="num">3,594</td><td class="num">23.7%</td><td class="num">344</td><td class="num dn">(1,426)</td></tr>
+          <tr><td>Q4 2025</td><td class="num">95,862</td><td class="num">17,664</td><td class="num up">+48%</td><td class="num">5,313</td><td class="num">30.1%</td><td class="num">370</td><td class="num dn">(3,617)</td></tr>
+          <tr style="background:#eef4ff;font-weight:700;"><td>Q1 2026</td><td class="num">89,637</td><td class="num">20,028</td><td class="num up">+63%</td><td class="num">6,598</td><td class="num">32.9%</td><td class="num">411</td><td class="num dn">(2,100)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight"><div class="h">💡 Cloud 마진 턴어라운드</div>Google Cloud 영업이익률이 4.9%(Q2'23) → 17%대('24) → <strong>33%(Q1'26)</strong>로 구조적으로 개선됐다. 동시에 매출 성장이 +63%로 재가속하며 "고성장 + 고마진"을 동시 달성 — 풀스택 수직통합(자체 TPU·모델·DC)과 톱라인 레버리지가 핵심 동인이라고 경영진은 설명한다(출처: Q1 2026 컨콜). 단, capex 급증에 따른 감가상각·전력비 증가가 향후 마진에 압력으로 작용할 수 있음을 회사가 명시.</div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 & 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06-16)</span><span class="v">$371.99</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$4.54T</span></div>
+        <div class="kv-item"><span class="k">PER (후행)</span><span class="v">28.2x</span></div>
+        <div class="kv-item"><span class="k">PER (선행)</span><span class="v">~29.6x</span></div>
+        <div class="kv-item"><span class="k">PBR</span><span class="v">9.4x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA</span><span class="v">27.8x</span></div>
+        <div class="kv-item"><span class="k">PSR</span><span class="v">10.7x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">0.24% (DPS $0.88, +5%)</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">⑤ 주가 추이 (월별, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: 공개 시장 데이터(stockanalysis.com / macrotrends 개략값). 정확한 주가는 증권사 플랫폼 확인 요망. 2026-05-13 사상 최고 종가 $402 → 6월 ~$372. ※ PBR/PSR/EV/EBITDA는 stockanalysis.com 2026-06-16 기준.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>후행 PER은 일시적 지분증권 평가차익으로 순이익이 부풀려진 분기들이 TTM에 포함되어 낮게 보일 수 있음(일부 출처는 후행 PER을 21~22x로 표기) — 영업이익·FCF 기준 해석 병행 권장. 밸류에이션 지표는 stockanalysis.com 2026-06-16 기준. 핵심 변수는 ① $180~190B 규모 capex의 ROIC와 감가상각·전력비 부담, ② Cloud 백로그($462B)의 매출 전환 속도, ③ AI Overviews/AI Mode 전환기의 검색 광고 수익화 유지, ④ 규제(반독점) 리스크.</div>
+  </section>
+
+  <!-- 5. 백로그 -->
+  <section id="backlog">
+    <h2 class="sec">5. 백로그 (Cloud RPO) & Capex</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Alphabet 분기 컨콜·10-Q. RPO(Remaining Performance Obligations, 잔여이행의무) = 계약 기반 미인식 매출. Alphabet은 주로 Google Cloud 백로그를 컨콜에서 공시.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑥ Google Cloud 백로그(RPO) 추이 ($B)</p>
+      <canvas id="chartRPO" height="100"></canvas>
+      <p class="chart-note">출처: Alphabet 분기 컨콜. Q2'25 $106B → Q3'25 $155B → Q4'25 $240B → Q1'26 $462B. 한 분기 만에 거의 2배 폭증 — AI 인프라·엔터프라이즈 AI 수요 + TPU 하드웨어 약정 편입.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑦ 분기 Capex (백만 USD) — 데이터센터·서버 투자 급증</p>
+      <canvas id="chartCapex" height="100"></canvas>
+      <p class="chart-note">출처: Alphabet 현금흐름표(분기 단독값). FY2025 ~$91B → FY2026 가이던스 $180~190B(2배+). Q1'26 분기 $35.7B. 투자 구성: 서버 ~60% / 데이터센터·네트워크 ~40%.</p>
+    </div>
+
+    <h3 class="sub">Cloud 백로그 & Capex 상세 테이블</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>Cloud 백로그(RPO)</th><th>QoQ</th><th>분기 Capex</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>Q2 2025</td><td class="num">$106B</td><td class="num up">+18%</td><td class="num">$22.4B</td><td>+38% YoY</td></tr>
+        <tr><td>Q3 2025</td><td class="num">$155B</td><td class="num up">+46%</td><td class="num">$24.0B</td><td>$1B+ 딜, 직전 2년 합보다 많음</td></tr>
+        <tr><td>Q4 2025</td><td class="num">$240B</td><td class="num up">+55%</td><td class="num">$27.9B</td><td>전년 대비 2배+</td></tr>
+        <tr style="background:#eef4ff;font-weight:700;"><td>Q1 2026</td><td class="num">$462B</td><td class="num up">~+93%</td><td class="num">$35.7B</td><td>거의 2배 폭증, TPU HW 약정 포함</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ RPO 해석 주의</div>Q1 2026 10-Q 기준 전사 RPO $467.6B 중 <strong>$462.3B가 Google Cloud</strong> 관련(출처: GOOG 10-Q Q1 2026). 경영진은 백로그의 <strong>"50% 강을 향후 24개월 내 매출로 인식"</strong>하고 나머지는 그 이후 인식 예정이라 밝혔다(출처: Q1 2026 컨콜). Q1 2026 백로그에는 TPU 하드웨어 판매 약정이 일부 포함되며, 대부분은 여전히 GCP 계약이라고 CFO가 명시. 백로그가 현 Cloud 연매출의 약 6년치에 달하는 이례적 가시성.</div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜 (구속 vs LOI/MOU)</h2>
+    <p style="font-size:12px;color:var(--muted);">아래는 전력·에너지·AI 인프라 관련 주요 계약. <span class="tag deal">구속</span>=구속력 있는 PPA/인수/투자, <span class="tag loi">프레임워크</span>=옵션·MOU·우선협상 등 비구속.</p>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>Anthropic — 최대 100만 TPU · 5GW 전용 용량 + 최대 $40B 투자</div>
+      <p style="font-size:13px;margin:6px 0;">2026-04-24, Google이 Anthropic에 최대 $40B 투자 및 5년간 5GW 전용 TPU 용량 제공 약정. 2026년 중 1GW+ 온라인, 2027부터 Broadcom 경유 +3.5GW. AI 추론·학습 외부 수요의 대표 사례이자 Cloud 백로그 동력.</p>
+      <div class="deal-meta">출처: DataCenterDynamics · <a href="https://www.datacenterdynamics.com/en/news/google-and-anthropic-confirm-massive-1gw-cloud-deal-with-up-to-one-million-google-tpus/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>NextEra / Duane Arnold 원전 재가동 — 615MW, 25년 PPA</div>
+      <p style="font-size:13px;margin:6px 0;">2025-10, 아이오와 Duane Arnold(2020년 폐쇄) 615MW 원전 재가동에 대한 구속력 있는 25년 PPA. Google이 주 구매자, 2029년 초 재가동(규제승인 조건부). 별도로 2025-12 기가와트급 DC 캠퍼스 공동개발 전략 파트너십(합산 ~3.5GW) 체결(구속력 명시 안 됨).</p>
+      <div class="deal-meta">출처: NextEra Newsroom(2025-10-27) · CNBC · <a href="https://newsroom.nexteraenergy.com/NextEra-Energy-and-Google-Announce-New-Collaboration-to-Accelerate-Nuclear-Energy-Deployment-in-the-U-S?l=12" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>Kairos Power × TVA — Hermes 2 SMR, 최대 50MW PPA (착공)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-08, TVA가 Kairos Hermes 2(Gen IV 용융염냉각 SMR, 최대 50MWe, 테네시 오크리지) 전력 매입, Google이 TVA 통해 청정에너지 속성 조달 — "美 유틸리티가 Gen IV 원자로 전력 구매를 약정한 최초 사례". <strong>2026-04-17 착공</strong>, 2030 가동 목표. 아래 Kairos 마스터 협약의 첫 구체적 배치.</p>
+      <div class="deal-meta">출처: Google 블로그(2025-08-18) · Kairos(2026-04-17 착공) · <a href="https://blog.google/outreach-initiatives/sustainability/google-first-advanced-nuclear-reactor-project-with-kairos-power-and-tennessee-valley-authority/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>Commonwealth Fusion Systems (CFS) — 핵융합 200MW PPA + 지분투자</div>
+      <p style="font-size:13px;margin:6px 0;">2025-06, 핵융합 발전 세계 최대 직접 기업 구매계약. ARC 1호기(버지니아, 총 400MW)의 절반인 200MW offtake + Google 지분투자(2번째). 2030년대 초 그리드 연결 목표. ※ "향후 추가 발전소 전력 구매"는 옵션(비구속). CFS는 "성공 미보장" 명시.</p>
+      <div class="deal-meta">출처: CFS 보도자료(2025-06-30) · Google 블로그 · <a href="https://cfs.energy/news-and-media/google-and-commonwealth-fusion-systems-sign-strategic-partnership/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>Intersect "디지털 파워 자산" 인수 — $4.75B (종결)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-12 발표 → <strong>2026-03-10 종결</strong>. Alphabet이 Intersect Power의 디지털 파워 자산을 $4.75B(현금+부채)에 인수, 종결 완료. 전력을 in-house 확보하는 수직통합 전략의 변곡점. 그리드연계 사업은 IPX Power로 분사. (별개로 2024-12 Intersect·TPG와 $800M 지분 + "$20B 목표" 공동개발 프레임워크.)</p>
+      <div class="deal-meta">출처: CNBC(2025-12-22) · TPG(2026-03-10 종결) · <a href="https://www.tpg.com/news-and-insights/tpg-announces-completion-of-4-75-billion-sale-of-intersect-to-google-launches-ipx-power-as-independent-power-producer" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>대형 재생에너지 PPA — TotalEnergies 1GW · Clearway 1.2GW 등</div>
+      <p style="font-size:13px;margin:6px 0;">TotalEnergies 태양광 1GW(ERCOT, 2026 착공), Clearway 풍력+태양광 1.2GW($2.4B+), Enlight 태양광 200MWac+저장 등 구속 PPA. 누적 청정에너지 계약 170+건·22+GW(2010~2024), 2024년 단일 연도 ~8GW(사상 최대).</p>
+      <div class="deal-meta">출처: TotalEnergies · Clearway · Google Data Centers · <a href="https://totalenergies.com/news/press-releases/united-states-totalenergies-provide-1-gw-solar-capacity-power-googles-data" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속</span>지열 — Fervo Project Red 3.5MW · NV Energy CTT 115MW · Ormat 150MW</div>
+      <p style="font-size:13px;margin:6px 0;">Fervo Project Red(세계 최초 기업 EGS, 3.5MW, 2023 가동), NV Energy Clean Transition Tariff(CTT) 경유 Fervo 115MW·Ormat 최대 150MW(2026-02, 승인 조건부) 등. CTT 모델로 유틸리티 협업을 표준화.</p>
+      <div class="deal-meta">출처: Utility Dive · Ormat IR(2026-02-17) · <a href="https://investor.ormat.com/news-events/news/news-details/2026/Ormat-Technologies-Announces-the-Signing-of-Geothermal-Portfolio-PPA-of-Up-to-150-MW-to-Support-Googles-Data-Center-Operations-Through-NV-Energy/default.aspx" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Kairos Power 마스터 협약 — 최대 500MW SMR (2035)</div>
+      <p style="font-size:13px;margin:6px 0;">2024-10, 세계 최초 첨단원자로 다중배치 기업협약. 최대 500MW(6~7기 KP-FHR SMR), 첫 가동 2030 → 2035 누적 500MW. 단 마스터 협약 자체는 개별 PPA로 구체화되는 <strong>프레임워크</strong>이며, 정확한 기수·구속조건은 비공개(상기 TVA Hermes 2가 첫 구체 배치).</p>
+      <div class="deal-meta">출처: Google 블로그(2024-10-14) · Kairos Power · <a href="https://blog.google/outreach-initiatives/sustainability/google-kairos-power-nuclear-energy-agreement/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Elementl Power — 첨단원전 3개 사이트 (각 600MW+)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-05, Google이 초기 개발자본(인허가·송전연계권) 투입, 상업 오프테이크는 "옵션" 구조 → 비구속성 강함. 3개 사이트, 각 최소 600MW. 투자금액·위치 비공개(데이터 없음).</p>
+      <div class="deal-meta">출처: PR Newswire/Elementl(2025-05-07) · CNBC · <a href="https://www.prnewswire.com/news-releases/elementl-power-and-google-sign-strategic-agreement-to-develop-locations-for-advanced-nuclear-projects-302447957.html" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Fervo Energy — 최대 3GW 지열 프레임워크 + ROFR</div>
+      <p style="font-size:13px;margin:6px 0;">2026-03 서명(2028-03 만료). 최대 3GW(2033년까지 파이프라인 대상) + 우선매수권(ROFR). <strong>비구속</strong> — Google은 "이유 유무와 무관하게 프로젝트 수락·거부할 일방적 권리" 보유, 구매의무 없음(Fervo S-1 공시). "3GW=확정물량" 오해 금지.</p>
+      <div class="deal-meta">출처: Fervo S-1 분석(Benzinga, 2026-04) · <a href="https://www.benzinga.com/trading-ideas/long-ideas/26/04/51945833/google-fervo-energy-microsoft" target="_blank">링크</a></div>
+    </div>
+
+    <div class="warn"><div class="h">⚠ 구속력 분류 메모</div>헤드라인 용량의 상당 부분(Kairos 500MW, Elementl 1.8GW, Fervo 3GW)은 <strong>프레임워크/옵션</strong>으로, 확정 capacity가 아니다. 현재 명백히 구속력 있는 원자력·핵융합 물량은 NextEra/Duane Arnold(615MW), Kairos/Hermes2(50MW), CFS(200MW) 정도. 데이터 없음: Kairos 마스터 협약 정확 기수·조건, CFS/Elementl 투자금액, Duane Arnold PPA의 $·MW 분배.</div>
+  </section>
+
+  <!-- 7. (NEW) 전력·데이터센터 동향 -->
+  <section id="power">
+    <h2 class="sec">7. 전력·데이터센터 동향 ★</h2>
+    <p style="font-size:12px;color:var(--muted);">본 데스크가 가장 주목하는 섹션. Alphabet의 capex 궤적·데이터센터/TPU 빌드아웃·청정에너지 조달(원자력/핵융합/지열/태양광·풍력)·24/7 무탄소에너지 목표·전력 제약에 관한 경영진 발언을 종합한다. 출처: Alphabet 컨콜·블로그·상대방 보도자료.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑧ Capex 궤적 & 가이던스 ($B) — 연간</p>
+      <canvas id="chartCapexYr" height="95"></canvas>
+      <p class="chart-note">출처: Alphabet 10-K/컨콜. FY2023 $32B → FY2024 $52.5B → FY2025 ~$91B → FY2026 가이던스 $180~190B(중간값 ~$185B). FY2027은 "2026 대비 유의미 증가" 전망(CFO Ashkenazi, Q1 2026).</p>
+    </div>
+
+    <h3 class="sub">① Capex 궤적 & 가이던스</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>2025년 가이던스 3차례 상향:</strong> 연초 ~$75B → Q2'25 ~$85B → Q3'25 $91~93B(실제 ~$91B). "서버 인도 시점 + 데이터센터 건설 가속"이 사유(출처: Q2/Q3 2025 컨콜).</li>
+        <li><strong>2026년 가이던스 $180~190B:</strong> Q4'25에 처음 $175~185B 제시 → <strong>Q1'26에 $180~190B로 상향</strong>(Intersect 인수 반영분 포함). 2025 실적의 2배+. 상단 $190B는 2025(~$91B)의 두 배 이상.</li>
+        <li><strong>2027년:</strong> CFO Ashkenazi "2026 대비 <strong>유의미하게 증가</strong>할 것으로 예상"(Q1 2026).</li>
+        <li><strong>투자 구성:</strong> 서버 ~60% / 데이터센터·네트워크 ~40%(2025, Q1'26 동일).</li>
+        <li><strong>P&L 압박:</strong> CFO는 "기술 인프라 투자 증가가 <strong>감가상각비 및 전력 등 데이터센터 운영비</strong> 형태로 P&L에 계속 압력"이라고 명시. 2025 감가상각 $21.1B(+38%).</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">② 데이터센터 · TPU(Ironwood) 빌드아웃</h3>
+    <div class="card">
+      <p><strong>TPU Ironwood(7세대):</strong> 2025-11 발표, 2026-04 GA. 슈퍼팟당 9,216칩, HBM 1.77PB, v5p 대비 피크 10배, 1세대 대비 전력효율 ~30배, "기가와트 스케일" 액체냉각. <strong>고객 데이터센터 내 TPU 배치도 개시</strong>(Q1'26).</p>
+      <p><strong>주요 DC 발표:</strong> 인도 비사카파트남 $15B(2026~30, 기가와트급), 독일 EUR 5.5B 프로그램, 미시간(DTE) 2.7GW 청정에너지 매칭, 미네소타(Xcel) ~1.9GW 등. ※ 전사 DC 총 전력 GW 단일 공식수치는 미공개(데이터 없음) — 딜 단위 GW만 공개.</p>
+      <p><strong>전략 전환:</strong> DC 발표와 전력 조달을 동시 발표하는 방식으로 전환, CTT(Clean Transition Tariff)·behind-the-meter "에너지 파크"(DC+발전+저장 병치)로 계통연계 지연을 우회.</p>
+    </div>
+
+    <h3 class="sub">③ 청정에너지 조달 포트폴리오 (구속력 분류)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>카테고리</th><th>상대방</th><th>규모</th><th>가동목표</th><th>구속력</th></tr></thead>
+      <tbody>
+        <tr><td>원자력(SMR)</td><td>Kairos Power 마스터협약</td><td class="num">최대 500MW</td><td>2030~35</td><td>프레임워크</td></tr>
+        <tr><td>원자력(SMR)</td><td>Kairos+TVA Hermes 2</td><td class="num">최대 50MW</td><td>2030</td><td><strong>구속(착공)</strong></td></tr>
+        <tr><td>원자력(재가동)</td><td>NextEra Duane Arnold</td><td class="num">615MW</td><td>2029초</td><td><strong>구속(조건부)</strong></td></tr>
+        <tr><td>원자력(개발)</td><td>Elementl Power</td><td class="num">3×600MW+</td><td>미정</td><td>비구속</td></tr>
+        <tr><td>핵융합</td><td>Commonwealth Fusion(CFS)</td><td class="num">200MW</td><td>2030년대초</td><td><strong>구속</strong>(+옵션)</td></tr>
+        <tr><td>지열</td><td>Fervo / NV Energy CTT</td><td class="num">115MW</td><td>미정</td><td><strong>구속</strong></td></tr>
+        <tr><td>지열</td><td>Fervo 프레임워크+ROFR</td><td class="num">최대 3GW</td><td>~2033</td><td>비구속</td></tr>
+        <tr><td>지열</td><td>Ormat / NV Energy CTT</td><td class="num">최대 150MW</td><td>2028~30</td><td>구속(승인대기)</td></tr>
+        <tr><td>태양광</td><td>TotalEnergies (TX)</td><td class="num">1GW</td><td>2026 착공</td><td><strong>구속</strong></td></tr>
+        <tr><td>풍력+태양광</td><td>Clearway</td><td class="num">1.2GW</td><td>2027~28</td><td><strong>구속</strong></td></tr>
+        <tr><td>전력자산 M&A</td><td>Intersect "디지털파워"</td><td class="num">$4.75B</td><td>종결</td><td><strong>구속·집행완료</strong></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 class="sub">④ 24/7 무탄소에너지(CFE) by 2030</h3>
+    <div class="card">
+      <p>최신 공식(10차 환경보고서, 2024 실적·2025-07 발행): 시간당 글로벌 CFE <strong>66%</strong>(2023년 64%→상승). DC 20개 그리드 중 9개가 80%+. 지역편차 큼: 중남미 ~92%, 유럽 80%대, 북미 ~70%, <strong>아태 ~12%(일본 17%)</strong>. Google은 "순항(on track)" 표현을 명시하지 않았고, 총배출 증가로 2030 목표 달성이 "점점 복잡한 도전"임을 인정. 2017년 이래 연간 100% 재생에너지 매칭은 유지. (2025 실적 보고서 미발행 → 데이터 없음)</p>
+    </div>
+
+    <h3 class="sub">⑤ 전력 제약 — 경영진 발언 (핵심)</h3>
+    <div class="insight">
+      <div class="h">💡 경영진이 직접 인정한 "전력·컴퓨트 제약"</div>
+      <ul style="margin:6px 0 0;padding-left:18px;">
+        <li><strong>Pichai (Q1 2026):</strong> "우리는 단기적으로 <strong>컴퓨트 제약 상태(compute constrained)</strong>다. 예컨대 수요를 충족할 수 있었다면 <strong>클라우드 매출은 더 높았을 것</strong>이다."</li>
+        <li><strong>Pichai (Q4 2025):</strong> "올해 내내 <strong>공급 제약(supply constrained)</strong> 상태로 지나갈 것으로 예상한다." / "잠 못 들게 하는 최대 질문은 단연 용량 — <strong>전력·토지·공급망 제약</strong>이다."</li>
+        <li><strong>Ashkenazi (CFO):</strong> 기술 인프라 투자 증가가 "<strong>감가상각비 및 전력 등 데이터센터 운영비</strong>" 형태로 P&L에 계속 압력.</li>
+        <li><strong>Amin Vahdat (Cloud VP, 2025-11):</strong> "사실상 동일한 비용·점점 동일한 <strong>전력·에너지 수준</strong>에서 1,000배 역량을 제공해야 한다" — 전력을 1000배 스케일링의 핵심 제약으로 명시.</li>
+      </ul>
+    </div>
+    <div class="warn"><div class="h">⚠ 데스크 주</div>Alphabet은 자체 capex로 직접 DC를 짓는 "전력 수요측" 최상위 플레이어로, 원자력(Kairos/TVA·NextEra)·핵융합(CFS)·지열(Fervo/Ormat)·태양광·풍력을 전방위 조달 중이다. 헤드라인 GW의 다수는 프레임워크/옵션이므로, 본 데스크는 ① 구속 PPA 전환 속도, ② CTT·에너지파크 모델 확산, ③ 전력 확보가 Cloud 백로그($462B) 실현의 병목인지 여부를 교차 모니터링한다.</div>
+  </section>
+
+  <!-- 8. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">8. 핵심 포인트 & 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (12개 분기 펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>매출 성장 재가속:</strong> 분기 YoY가 +7~16% 박스권에서 Q1 2026 <strong>+22%</strong>로 점프(11분기 연속 두 자릿수). (출처: Q1'26 8-K)</li>
+        <li><strong>Google Cloud 고성장+고마진 동시 달성:</strong> 매출 +28%대 → <strong>+63%</strong>(Q1'26), 영업이익률 4.9%(Q2'23) → <strong>33%</strong>(Q1'26). 풀스택 수직통합이 동인. (출처: 각 분기 8-K)</li>
+        <li><strong>Cloud 백로그 폭증:</strong> $106B(Q2'25) → $155B → $240B → <strong>$462B</strong>(Q1'26). 50%+ 향후 24개월 내 인식 예정. (출처: 각 분기 컨콜·10-Q)</li>
+        <li><strong>Capex 2배+ & 감가상각·전력비 부담:</strong> FY2025 ~$91B → FY2026 가이던스 <strong>$180~190B</strong>, 2027 추가 증가. 감가상각·전력비가 P&L 압박 요인으로 부상. (출처: 컨콜)</li>
+        <li><strong>순이익 변동성 주의:</strong> Q1·Q3 2025, Q1 2026 순이익·EPS는 지분증권 평가차익으로 일시 급등 → <strong>영업이익(OPM 30~36%)</strong> 기준 판단 필요. Q3'25엔 EU 과징금 $3.5B 반영. (출처: 8-K)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — Cloud "고성장+고마진" 동시 전환의 구조성</div>
+      시장은 capex 급증을 마진 훼손 요인으로 보지만, Google Cloud는 매출 +63% 가속과 동시에 영업이익률을 17.8%→33%로 끌어올렸다. 풀스택 수직통합(자체 TPU·Gemini·DC)에 따른 단가 절감(2025 Gemini 서빙 단가 -78%)과 톱라인 레버리지가 동시에 작동한 결과다. capex가 곧바로 마진을 깎는다는 통념과 달리, 이익률이 우상향하는 한 capex는 "성장 자본"으로 재평가될 여지. <em>(근거: 각 분기 8-K·컨콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — $462B 백로그 = 6년치 가시성, 단 전력이 병목</div>
+      Cloud 백로그가 한 분기 만에 $240B→$462B로 거의 2배가 됐고, 이는 현 Cloud 연매출의 약 6년치다. 그러나 Pichai는 "수요를 충족했다면 클라우드 매출이 더 높았을 것"이라며 <strong>제약은 시장 기회가 아니라 실행(전력·용량)</strong>임을 명시했다. 즉 백로그 실현 속도의 핵심 변수는 수요가 아니라 <strong>전력·DC 캐파 온라인 속도</strong> — 본 데스크의 원자력·지열·태양광 조달 모니터링이 곧 GOOGL 매출 선행지표가 된다. <em>(근거: Q1'26 컨콜·10-Q. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — TPU 외판(外販)의 옵션 가치</div>
+      Anthropic 최대 100만 TPU/5GW 약정, 그리고 "고객 자체 DC에 TPU 배치 개시"는 Google이 자체 가속기를 NVIDIA 대안으로 외부 판매하는 새 수익원의 단초다. TPU 하드웨어 매출은 2026년 일부→2027년 본격 인식 예정으로 백로그에 이미 일부 반영. 시장이 Cloud "서비스"에만 집중하는 사이, 실리콘 수직통합의 외판 레버리지는 덜 부각된 옵션. <em>(근거: Q1'26 컨콜·DCD. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 4 — 검색 광고, AI 전환기 수익화 방어</div>
+      AI Overviews/AI Mode 도입에도 Search & other 매출은 +19%(Q1'26)로 가속했고, 경영진은 AI Overviews가 "기존과 거의 동일한 수준으로 수익화"되며 "잠식 증거는 없다"고 밝혔다. AI가 검색을 잠식할 것이란 베어 케이스의 핵심 가정이 아직 데이터로 확인되지 않음 — 수익화 유지 여부가 향후 재평가 트리거. <em>(근거: Q3'25·Q1'26 컨콜. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 5 — 전력 in-house 수직통합(Intersect 인수)</div>
+      Alphabet은 Intersect "디지털 파워 자산"을 $4.75B에 인수·종결(2026-03)하며 전력 개발을 외부 PPA를 넘어 자체 보유로 확장했다. 하이퍼스케일러가 발전·저장을 in-house화하는 흐름은 계통연계 지연을 우회하고 전력 단가를 통제하려는 구조적 전환으로, 데이터센터 디벨로퍼 ↔ 발전·저장 공급망의 경계가 흐려지고 있음을 시사. <em>(근거: TPG/CNBC 보도. 추론: 논리적 도출)</em>
+    </div>
+  </section>
+
+  <!-- 9. 컨콜 정리 -->
+  <section id="calls">
+    <h2 class="sec">9. 컨콜 정리 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Alphabet IR 분기 보도자료(8-K Ex-99.1) 및 The Motley Fool 어닝콜 트랜스크립트. 각 분기 "전문 보기"는 별도 페이지로 연결.</p>
+
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q1 2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q1 2026</span>
+        <span class="ctitle">2026-04-29 · 매출 $109.9B(+22%), Cloud +63%, 백로그 $462B, capex 가이던스 $180~190B 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$109,896M (+22% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$39,696M (OPM 36.1%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$5.11*</span></div>
+          <div><span class="k">Google Cloud</span><span class="v">$20.0B (+63%)</span></div>
+          <div><span class="k">Cloud 백로그</span><span class="v">$462B</span></div>
+          <div><span class="k">분기 Capex</span><span class="v">$35.7B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Google Cloud 매출 +63%로 가속, 처음으로 $20B 돌파. Cloud 영업이익 $6.6B(전년의 3배), OPM 33%.</li>
+          <li><strong>Cloud 백로그 한 분기 만에 거의 2배 $462B. 50%+를 향후 24개월 내 매출 인식 예정.</strong></li>
+          <li><strong>Pichai: "단기적으로 컴퓨트 제약 상태 — 수요를 충족했다면 클라우드 매출은 더 높았을 것."</strong></li>
+          <li><strong>FY2026 capex 가이던스 $175~185B → $180~190B로 상향(Intersect 인수 반영). 2027 추가 증가 예상.</strong></li>
+          <li>투자 구성 서버 60%/DC·네트워크 40%. "감가상각·전력비가 P&L 압박." 배당 +5%($0.22).</li>
+          <li>*EPS $5.11·순이익 $62.6B은 지분증권 평가차익(기타수익 $37.7B) 포함 → 영업이익 기준 판단.</li>
+        </ul>
+        <div class="src">출처: Alphabet Q1 2026 보도자료(2026-04-29, SEC 8-K) · Motley Fool 트랜스크립트 · <a href="https://abc.xyz/investor/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/googl-q1-2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q4 2025</span>
+        <span class="ctitle">2026-02-04 · 매출 $113.8B(+18%), 연매출 $400B 돌파, capex 가이던스 $175~185B(2026)</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$113,828M (+18% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$35,934M (OPM 31.6%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$2.82</span></div>
+          <div><span class="k">Google Cloud</span><span class="v">$17.7B (+48%)</span></div>
+          <div><span class="k">Cloud 백로그</span><span class="v">$240B (+55% QoQ)</span></div>
+          <div><span class="k">2025 Capex</span><span class="v">~$91.4B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>FY2025 연매출 사상 첫 $400B 돌파. Q4 영업현금흐름 $52.4B(분기 사상 최대).</li>
+          <li>Cloud +48%로 가속, OPM 30.1%. 백로그 $240B(전년 2배+).</li>
+          <li><strong>Pichai: "올해 내내 공급 제약 상태로 지나갈 것" / "용량 — 전력·토지·공급망 제약이 최대 고민."</strong></li>
+          <li><strong>2026 capex 가이던스 $175~185B 첫 제시.</strong> 2025 감가상각 $21.1B(+38%).</li>
+          <li>2025년 Gemini 서빙 단가 -78%. Gemini 앱 MAU 750M+, Workspace AI 좌석 800만+.</li>
+        </ul>
+        <div class="src">출처: Alphabet Q4 2025 보도자료(2026-02-04, SEC 8-K) · Motley Fool 트랜스크립트 · <a href="https://abc.xyz/investor/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/googl-q4-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q3 2025</span>
+        <span class="ctitle">2025-10-29 · 첫 $100B 분기(+16%), Cloud +34%, 백로그 $155B, capex $91~93B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$102,346M (+16% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$31,228M (OPM 30.5%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$2.87*</span></div>
+          <div><span class="k">Google Cloud</span><span class="v">$15.2B (+34%)</span></div>
+          <div><span class="k">Cloud 백로그</span><span class="v">$155B (+46% QoQ)</span></div>
+          <div><span class="k">2025 Capex 가이던스</span><span class="v">$91~93B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>분기 사상 첫 $100B 돌파. Cloud +34%, 영업이익 +85%, OPM 23.7%.</li>
+          <li>Cloud 백로그 $155B(+46% QoQ). "$1B+ 딜이 직전 2년 합보다 많다."</li>
+          <li><strong>capex 가이던스 $91~93B로 재상향, 2026 "상당한 증가" 예고. "Q4·2026 타이트한 수급 지속."</strong></li>
+          <li><strong>"감가상각·전력 등 데이터센터 운영비가 P&L 압박." 감가상각 $5.6B(+41%).</strong></li>
+          <li>EU 반독점 과징금 $3.5B 영업비용 반영(OPM 일시 하락). *EPS는 지분증권 평가차익 포함.</li>
+        </ul>
+        <div class="src">출처: Alphabet Q3 2025 보도자료(2025-10-29, SEC 8-K) · Motley Fool 트랜스크립트 · <a href="https://abc.xyz/investor/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/googl-q3-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q2 2025</span>
+        <span class="ctitle">2025-07-23 · 매출 $96.4B(+14%), Cloud +32% ARR $50B+, capex $75B→$85B 상향</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$96,428M (+14% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$31,271M (OPM 32.4%)</span></div>
+          <div><span class="k">희석 EPS</span><span class="v">$2.31</span></div>
+          <div><span class="k">Google Cloud</span><span class="v">$13.6B (+32%)</span></div>
+          <div><span class="k">Cloud 백로그</span><span class="v">$106B (+18% QoQ)</span></div>
+          <div><span class="k">2025 Capex 가이던스</span><span class="v">$75B→$85B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>Cloud +32%, OPM 20.7%(전년 11.3%), ARR $50B 돌파. 백로그 $106B.</li>
+          <li><strong>2025 capex 가이던스 $75B → ~$85B로 상향("서버 인도 시점 + DC 건설 가속").</strong></li>
+          <li><strong>"2026까지 타이트한 수급 환경 지속 예상."</strong> 감가상각 $5B(+$1.3B YoY), Q3 가속 예고.</li>
+          <li>AI Overviews 월 20억 사용자, Gemini 앱 MAU 4.5억. 법적 합의 비용 $1.4B 영업비용 반영.</li>
+        </ul>
+        <div class="src">출처: Alphabet Q2 2025 보도자료(2025-07-23, SEC 8-K) · Motley Fool 트랜스크립트 · <a href="https://abc.xyz/investor/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/googl-q2-2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+/* ── 차트 공통 ── */
+const q = ["Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"];
+const rev = [74604,76693,86310,80539,84742,88268,96469,90234,96428,102346,113828,109896];
+const opi = [21838,21343,23697,25472,27425,28521,30972,30606,31271,31228,35934,39696];
+const opm = [29.3,27.8,27.5,31.6,32.4,32.3,32.1,33.9,32.4,30.5,31.6,36.1];
+const npm = [24.6,25.7,24.0,29.4,27.9,29.8,27.5,38.3,29.2,34.2,30.3,57.0];
+
+Chart.defaults.font.family = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+Chart.defaults.font.size = 12;
+const grid = {color:'rgba(0,0,0,.06)'};
+
+/* ① 매출 + 영업이익 */
+new Chart(document.getElementById('chartRevOp'),{type:'bar',data:{labels:q,datasets:[
+  {label:'매출 (좌축, $M)',data:rev,backgroundColor:'rgba(66,133,244,.7)',yAxisID:'y'},
+  {label:'영업이익 (우축, $M)',data:opi,type:'line',borderColor:'#188038',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:'#188038',tension:.3,yAxisID:'y2'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,title:{display:true,text:'매출 $M'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'영업이익 $M'}}}}});
+
+/* ② OPM + NPM */
+new Chart(document.getElementById('chartMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'OPM %',data:opm,borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.1)',fill:true,tension:.3,pointRadius:4},
+  {label:'NPM % (※비영업 변동 포함)',data:npm,borderColor:'#ea4335',backgroundColor:'rgba(234,67,53,.08)',fill:true,tension:.3,pointRadius:4,borderDash:[5,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ③ 세그먼트 매출 */
+const svc=[66285,67986,76311,70398,73928,76510,84094,77264,82543,87052,95862,89637];
+const cld=[8031,8411,9192,9574,10347,11353,11955,12260,13624,15157,17664,20028];
+const ob=[285,297,657,495,365,388,400,450,373,344,370,411];
+new Chart(document.getElementById('chartSeg'),{type:'bar',data:{labels:q,datasets:[
+  {label:'Google Services ($M)',data:svc,backgroundColor:'rgba(66,133,244,.7)',stack:'s'},
+  {label:'Google Cloud ($M)',data:cld,backgroundColor:'rgba(24,128,56,.8)',stack:'s'},
+  {label:'Other Bets ($M)',data:ob,backgroundColor:'rgba(251,188,5,.85)',stack:'s'}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid,title:{display:true,text:'$M'}}}}});
+
+/* ④ Cloud 성장률 & 영업이익률 */
+const cloudYoY=[28,22,26,28,29,35,30,28,32,34,48,63];
+const cloudOPM=[4.9,3.2,9.4,9.4,11.3,17.1,17.5,17.8,20.7,23.7,30.1,32.9];
+new Chart(document.getElementById('chartCloudMargin'),{type:'line',data:{labels:q,datasets:[
+  {label:'Cloud 매출 YoY %',data:cloudYoY,borderColor:'#188038',backgroundColor:'rgba(24,128,56,.1)',fill:true,tension:.3,pointRadius:4},
+  {label:'Cloud 영업이익률 %',data:cloudOPM,borderColor:'#7c3aed',backgroundColor:'transparent',tension:.3,pointRadius:4,borderDash:[5,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{grid,ticks:{callback:v=>v+'%'}}}}});
+
+/* ⑥ RPO */
+const rpoLabels=["Q2'25","Q3'25","Q4'25","Q1'26"];
+const rpo=[106,155,240,462];
+new Chart(document.getElementById('chartRPO'),{type:'bar',data:{labels:rpoLabels,datasets:[
+  {label:'Cloud 백로그 ($B)',data:rpo,backgroundColor:rpo.map(v=>v>=400?'rgba(24,128,56,.9)':'rgba(24,128,56,.5)'),borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}B`}}},scales:{y:{grid,title:{display:true,text:'$B'},ticks:{callback:v=>'$'+v+'B'}}}}});
+
+/* ⑦ 분기 Capex */
+const capex=[6888,8055,11019,12012,13186,13061,14276,17197,22446,23953,27851,35674];
+new Chart(document.getElementById('chartCapex'),{type:'bar',data:{labels:q,datasets:[
+  {label:'분기 Capex ($M)',data:capex,backgroundColor:'rgba(66,133,244,.75)',borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw}M`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ⑧ 연간 Capex */
+const capexYrLabels=["FY2023","FY2024","FY2025","FY2026E(중간값)"];
+const capexYr=[32251,52535,91400,185000];
+new Chart(document.getElementById('chartCapexYr'),{type:'bar',data:{labels:capexYrLabels,datasets:[
+  {label:'연간 Capex ($M)',data:capexYr,backgroundColor:["rgba(66,133,244,.5)","rgba(66,133,244,.6)","rgba(66,133,244,.75)","rgba(234,67,53,.8)"],borderRadius:4}
+]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${(ctx.raw/1000).toFixed(1)}B`}}},scales:{y:{grid,title:{display:true,text:'$M'}}}}});
+
+/* ⑤ 주가 (개략값) */
+new Chart(document.getElementById('chartStock'),{type:'line',data:{labels:["Jun'25","Jul","Aug","Sep","Oct","Nov","Dec","Jan'26","Feb","Mar","Apr","May","Jun'26"],datasets:[{label:'주가 (USD, 개략값)',data:[176,193,205,245,270,295,305,300,290,310,355,395,372],borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.08)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>'$'+v}}}}});
+
+function toggleCall(head){
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(90deg)':'';
+}
+
+/* ── 네비 활성화 ── */
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=80) cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{passive:true});
+
+/* ── 하이라이트 ── */
+let cc='yellow',em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();r.surroundContents(m);s.removeAllRanges();
+  }catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();return;}el=el.parentElement;}
+});
+</script>
+
+</body>
+</html>
