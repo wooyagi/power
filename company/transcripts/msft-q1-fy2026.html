@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft FY2026 1분기(Q1 FY26) 어닝콜</title>
+<style>
+  :root{--ink:#13171e;--paper:#f9f9f7;--text:#1a1f29;--muted:#6b7280;--line:#e6e9ee;--accent:#0067b8;
+    --hl-yellow:rgba(255,220,0,.45);--hl-green:rgba(72,199,116,.38);--hl-red:rgba(255,100,100,.35);
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.8;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-info{flex:1;}
+  .hdr-info h1{font-size:16px;font-weight:800;margin:0;}
+  .hdr-info p{font-size:12px;color:#9aa6b7;margin:2px 0 0;font-family:var(--mono);}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 24px 120px;}
+  .transcript{font-size:14px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word;}
+  .memo-section{position:fixed;bottom:70px;right:24px;width:280px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:12px;z-index:50;}
+  .memo-section h4{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--ink);}
+  .memo-section textarea{width:100%;height:100px;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;font-family:var(--sans);resize:vertical;line-height:1.5;}
+  .memo-section textarea:focus{outline:2px solid var(--accent);border-color:transparent;}
+  .memo-status{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+  .memo-status.saved{color:#1f7a4d;}
+  .hl-toolbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../microsoft.html">← Microsoft 리포트</a>
+  <div class="hdr-info">
+    <h1>Microsoft FY2026 1분기 어닝콜 (Q1 FY26)</h1>
+    <p>2025-10-29 (분기말 2025-09-30) · Motley Fool 전문 기반 한국어 정리</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="transcript" id="transcript">※ 안내: 본 페이지는 Microsoft FY2026 1분기 어닝콜(2025-10-29)을 The Motley Fool 공개 전문과 IR 보도자료를 토대로 컨퍼런스 콜 톤에 맞춰 한국어로 충실히 정리한 것입니다. 일부는 발언 취지를 살린 요약이며, 핵심 수치·전력/Capex 관련 발언은 원문에 근거합니다. 수치 가공·날조는 없습니다. 통화 USD. 출처 링크는 하단 참조.
+
+══════════════════════════════════════════
+[실적 요약]
+══════════════════════════════════════════
+- 총매출 $77.7B (상수환율 +17%, 보고기준 +18%)
+- 영업이익 +22% (상수환율)
+- GAAP EPS $3.72 / 비GAAP EPS $4.13 (+21% cc, 조정 기준)
+  ※ OpenAI 투자 지분손실분 약 $3.1B 비GAAP 차감 반영
+- Microsoft Cloud 매출 $49.1B (+25% cc)
+- Intelligent Cloud $30.9B (+28%)
+- Azure 및 기타 클라우드 성장 +40% (상수환율 +39%)
+- 커머셜 RPO $392B (+51%), 가중평균 잔여기간 약 2년
+- 커머셜 부킹 +112% (상수환율 +111%)
+- 잉여현금흐름 $25.7B (+33%)
+- 분기 Capex(금융리스 포함) $34.9B — 약 절반이 단명 자산(GPU/CPU), 금융리스 $11.1B 포함
+
+══════════════════════════════════════════
+[CEO Satya Nadella — 준비 발언]
+══════════════════════════════════════════
+"Microsoft Cloud 매출이 $49B를 넘어 전년 대비 26% 성장했고, 커머셜 RPO는 50% 넘게 늘어 약 $400B에 달했습니다."
+
+★ 데이터센터·전력:
+"우리는 행성 규모(planet-scale)의 클라우드와 AI 팩토리를 짓고 있으며, 와트당·달러당 토큰(tokens per dollar per watt)을 극대화하고 있습니다. 이번 분기에 우리는 세계에서 가장 강력한 AI 데이터센터 Fairwater(위스콘신)를 발표했으며, 이는 내년에 가동을 시작해 단일 캠퍼스만으로 2기가와트(2GW)까지 확장될 것입니다."
+"우리는 올해 총 AI 용량을 80% 이상 늘리고, 향후 2년 동안 총 데이터센터 풋프린트를 대략 2배로 늘릴 것입니다."
+
+★ OpenAI:
+"OpenAI가 증분 $250B 규모의 Azure 서비스를 계약했습니다. 우리는 매출 셰어, 독점적 권리, 그리고 AGI 또는 2030년까지 Azure에 대한 API 독점권을 보유합니다."
+
+AI 채택: AI 기능의 월간 활성 사용자(MAU) 9억 명, 1st-party Copilot 제품군 MAU 1억 5,000만 명 돌파.
+
+══════════════════════════════════════════
+[CFO Amy Hood — 준비 발언]
+══════════════════════════════════════════
+★ Capex:
+"자본지출은 $34.9B였으며, 약 절반이 단명 자산(주로 GPU·CPU)에 투입됐습니다." (장기 자산에는 금융리스 $11.1B 포함)
+
+★ 용량(공간·전력) 제약 — 본 분기 핵심:
+"우리는 이제 최소 회계연도 말까지 용량 제약(capacity constrained) 상태일 것으로 예상하며, 수요가 현재의 인프라 구축을 초과해 Azure에서 매출 기회를 놓치고 있습니다(resulting in lost revenue opportunities for Azure)."
+
+클라우드 마진:
+"Microsoft Cloud 총이익률은 약 66%로, 지속적인 AI 투자와 Azure로의 믹스 이동으로 전년 대비 하락할 것입니다."
+
+백로그:
+"커머셜 RPO는 $392B로 증가했고, 가중평균 잔여기간은 약 2년입니다."
+
+가이던스:
+Q2 FY26 총매출 $79.5~80.6B(+14~16%), Azure 상수환율 약 +37%. 용량 제약은 회계연도 말까지 지속. 클라우드 GPM ~66%.
+
+══════════════════════════════════════════
+[Q&A 하이라이트 — "공간 또는 전력이 부족했다"]
+══════════════════════════════════════════
+■ Mark Moerdler (Bernstein) — 인프라와 수요의 매칭
+Nadella: "매출·부킹이 대차대조표에 올라오는 것과 단명 자산의 감가상각은 사실 상당히 잘 매칭됩니다."
+★ Amy Hood: "우리는 이제 여러 분기째 (용량이) 부족했습니다. (...) 지난 몇 분기 동안 우리는 실제로 GPU 자체가 부족했던 게 아니라, 공간 또는 전력(the space or the power)이 부족했습니다. 수요는 증가하고 있고, 그것도 한 곳이 아니라 여러 곳에서 증가하고 있습니다."
+
+■ Mark Murphy — 집중도(concentration) 리스크
+Nadella: 일부 수요가 고객·위치·유형 측면에서 너무 집중된 형태로 들어오면, 우리의 1st-party 워크로드(다른 마진 스택)와 균형을 맞춰야 한다는 취지로 선별 전략 설명.
+
+■ Brad Zelnick — Azure 용량 영향
+Hood: "Azure가 매출 영향의 대부분을 떠안습니다. (...) 우리는 Azure에서 (용량이) 부족했고, 그 점을 분명히 해왔습니다."
+
+■ Kash Rangan — 고객 선별
+Nadella: "(맞지 않는 거래에) '노(no)'라고 말할 때마다, 그 다음 날 더 기분이 좋아집니다."
+
+══════════════════════════════════════════
+[데스크 주 — 전력·데이터센터 관점]
+══════════════════════════════════════════
+· 이번 분기가 "GPU가 아니라 공간·전력이 부족"이라는 메시지가 공식 컨콜에서 명확히 나온 분기. 전력·계통이 클라우드 성장의 진짜 병목임을 회사 스스로 인정.
+· Fairwater(위스콘신) 단일 캠퍼스 2GW, 올해 AI 용량 +80%, 2년 내 풋프린트 2배 등 전력 수요측 확장 시그널이 집중.
+· capex의 ~절반이 단명 자산(GPU)이고 금융리스 $11.1B가 큰 비중 — 데이터센터 캐파 파이프라인의 규모를 시사.
+
+⚠ 출처 구분: 이후 회자된 "warm shells", "꽂을 데 없는 칩 재고", "컴퓨트 과잉이 아니라 전력" 발언은 이 어닝콜이 아니라 Nadella의 Bg2 Pod 인터뷰(2025-11)에서 나온 것이므로 본 컨콜에 귀속하지 않음.
+
+[출처]
+· Motley Fool Q1 FY26 전문: https://www.fool.com/earnings/call-transcripts/2025/10/29/microsoft-msft-q1-2026-earnings-call-transcript/
+· Microsoft IR 보도자료(8-K Ex-99.1): https://www.sec.gov/Archives/edgar/data/789019/000119312525256310/msft-ex99_1.htm</div>
+</div>
+<div class="memo-section">
+  <h4>📝 메모</h4>
+  <textarea id="memoTA" placeholder="이 전문에서 중요한 내용 메모..."></textarea>
+  <div class="memo-status" id="memoStatus"></div>
+</div>
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+<script>
+const KEY = 'memo-' + location.pathname;
+const ta = document.getElementById('memoTA');
+const st = document.getElementById('memoStatus');
+const saved = localStorage.getItem(KEY);
+if(saved) ta.value = saved;
+let timer;
+ta.addEventListener('input', () => {
+  st.textContent = '저장 중...'; st.className = 'memo-status';
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.setItem(KEY, ta.value);
+    st.textContent = '✓ 저장됨'; st.className = 'memo-status saved';
+  }, 600);
+});
+let cc='yellow', em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+const HLKEY = 'hl-' + location.pathname;
+function saveHL(){const d=[];document.querySelectorAll('mark[data-hlid]').forEach(m=>d.push({id:m.dataset.hlid,color:m.dataset.color,text:m.textContent}));localStorage.setItem(HLKEY,JSON.stringify(d));}
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();m.dataset.color=cc;r.surroundContents(m);s.removeAllRanges();saveHL();}catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();saveHL();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

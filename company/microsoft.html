@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft (MSFT) — 기업 분석 리포트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#13171e; --paper:#f6f7f9; --card:#fff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#0067b8; --accent2:#107c10;
+    --hl-yellow:rgba(255,220,0,.45); --hl-green:rgba(72,199,116,.38); --hl-red:rgba(255,100,100,.35);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  header{background:var(--ink);color:#fff;padding:20px 0;}
+  .hdr{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .badges{display:flex;gap:7px;flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:3px 10px;}
+
+  nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;}
+  .nav-inner{max-width:980px;margin:0 auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+  .nav-inner a{font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;}
+  .nav-inner a:hover{color:var(--accent);}
+  .nav-inner a.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+  .wrap{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  section{margin-bottom:48px;}
+  h2.sec{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:8px;margin:0 0 20px;}
+  h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 10px;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px;}
+  .kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .kv-item{display:flex;flex-direction:column;gap:3px;}
+  .kv-item .k{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px;}
+  .kv-item .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .kv-item .v.up{color:#1f7a4d;} .kv-item .v.dn{color:#c0392b;}
+
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;}
+  .chart-title{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 14px;}
+  .chart-note{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+
+  p{margin:0 0 12px;font-size:14px;line-height:1.7;}
+  .warn{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#78350f;margin:12px 0;}
+  .insight{background:#eff6ff;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#0c4a6e;margin:12px 0;}
+  .insight .h,.warn .h{font-weight:800;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{background:#f8f9fa;font-weight:700;color:var(--ink);padding:8px 12px;text-align:left;border-bottom:2px solid var(--line);}
+  td{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--text);}
+  tr:hover td{background:#fafafa;}
+  td.num{text-align:right;font-family:var(--mono);}
+  td.up{color:#1f7a4d;font-weight:600;} td.dn{color:#c0392b;font-weight:600;}
+
+  .call-block{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .call-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .call-head:hover{background:#fafafa;}
+  .call-head .qtag{font-size:11px;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:2px 8px;}
+  .call-head .ctitle{font-size:14px;font-weight:700;flex:1;margin:0 12px;}
+  .call-head .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .call-body{display:none;padding:0 18px 16px;border-top:1px solid var(--line);}
+  .call-body.open{display:block;}
+  .call-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;}
+  .call-kv .k{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .call-kv .v{font-size:13px;font-weight:700;}
+  .call-pts{margin:12px 0 0;}
+  .call-pts li{font-size:13px;margin:6px 0;line-height:1.55;}
+  .src{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;}
+  .src a{color:var(--accent);text-decoration:none;} .src a:hover{text-decoration:underline;}
+
+  .deal-item{border-left:3px solid var(--accent2);padding:8px 0 8px 14px;margin:8px 0;}
+  .deal-item.loi{border-color:#b9772a;}
+  .deal-title{font-size:14px;font-weight:700;}
+  .deal-meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:#fff;border-radius:3px;padding:1px 6px;margin-right:5px;}
+  .tag.deal{background:#1f7a4d;} .tag.loi{background:#b9772a;}
+
+  .hl-toolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:transform .1s;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+
+  .transcript-btn{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#0067b8;background:#f0f5ff;border:1px solid #c7d9f8;border-radius:6px;padding:4px 12px;cursor:pointer;text-decoration:none;}
+  .transcript-btn:hover{background:#e0ecff;}
+
+  @media(max-width:600px){.hdr{gap:10px;} .nav-inner{gap:0;} .kv-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- 하이라이트 툴바 -->
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>Microsoft Corporation</h1>
+      <p>NASDAQ: MSFT · 클라우드(Azure)·소프트웨어·AI 인프라 · Redmond, WA</p>
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#0067b8;">하이퍼스케일러</span>
+      <span class="badge" style="background:#107c10;">AI 인프라(Azure)</span>
+      <span class="badge" style="background:#7c3aed;">원자력 PPA</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="active">기업 개요</a>
+    <a href="#financials">재무 추이</a>
+    <a href="#segments">사업부</a>
+    <a href="#valuation">밸류에이션</a>
+    <a href="#backlog">백로그</a>
+    <a href="#deals">계약·딜</a>
+    <a href="#power">전력·데이터센터</a>
+    <a href="#alpha">핵심·알파</a>
+    <a href="#calls">컨콜 정리</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. 기업 개요 -->
+  <section id="overview">
+    <h2 class="sec">1. 기업 개요</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">핵심 사업</span><span class="v">클라우드(Azure)·소프트웨어·AI</span></div>
+        <div class="kv-item"><span class="k">회계연도</span><span class="v">6월 30일 종료</span></div>
+        <div class="kv-item"><span class="k">최근 분기 매출</span><span class="v up">$82.9B (Q3 FY26, +18% YoY)</span></div>
+        <div class="kv-item"><span class="k">Azure 성장(Q3 FY26)</span><span class="v up">+40% (cc +39%)</span></div>
+        <div class="kv-item"><span class="k">커머셜 RPO(백로그)</span><span class="v up">$627B (Q3 FY26, +99%)</span></div>
+        <div class="kv-item"><span class="k">CY2026 Capex 가이던스</span><span class="v">~$190B</span></div>
+        <div class="kv-item"><span class="k">본사</span><span class="v">Redmond, WA</span></div>
+        <div class="kv-item"><span class="k">상장</span><span class="v">NASDAQ: MSFT</span></div>
+      </div>
+    </div>
+
+    <h3 class="sub">전사 사업 개요</h3>
+    <p>Microsoft는 ① <strong>Productivity & Business Processes</strong>(Microsoft 365, Office, LinkedIn, Dynamics), ② <strong>Intelligent Cloud</strong>(Azure, 서버 제품, 엔터프라이즈 서비스), ③ <strong>More Personal Computing</strong>(Windows, 검색·광고, 게임/Xbox, 디바이스) 3개 세그먼트로 구성된 종합 소프트웨어·클라우드 기업이다. 본 전력 데스크 관점에서 Microsoft는 세계 최대급 <strong>전력 수요측(하이퍼스케일 데이터센터 디벨로퍼)</strong> 플레이어로, AI 학습·추론용 컴퓨트를 대규모로 확장하면서 CY2026 약 $190B의 자본지출을 집행할 계획이며, 전력 확보가 성장의 핵심 병목으로 부상했다.</p>
+    <p>FY2026 들어 OpenAI 관련 대형 Azure 컴퓨트 약정 등이 커머셜 RPO(잔여이행의무)에 반영되며 백로그가 $368B(Q4 FY25) → $625B(Q2 FY26)로 급증했고, Azure는 분기 +40% 안팎의 고성장을 지속하고 있다. 동시에 경영진은 "전력·공간 제약(power/space-constrained)"을 반복 언급하며 데이터센터 발전·계통 확보를 최우선 과제로 제시하고 있다.</p>
+
+    <h3 class="sub">사업부별 상세 (근거 기반 경쟁 해자)</h3>
+    <div class="card">
+      <strong>① Intelligent Cloud — Azure + 서버 제품</strong>
+      <p>Azure는 AWS에 이은 글로벌 2위 퍼블릭 클라우드로, AI 워크로드에서 OpenAI 파트너십을 통한 선점 효과가 핵심 해자다. Q3 FY26 Intelligent Cloud 매출 $34.7B(+30% YoY), Azure +40%(cc +39%). AI 서비스 런레이트는 $37B 초과(+123%)로 공시. <br><em>경쟁 강점(근거 포함):</em> Azure는 엔터프라이즈 IT(Windows Server·Active Directory·SQL Server)와 결합된 하이브리드 락인, 그리고 OpenAI 모델 독점/우선 제공권(API 독점은 2026-04 일부 완화)으로 차별화. 다만 클라우드 인프라 절대 점유율은 AWS에 이은 2위(시장 일반론).</p>
+    </div>
+    <div class="card">
+      <strong>② Productivity & Business Processes — M365 / Office / LinkedIn / Dynamics</strong>
+      <p>Microsoft 365는 기업용 생산성 SW의 사실상 표준. Copilot(생성형 AI) 부가판매로 ARPU 상향 여력 확보. LinkedIn은 전문직 소셜·채용 시장의 독점적 지위. Q3 FY26 세그먼트 매출 $35.0B(+17%). <em>해자:</em> 수억 명 규모 구독 기반과 전환비용, 번들 효과.</p>
+    </div>
+    <div class="card">
+      <strong>③ More Personal Computing — Windows / 검색·광고 / 게임</strong>
+      <p>Windows OS, Bing/Copilot 검색·광고, Xbox·Activision Blizzard 게임, Surface 디바이스. Q3 FY26 세그먼트 매출 $13.2B(-1%)로 성장 정체. PC 사이클·게임 콘텐츠 타이밍에 따라 변동성이 큰 부문.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 데이터 주의 — 세그먼트 재분류</div>Microsoft는 <strong>FY2025 1분기(2024-08 발효)에 세그먼트 재분류</strong>를 단행했다. 이로 인해 Productivity & Business Processes가 Q4 FY24 ~$20.3B → Q1 FY25 ~$28.3B로 점프하고, Intelligent Cloud·More Personal Computing 일부 매출이 이동했다. <strong>FY24와 FY25 이후의 세그먼트 수치는 정의가 달라 직접 비교 불가</strong>(수치 자체는 정확). 추세 분석은 전사 매출·Azure·MS Cloud 등 일관 지표를 사용하는 것이 적절하다.</p>
+  </section>
+
+  <!-- 2. 재무 추이 -->
+  <section id="financials">
+    <h2 class="sec">2. 매출·이익·마진 추이 (분기별)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Microsoft 분기 8-K Exhibit 99.1 (SEC EDGAR, CIK 789019) 및 10-Q/10-K. 최근 12개 분기 (Q4 FY2023 ~ Q3 FY2026). GAAP 기준. 회계연도 6월 30일 종료. stockanalysis.com 교차검증.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">① 분기 매출 · 영업이익 (백만 USD)</p>
+      <canvas id="chartRevOp" height="100"></canvas>
+      <p class="chart-note">출처: SEC 8-K 각 분기. 매출은 12개 분기 연속 +12~18% YoY 견조한 두 자릿수 성장.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">② OPM · NPM 추이 (%)</p>
+      <canvas id="chartMargin" height="100"></canvas>
+      <p class="chart-note">GAAP 영업이익률(OPM)·순이익률(NPM). ※ Q2 FY26 NPM 47.3%는 영업외 일회성 요인(투자평가이익/세금 추정)으로 순이익이 영업이익을 초과한 이상치 — 영업이익률(47.1%)이 본질에 가까움. 출처: SEC 8-K.</p>
+    </div>
+
+    <h3 class="sub">주요 재무 수치 테이블 (GAAP, 단위: 백만 USD)</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>분기 (회계)</th><th>분기말</th><th>매출</th><th>YoY</th><th>영업이익</th><th>OPM</th><th>순이익</th><th>NPM</th><th>희석 EPS</th><th>Azure</th><th>Capex</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Q4 FY23</td><td>'23-06</td><td class="num">56,189</td><td class="num up">+8%</td><td class="num up">24,254</td><td class="num">43.2%</td><td class="num up">20,081</td><td class="num">35.7%</td><td class="num">2.69</td><td class="num">+26%</td><td class="num">8,943</td></tr>
+        <tr><td>Q1 FY24</td><td>'23-09</td><td class="num">56,517</td><td class="num up">+13%</td><td class="num up">26,895</td><td class="num">47.6%</td><td class="num up">22,291</td><td class="num">39.4%</td><td class="num">2.99</td><td class="num">+29%</td><td class="num">9,917</td></tr>
+        <tr><td>Q2 FY24</td><td>'23-12</td><td class="num">62,020</td><td class="num up">+18%</td><td class="num up">27,032</td><td class="num">43.6%</td><td class="num up">21,870</td><td class="num">35.3%</td><td class="num">2.93</td><td class="num">+30%</td><td class="num">9,735</td></tr>
+        <tr><td>Q3 FY24</td><td>'24-03</td><td class="num">61,858</td><td class="num up">+17%</td><td class="num up">27,581</td><td class="num">44.6%</td><td class="num up">21,939</td><td class="num">35.5%</td><td class="num">2.94</td><td class="num">+31%</td><td class="num">10,952</td></tr>
+        <tr><td>Q4 FY24</td><td>'24-06</td><td class="num">64,727</td><td class="num up">+15%</td><td class="num up">27,925</td><td class="num">43.1%</td><td class="num up">22,036</td><td class="num">34.0%</td><td class="num">2.95</td><td class="num">+29%</td><td class="num">13,873</td></tr>
+        <tr><td>Q1 FY25</td><td>'24-09</td><td class="num">65,585</td><td class="num up">+16%</td><td class="num up">30,552</td><td class="num">46.6%</td><td class="num up">24,667</td><td class="num">37.6%</td><td class="num">3.30</td><td class="num">+33%</td><td class="num">14,923</td></tr>
+        <tr><td>Q2 FY25</td><td>'24-12</td><td class="num">69,632</td><td class="num up">+12%</td><td class="num up">31,653</td><td class="num">45.5%</td><td class="num up">24,108</td><td class="num">34.6%</td><td class="num">3.23</td><td class="num">+31%</td><td class="num">15,804</td></tr>
+        <tr><td>Q3 FY25</td><td>'25-03</td><td class="num">70,066</td><td class="num up">+13%</td><td class="num up">32,000</td><td class="num">45.7%</td><td class="num up">25,824</td><td class="num">36.9%</td><td class="num">3.46</td><td class="num">+33%</td><td class="num">16,745</td></tr>
+        <tr><td>Q4 FY25</td><td>'25-06</td><td class="num">76,441</td><td class="num up">+18%</td><td class="num up">34,323</td><td class="num">44.9%</td><td class="num up">27,233</td><td class="num">35.6%</td><td class="num">3.65</td><td class="num">+39%</td><td class="num">17,079</td></tr>
+        <tr><td>Q1 FY26</td><td>'25-09</td><td class="num">77,673</td><td class="num up">+18%</td><td class="num up">37,961</td><td class="num">48.9%</td><td class="num up">27,747</td><td class="num">35.7%</td><td class="num">3.72</td><td class="num">+40%</td><td class="num">34,900</td></tr>
+        <tr><td>Q2 FY26</td><td>'25-12</td><td class="num">81,273</td><td class="num up">+17%</td><td class="num up">38,275</td><td class="num">47.1%</td><td class="num up">38,458</td><td class="num">47.3%*</td><td class="num">5.16*</td><td class="num">+39%</td><td class="num">37,500</td></tr>
+        <tr style="background:#eff6ff;font-weight:700;"><td>Q3 FY26</td><td>'26-03</td><td class="num">82,886</td><td class="num up">+18%</td><td class="num up">38,398</td><td class="num">46.3%</td><td class="num up">31,778</td><td class="num">38.3%</td><td class="num">4.27</td><td class="num">+40%</td><td class="num">31,900</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn"><div class="h">⚠ 수치 출처·주의</div>전 분기 GAAP 매출·영업이익·순이익·EPS·Azure 성장률은 Microsoft 8-K Exhibit 99.1(SEC EDGAR)에서 직접 추출, stockanalysis.com 교차검증. OPM/NPM은 (이익÷매출) 계산값. <strong>*Q2 FY26 순이익·NPM·EPS는 순이익이 영업이익을 초과하는 이상치</strong>로 영업외 일회성 요인(투자평가이익/세금 추정)이며 영업 본질과 다름 — 컨콜 비GAAP EPS는 $4.14(+24% cc)로 보고됨. Capex는 Q4 FY25까지는 현금흐름표상 "현금 capex(Additions to PP&E)", Q1~Q3 FY26는 컨콜에서 보고된 <strong>금융리스 포함 총 capex</strong>(Q1 $34.9B, Q2 $37.5B, Q3 $31.9B)로 기준이 다름 — 아래 7번 전력 섹션 주석 참조. "금융리스 포함 총 capex"는 단일 GAAP 라인이 아님.</div>
+  </section>
+
+  <!-- 3. 사업부별 -->
+  <section id="segments">
+    <h2 class="sec">3. 사업부별 매출 · Azure 디테일</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Microsoft 분기 8-K Exhibit 99.1 및 보도자료 하이라이트. 세그먼트 매출은 십억 달러 단위 반올림 공시값. FY25 1분기 재분류 유의.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">③ 세그먼트별 매출 추이 ($B)</p>
+      <canvas id="chartSeg" height="110"></canvas>
+      <p class="chart-note">출처: Microsoft 분기 보도자료. ⚠ Q1 FY25(2024-09)부터 세그먼트 재분류 발효 — P&BP 점프는 정의 변경 효과. Intelligent Cloud가 일관된 성장 엔진.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <p class="chart-title">④ Azure 매출 성장률 YoY (%) · Microsoft Cloud 매출 ($B)</p>
+      <canvas id="chartAzure" height="100"></canvas>
+      <p class="chart-note">출처: Microsoft 분기 보도자료. Azure 성장률 FY25 +31~33% → FY26 +39~40%로 재가속(AI 컴퓨트 수요). MS Cloud는 Q2 FY26 처음으로 $50B 돌파.</p>
+    </div>
+
+    <h3 class="sub">세그먼트 매출 테이블 ($B, YoY)</h3>
+    <div class="card" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>분기</th><th>Productivity & BP</th><th>Intelligent Cloud</th><th>More Personal Computing</th><th>MS Cloud</th><th>Azure</th></tr></thead>
+        <tbody>
+          <tr><td>Q4 FY24</td><td class="num">20.3 (+11%)</td><td class="num">28.5 (+19%)</td><td class="num">15.9 (+14%)</td><td class="num">36.8 (+21%)</td><td class="num">+29%</td></tr>
+          <tr><td>Q1 FY25 ⚠</td><td class="num">28.3 (+12%)</td><td class="num">24.1 (+20%)</td><td class="num">13.2 (+17%)</td><td class="num">38.9 (+22%)</td><td class="num">+33%</td></tr>
+          <tr><td>Q2 FY25</td><td class="num">29.4 (+14%)</td><td class="num">25.5 (+19%)</td><td class="num">14.7 (~0%)</td><td class="num">40.9 (+21%)</td><td class="num">+31%</td></tr>
+          <tr><td>Q3 FY25</td><td class="num">29.9 (+10%)</td><td class="num">26.8 (+21%)</td><td class="num">13.4 (+6%)</td><td class="num">42.4 (+20%)</td><td class="num">+33%</td></tr>
+          <tr><td>Q4 FY25</td><td class="num">33.1 (+16%)</td><td class="num">29.9 (+26%)</td><td class="num">13.5 (+9%)</td><td class="num">46.7 (+27%)</td><td class="num">+39%</td></tr>
+          <tr><td>Q1 FY26</td><td class="num">33.0 (+17%)</td><td class="num">30.9 (+28%)</td><td class="num">13.8 (+4%)</td><td class="num">49.1 (+26%)</td><td class="num">+40%</td></tr>
+          <tr><td>Q2 FY26</td><td class="num">34.1 (+16%)</td><td class="num">32.9 (+29%)</td><td class="num">14.3 (-3%)</td><td class="num">51.5 (+26%)</td><td class="num">+39%</td></tr>
+          <tr style="background:#eff6ff;font-weight:700;"><td>Q3 FY26</td><td class="num">35.0 (+17%)</td><td class="num">34.7 (+30%)</td><td class="num">13.2 (-1%)</td><td class="num">54.5 (+29%)</td><td class="num">+40%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warn"><div class="h">⚠</div>FY24와 FY25+ 세그먼트는 재분류로 직접 비교 불가. 시계열 분석은 Azure 성장률·MS Cloud(전 분기 일관 공시) 지표를 사용하는 것이 적절.</div>
+  </section>
+
+  <!-- 4. 밸류에이션 -->
+  <section id="valuation">
+    <h2 class="sec">4. 시총 & 밸류에이션</h2>
+    <div class="card">
+      <div class="kv-grid">
+        <div class="kv-item"><span class="k">주가 (2026-06-16)</span><span class="v">$392.60</span></div>
+        <div class="kv-item"><span class="k">시가총액</span><span class="v">~$2.92T</span></div>
+        <div class="kv-item"><span class="k">PER (후행)</span><span class="v">23.8x</span></div>
+        <div class="kv-item"><span class="k">PER (선행)</span><span class="v">21.6x</span></div>
+        <div class="kv-item"><span class="k">PBR</span><span class="v">7.2x</span></div>
+        <div class="kv-item"><span class="k">EV/EBITDA (TTM)</span><span class="v">16.1x</span></div>
+        <div class="kv-item"><span class="k">배당수익률</span><span class="v">0.93% (DPS $3.64)</span></div>
+        <div class="kv-item"><span class="k">PSR</span><span class="v">9.2x</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title">⑤ 주가 추이 (월별, USD) — 참고용</p>
+      <canvas id="chartStock" height="90"></canvas>
+      <p class="chart-note">출처: statmuse 월별 종가(근사값) · stockanalysis.com. 2025-07 $529 부근 고점(역대 최고 ~$555, 7/31) → 2026-03 $369 저점(AI capex·메모리 비용 우려) → 6월 ~$393.</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 밸류에이션 주의</div>밸류에이션 지표는 stockanalysis.com 2026-06-16 기준(단일 일자). 월별 종가는 statmuse 단일 소스 근사값으로 ±수 달러 차이 가능. 52주 최고 $555.45(2025-07-31)·최저 $356.28(2026-03-30), 연초 대비 약 -15%. 핵심 변수는 ① ~$190B capex의 ROI·감가상각 부담, ② Azure 백로그(RPO $627B)의 매출 전환 속도, ③ OpenAI 관계 변화(투자 지분손실 인식·독점 완화). 후행 PER 23.8x는 빅테크 평균 수준.</div>
+  </section>
+
+  <!-- 5. 백로그 -->
+  <section id="backlog">
+    <h2 class="sec">5. 백로그 (커머셜 RPO)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Microsoft 분기 보도자료·컨콜. 커머셜 RPO(Remaining Performance Obligations) = 계약 기반 잔여이행의무로, Microsoft가 클라우드 수주 백로그 지표로 공시.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑥ 커머셜 RPO 추이 ($B)</p>
+      <canvas id="chartRPO" height="100"></canvas>
+      <p class="chart-note">출처: Microsoft 분기 보도자료. $368B(Q4 FY25) → $392B(Q1 FY26) → $625B(Q2 FY26, +110% YoY) → $627B(Q3 FY26, +99%). Q2 FY26 급증은 OpenAI 관련 초대형 다년 약정 반영.</p>
+    </div>
+
+    <h3 class="sub">커머셜 RPO 상세 테이블</h3>
+    <div class="card" style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>분기</th><th>분기말</th><th>RPO</th><th>YoY</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>Q4 FY24</td><td>'24-06</td><td class="num">$269B</td><td class="num up">+20%</td><td>—</td></tr>
+        <tr><td>Q1 FY25</td><td>'24-09</td><td class="num">$259B</td><td class="num up">+22%</td><td>—</td></tr>
+        <tr><td>Q2 FY25</td><td>'24-12</td><td class="num">$298B</td><td class="num up">+34%</td><td>—</td></tr>
+        <tr><td>Q3 FY25</td><td>'25-03</td><td class="num">$315B</td><td class="num up">+34%</td><td>—</td></tr>
+        <tr><td>Q4 FY25</td><td>'25-06</td><td class="num">$368B</td><td class="num up">+37%</td><td>커머셜 부킹 강세</td></tr>
+        <tr><td>Q1 FY26</td><td>'25-09</td><td class="num">$392B</td><td class="num up">+51%</td><td>커머셜 부킹 +112%</td></tr>
+        <tr style="background:#eff6ff;font-weight:700;"><td>Q2 FY26</td><td>'25-12</td><td class="num">$625B</td><td class="num up">+110%</td><td>OpenAI가 RPO의 ~45%(~$281B) 차지(컨콜)</td></tr>
+        <tr style="background:#eff6ff;"><td>Q3 FY26</td><td>'26-03</td><td class="num">$627B</td><td class="num up">+99%</td><td>QoQ 보합 유지</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight"><div class="h">💡 백로그 해석 포인트</div>커머셜 RPO가 $392B(Q1 FY26)에서 $625B(Q2 FY26)로 한 분기 +$233B 급증한 것은 OpenAI의 약 $250B 증분 Azure 컴퓨트 약정 체결이 대부분을 설명한다. Q2 FY26 컨콜에서 회사는 OpenAI가 RPO의 약 45%(~$281B)를 차지한다고 밝혀 <strong>단일 고객 집중도</strong>가 핵심 리스크이자 변수다. 다만 Q3 FY26에 RPO가 $627B로 보합 유지된 점은 비OpenAI 부킹도 견조함을 시사. <em>(근거: Microsoft Q1~Q3 FY26 보도자료·컨콜. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 6. 계약·딜 -->
+  <section id="deals">
+    <h2 class="sec">6. 주요 계약·딜 (전력·컴퓨트)</h2>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속계약</span>Constellation / Crane Clean Energy Center (구 Three Mile Island Unit 1) — 835MW, 20년 PPA</div>
+      <p style="font-size:13px;margin:6px 0;">2024-09-20 발표. <strong>835MW 원전 재가동분 전량을 20년 고정가로 매입하는 구속력 있는 PPA</strong>(코로케이션 아님, PJM 권역 데이터센터 부하 매칭). Constellation 재가동 투자 ~$1.6B(DOE 대출 ~$1B 지원). <strong>가동 목표가 기존 2028년 → 2027년으로 앞당겨짐("ahead of schedule").</strong> 2026-06 디리스킹 이벤트: FERC가 은퇴 발전소(Eddystone)의 760MW 계통연계권 이전 승인(6/1), NRC가 환경평가 초안·FONSI 발행(6/8, 공람 ~7/8까지). 운영 라이선스 2034년까지 유효(2054년 연장 추진).</p>
+      <div class="deal-meta">출처: Constellation 보도자료 · Utility Dive · Power Engineering · <a href="https://www.constellationenergy.com/newsroom/2024/Constellation-to-Launch-Crane-Clean-Energy-Center.html" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">구속(기술리스크)</span>Helion Energy — 핵융합 PPA, ≥50MW (2028 목표)</div>
+      <p style="font-size:13px;margin:6px 0;">2023-05-10 발표 "세계 최초 핵융합 PPA". 1년 램프 후 ≥50MW 공급, Helion이 미달 시 위약금 부담(구속력 있으나 상업화 미검증 기술에 의존). 첫 발전소 "Orion"(워싱턴주 Chelan County) 2025 착공, 2028 계통 연결 목표. <strong>계약기간·금액 미공개(데이터 없음).</strong> 본질적으로 저확률 옵셔널리티로 해석 필요.</p>
+      <div class="deal-meta">출처: Helion 공식 · CNBC(2023-05-10) · <a href="https://www.helionenergy.com/newsroom/helion-announces-worlds-first-fusion-ppa-with-microsoft/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Brookfield — 10.5GW+ 신재생 프레임워크 (2026~2030)</div>
+      <p style="font-size:13px;margin:6px 0;">2024-05-01 발표. 미국·유럽 중심 <strong>10.5GW+ 신규 신재생 용량</strong> 5년 프레임워크(2026~2030 인도, 옵션 APAC/인도/중남미). 역대 최대 단일 기업 PPA의 약 8배 규모. 주로 풍력·태양광. <strong>구속력 있는 개별 오프테이크가 아닌 프레임워크(경로/의향)로 해석</strong>, 금액은 공식 미공개(언론 추정 ~$10B).</p>
+      <div class="deal-meta">출처: Brookfield 보도자료 · DataCenterDynamics · <a href="https://bep.brookfield.com/press-releases/brookfield-and-microsoft-collaborate-deliver-over-105-gw-renewable-energy" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">프레임워크</span>Acadia(CCIC) ~5GW · AES 475MW 태양광 등 신재생</div>
+      <p style="font-size:13px;margin:6px 0;">Acadia Infrastructure Capital(CCIC): 2024-12-11, ~$9B 규모 5년간 미국 ≥5GW 목표(연합 플랫폼, 단일 구속 PPA 아님; 첫 건 텍사스 210MW 태양광). AES: 2025-03-20 475MW 태양광 PPA(IL/MI/MO), 누계 1GW+. Microsoft 총 계약 무탄소 전력은 <strong>34GW·24개국</strong>(2025 지속가능보고서, FY24 기준).</p>
+      <div class="deal-meta">출처: PRNewswire · TechCrunch(2025-03-20) · Microsoft 지속가능보고서 · <a href="https://blogs.microsoft.com/on-the-issues/2025/05/29/environmental-sustainability-report/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item">
+      <div class="deal-title"><span class="tag deal">구속계약</span>OpenAI — 증분 $250B Azure 컴퓨트 약정 (2025-10 재구조화)</div>
+      <p style="font-size:13px;margin:6px 0;">2025-10-28 확정 계약. Microsoft 지분 ~27%(희석, 가치 ~$135B), OpenAI의 <strong>증분 $250B Azure 컴퓨트 약정(계약)</strong>. IP 권리 2032년까지 연장. 컴퓨트 우선거부권(ROFR)은 제거. 2026-04-27 수정으로 클라우드 독점 사실상 종료(OpenAI 멀티클라우드 허용), Azure는 주력·우선 클라우드 유지. <strong>이 약정이 Q2 FY26 RPO의 ~45%를 차지.</strong> GW 단위 용량은 미공개(데이터 없음).</p>
+      <div class="deal-meta">출처: Microsoft 블로그(2025-10-28) · OpenAI · <a href="https://blogs.microsoft.com/blog/2025/10/28/the-next-chapter-of-the-microsoft-openai-partnership/" target="_blank">링크</a></div>
+    </div>
+
+    <div class="deal-item loi">
+      <div class="deal-title"><span class="tag loi">기술파트너</span>Stargate ($500B JV) — Microsoft는 기술 파트너</div>
+      <p style="font-size:13px;margin:6px 0;">2025-01-21 발표된 $500B JV(OpenAI/Oracle/SoftBank/MGX). <strong>Microsoft는 주도 투자자가 아닌 "기술 파트너"</strong>로 지정 — Microsoft 직접 출자 규모는 미공개(데이터 없음). Microsoft의 OpenAI 독점→ROFR 전환이 Stargate를 가능케 한 배경.</p>
+      <div class="deal-meta">출처: CNBC(2025-01-21) · <a href="https://www.cnbc.com/2025/01/21/microsoft-loses-status-as-openais-exclusive-cloud-provider.html" target="_blank">링크</a></div>
+    </div>
+
+    <div class="warn"><div class="h">⚠ 혼동 주의 / 데이터 없음</div>· Microsoft–Bloom Energy SOFC 공급계약은 <strong>검증되지 않음(데이터 없음)</strong> — Bloom의 하이퍼스케일러 수주는 Oracle·Equinix·AEP·Brookfield 측이며 Microsoft 직접 계약 미확인. Microsoft 온사이트 발전은 PEM 수소 백업 파일럿(Plug Power 3MW, Caterpillar/Ballard 1.5MW)에 한정.<br>· Microsoft–SMR 벤더 직접 계약은 미확인(데이터 없음) — WNA 가입(2025-09)·SMR 인력 채용 등 역량 구축 단계.</div>
+  </section>
+
+  <!-- 7. 전력·데이터센터 동향 (NEW) -->
+  <section id="power">
+    <h2 class="sec">7. 전력·데이터센터 동향 (전력 데스크 중점)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Microsoft 분기 컨콜(Motley Fool 전문) · 보도자료 · DataCenterDynamics · CNBC · TechCrunch. 본 섹션은 본 데스크의 최우선 분석 영역.</p>
+
+    <div class="chart-wrap">
+      <p class="chart-title">⑦ 분기 Capex 추이 (백만 USD) — 데이터센터 투자 급증</p>
+      <canvas id="chartCapex" height="100"></canvas>
+      <p class="chart-note">출처: Microsoft 현금흐름표(~Q4 FY25 현금 capex) 및 컨콜(Q1~Q3 FY26 금융리스 포함 총 capex). FY25 현금 capex 합계 ~$64B(리스 포함 시 더 큼) → CY2026 가이던스 ~$190B(+~61%). 두 시리즈는 기준이 달라 색을 구분.</p>
+    </div>
+
+    <h3 class="sub">① Capex 궤적 & 가이던스</h3>
+    <div class="card">
+      <p>· <strong>현금 capex(Additions to PP&E)</strong>: Q4 FY23 $8.9B → Q4 FY25 $17.1B로 약 2배. FY25 연간 현금 capex ~$64B.</p>
+      <p>· <strong>금융리스 포함 총 capex(컨콜 기준)</strong>: Q1 FY26 $34.9B(약 절반이 단명 자산 GPU/CPU, 금융리스 $11.1B 포함) → Q2 FY26 $37.5B(약 2/3 단명 자산) → Q3 FY26 $31.9B(금융리스 $4.7B 포함). Q4 FY26 가이던스 "$40B 초과".</p>
+      <p>· <strong>CY2026 가이던스 ~$190B(약 +61% YoY)</strong> — 이 중 약 $25B는 부품(메모리) 가격 상승 효과(Q3 FY26 컨콜, Amy Hood). <strong>2025-05 시점 "FY26 capex 증가율은 FY25보다 둔화"라던 가이던스가 뒤집힘.</strong></p>
+      <p>· FY24 리스 포함 총 capex 및 FY27 숫자 가이던스는 <strong>데이터 없음</strong>.</p>
+    </div>
+
+    <h3 class="sub">② 데이터센터 확장 & 용량</h3>
+    <div class="card">
+      <p>· FY25말 운영 데이터센터 용량 약 <strong>5GW</strong>, <strong>분기당 약 1GW씩 추가</strong>, "향후 2년 내 총 풋프린트 2배" 목표(의향). 70개 리전, 400개+ 데이터센터.</p>
+      <p>· <strong>Fairwater(위스콘신) "AI 슈퍼팩토리"</strong>: 단일 캠퍼스 최대 2GW로 확장 예정. Q3 FY26에 6주 일찍 가동되어 매출 조기 인식. 2층 구조·액체냉각으로 GPU 밀도 극대화. Atlanta와 AI WAN으로 연결.</p>
+      <p>· "모든 Azure 리전이 AI-first, 액체냉각 지원"(Q4 FY25, Nadella). 최적화 핵심 지표로 <strong>"tokens per watt per dollar"(와트·달러당 토큰)</strong> 제시.</p>
+    </div>
+
+    <h3 class="sub">③ 전력 = 핵심 병목 (경영진 발언)</h3>
+    <div class="insight">
+      <div class="h">💡 "칩이 아니라 전력·공간이 부족하다"</div>
+      <p style="margin:6px 0;"><strong>Amy Hood (Q1 FY26 컨콜, 2025-10-29):</strong> "지난 몇 분기 동안 우리는 실제로 GPU 자체가 부족했던 게 아니라, <strong>공간 또는 전력(space or the power)이 부족</strong>했습니다." / "최소 회계연도 말까지 용량 제약(capacity constrained) 상태일 것이며, 수요가 인프라 구축을 초과해 Azure의 매출 기회를 놓치고 있습니다."</p>
+      <p style="margin:6px 0;"><strong>Amy Hood (Q3 FY26 컨콜, 2026-04-29):</strong> "추가 투자와 GPU·CPU·스토리지 용량의 조기 가동 노력에도 불구하고, <strong>최소 2026년 내내 제약 상태가 지속</strong>될 것으로 예상합니다."</p>
+      <p style="margin:6px 0;"><strong>Satya Nadella (Bg2 Pod 인터뷰, ~2025-11-03, 컨콜 아님):</strong> "지금 가장 큰 문제는 컴퓨트 과잉이 아니라 <strong>전력</strong>입니다 — 전력 근처에서 충분히 빠르게 건물을 올릴 수 있느냐의 문제." / "칩 공급 문제가 아니라, <strong>꽂아 넣을 'warm shell'(전력·냉각 갖춘 건물 외피)이 없다</strong>는 게 문제." / "재고에 칩이 쌓여 있는데 꽂을 데가 없습니다."</p>
+    </div>
+    <div class="warn"><div class="h">⚠ 출처 구분</div>"warm shells", "꽂을 데 없는 칩 재고", "컴퓨트 과잉이 아니라 전력" 발언은 <strong>컨콜이 아니라 Nadella의 Bg2 Pod 인터뷰(2025-11)</strong>에서 나온 것으로, 어닝콜에 직접 귀속하지 않도록 구분 표기. 컨콜에서의 표현은 "capacity constrained" → "short the space or the power"(Q1 FY26) → "demand exceeds supply"(Q2 FY26) → "remain constrained through 2026"(Q3 FY26)로 진화.</div>
+
+    <h3 class="sub">④ 데이터센터 리스 페이스 조정 (2025-02~03)</h3>
+    <div class="card">
+      <p>2025-02~03 TD Cowen(Michael Elias) 보고서가 Microsoft의 미국 리스 일부 취소(수백 MW), 이후 미국·유럽 합계 <strong>~2GW 취소/연기</strong>를 지적("오버서플라이" 프레이밍). Microsoft는 "전략적 페이싱일 뿐 모든 지역에서 강하게 성장 지속, FY 인프라 $80B 집행 온트랙"이라 반박. <strong>결과적으로 후퇴가 아닌 페이싱으로 판명</strong> — 이후 capex가 ~$190B로 상향됐고 2025년 말 Microsoft는 (오버서플라이의 반대인) 전력 제약 상태가 됐다.</p>
+    </div>
+    <div class="insight"><div class="h">💡 전력 데스크 핵심 시그널</div>2025~26 내러티브 궤적: 2025-02/03 "오버서플라이·~2GW 리스 취소" → "전략적 페이싱" → 2025-11 Nadella "병목은 칩이 아니라 전력(warm shells)" → 2026-04 capex ~$190B(+~61%)로 상향, <strong>전력 부족으로 약 $80B 규모 Azure 주문 미충족</strong>. 근시일 확정 원전 용량은 <strong>Crane 835MW(2027 목표)</strong>가 유일하며 FERC·NRC 승인이 이번 달 진행 중. Brookfield 10.5GW·Acadia 5GW는 프레임워크, Helion 50MW/2028은 기술리스크 옵셔널리티. <em>(근거: 컨콜·보도. 추론: 논리적 도출, 단정 금지)</em></div>
+  </section>
+
+  <!-- 8. 핵심·알파 -->
+  <section id="alpha">
+    <h2 class="sec">8. 핵심 포인트 & 알파 시그널</h2>
+
+    <h3 class="sub">핵심 포인트 (12개 분기 펀더멘털 변화)</h3>
+    <div class="card">
+      <ul style="font-size:14px;line-height:1.8;padding-left:20px;margin:0;">
+        <li><strong>매출 안정 고성장:</strong> 분기 YoY +12~18% 견조한 두 자릿수 유지. 절대 매출 $56B(Q4 FY23) → $83B(Q3 FY26). (출처: 각 분기 8-K)</li>
+        <li><strong>Azure 재가속:</strong> FY25 +31~33% → FY26 +39~40% YoY. AI 컴퓨트 수요가 동인. AI 서비스 런레이트 $37B+(+123%). (출처: 보도자료·컨콜)</li>
+        <li><strong>커머셜 RPO 폭증:</strong> $269B(Q4 FY24) → $368B(Q4 FY25) → <strong>$625B(Q2 FY26, +110%)</strong> → $627B(Q3 FY26). OpenAI $250B 약정이 핵심. (출처: 각 분기 보도자료)</li>
+        <li><strong>Capex 급증 & 마진 압력:</strong> CY2026 capex 가이던스 ~$190B(+~61%, 메모리 가격 +$25B 포함). 단명 자산(GPU) 비중 높아 감가상각 가속 — OPM 43~49% 박스권이나 향후 압력 변수. (출처: 컨콜)</li>
+        <li><strong>전력이 성장 제약:</strong> 경영진이 "공간·전력 부족"을 반복 언급, $80B 규모 주문 미충족. 칩이 아닌 전력·계통이 병목. (출처: Q1~Q3 FY26 컨콜·Bg2 Pod)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">알파 시그널 (시장이 덜 반영한 요소)</h3>
+    <div class="insight">
+      <div class="h">💡 알파 1 — "전력 병목"이 capex 가이던스를 상회시키는 구조</div>
+      시장은 2025-02 "리스 취소·오버서플라이"를 후퇴 신호로 해석했으나, 9개월 만에 회사는 capex를 ~$190B로 상향하고 "전력 부족으로 $80B 주문 미충족"을 공언했다. 즉 Microsoft의 제약은 <strong>수요 부족이 아니라 전력·warm shell 공급 부족</strong>이며, 이는 데이터센터 발전·계통(가스엔진·원전·연료전지) 공급측 수요의 강력한 선행지표다. <em>(근거: Q1~Q3 FY26 컨콜·Bg2 Pod. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 2 — RPO의 질: OpenAI 집중도 vs 가시성</div>
+      커머셜 RPO $627B는 강력한 매출 가시성이나, OpenAI 약정이 ~45%(~$281B)를 차지하는 집중 리스크를 동반한다. 핵심 판단 포인트는 ① 비OpenAI 부킹 다변화(Q3 RPO 보합 유지가 긍정 단서), ② RPO의 매출 인식 타임라인, ③ OpenAI 관계 변화(2026-04 독점 완화)의 영향. <em>(근거: Q2~Q3 FY26 컨콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 3 — 원전 PPA의 디리스킹이 진행 중</div>
+      Crane(구 TMI) 835MW PPA는 2027년 가동 목표로 앞당겨졌고, 2026-06에 FERC 계통연계권 이전 승인·NRC 환경평가 FONSI가 연달아 나오며 실현 리스크가 줄고 있다. 본 데스크 관점에서 Microsoft 백로그(RPO) ↔ 전력 조달(원전·가스·연료전지)의 연동을 교차 모니터링할 가치가 크다. <em>(근거: Utility Dive·NRC·FERC 보도. 추론: 논리적 도출)</em>
+    </div>
+    <div class="insight">
+      <div class="h">💡 알파 4 — 감가상각·메모리 비용이 마진의 다음 전장</div>
+      capex의 ~2/3가 단명 자산(GPU/CPU)이고, CY2026 capex 증가분의 ~$25B가 메모리 가격 상승이다. 단명 자산 비중 상승은 감가상각 가속으로 이어져 향후 클라우드 GPM·OPM에 압력이 될 수 있다 — 매출(Azure) 가속이 이를 상쇄하는지가 관전 포인트. <em>(근거: Q3 FY26 컨콜. 추론: 논리적 도출, 단정 금지)</em>
+    </div>
+  </section>
+
+  <!-- 9. 컨콜 정리 -->
+  <section id="calls">
+    <h2 class="sec">9. 컨콜 정리 (최근 4개 분기)</h2>
+    <p style="font-size:12px;color:var(--muted);">출처: Microsoft IR 분기 보도자료(8-K Ex-99.1) 및 The Motley Fool 어닝콜 트랜스크립트. 각 분기 "전문 보기"로 한국어 번역/요약 페이지 이동.</p>
+
+    <!-- NEW_CALL_INSERT -->
+
+    <!-- Q3 FY2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q3 FY26</span>
+        <span class="ctitle">2026-04-29 · 매출 $82.9B(+18%), Azure +40%, RPO $627B, CY26 capex ~$190B</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$82,886M (+18% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$38,398M (OPM 46.3%)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$4.27</span></div>
+          <div><span class="k">Azure</span><span class="v">+40% (cc +39%)</span></div>
+          <div><span class="k">커머셜 RPO</span><span class="v">$627B (+99%)</span></div>
+          <div><span class="k">Capex(리스포함)</span><span class="v">$31.9B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li>MS Cloud $54.5B(+29%), Intelligent Cloud $34.7B(+30%), AI 서비스 런레이트 $37B+(+123%).</li>
+          <li>Fairwater(위스콘신) 6주 일찍 가동 → 매출 조기 인식. 이번 분기 +1GW 추가, 2년 내 풋프린트 2배 목표.</li>
+          <li><strong>CY2026 capex ~$190B 가이던스(메모리 가격 +$25B 포함). "최소 2026년 내내 용량 제약 지속."</strong></li>
+          <li>발표 후 ~$190B capex 가이던스에 주가 다음 날 ~-4%.</li>
+        </ul>
+        <div class="src">출처: Microsoft IR / Motley Fool Q3 FY26 트랜스크립트(2026-04-29) · <a href="https://www.fool.com/earnings/call-transcripts/2026/04/29/microsoft-msft-q3-2026-earnings-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/msft-q3-fy2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q2 FY2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q2 FY26</span>
+        <span class="ctitle">2026-01-28 · 매출 $81.3B(+17%), MS Cloud 첫 $50B 돌파, RPO $625B(+110%)</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$81,273M (+17% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$38,275M (OPM 47.1%)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$5.16*</span></div>
+          <div><span class="k">Azure</span><span class="v">+39% (cc +38%)</span></div>
+          <div><span class="k">커머셜 RPO</span><span class="v">$625B (+110%)</span></div>
+          <div><span class="k">Capex(리스포함)</span><span class="v">$37.5B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>MS Cloud $51.5B로 처음 $50B 돌파.</strong> Intelligent Cloud $32.9B(+29%).</li>
+          <li>커머셜 RPO $625B(+110%), 이 중 OpenAI가 ~45%(~$281B) 차지.</li>
+          <li>*GAAP EPS $5.16(순이익 $38.5B)는 영업외 일회성 요인 추정 이상치 — 컨콜 비GAAP EPS $4.14(+24% cc).</li>
+          <li>이번 분기 ~1GW 추가. "수요가 공급을 계속 초과." Q3 capex는 QoQ 감소 가이던스.</li>
+        </ul>
+        <div class="src">출처: Microsoft IR / Motley Fool Q2 FY26 트랜스크립트(2026-01-28) · <a href="https://www.fool.com/earnings/call-transcripts/2026/01/28/microsoft-msft-q2-2026-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/msft-q2-fy2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q1 FY2026 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q1 FY26</span>
+        <span class="ctitle">2025-10-29 · 매출 $77.7B(+18%), Azure +40%, "공간·전력 부족" 발언</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$77,673M (+18% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$37,961M (OPM 48.9%)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$3.72</span></div>
+          <div><span class="k">Azure</span><span class="v">+40% (cc +39%)</span></div>
+          <div><span class="k">커머셜 RPO</span><span class="v">$392B (+51%)</span></div>
+          <div><span class="k">Capex(리스포함)</span><span class="v">$34.9B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>Amy Hood: "GPU가 아니라 공간 또는 전력이 부족했다." 회계연도 말까지 용량 제약, Azure 매출 기회 상실.</strong></li>
+          <li>capex $34.9B 중 금융리스 $11.1B 포함, 약 절반 단명 자산. 커머셜 부킹 +112%.</li>
+          <li>OpenAI 신규 계약(증분 $250B Azure 약정, IP 2032년까지) 반영.</li>
+          <li>Nadella: 올해 AI 용량 80%+ 증가, 2년 내 데이터센터 풋프린트 2배. Fairwater 2GW로 확장.</li>
+        </ul>
+        <div class="src">출처: Microsoft IR / Motley Fool Q1 FY26 트랜스크립트(2025-10-29) · <a href="https://www.fool.com/earnings/call-transcripts/2025/10/29/microsoft-msft-q1-2026-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/msft-q1-fy2026.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+    <!-- Q4 FY2025 -->
+    <div class="call-block">
+      <div class="call-head" onclick="toggleCall(this)">
+        <span class="qtag">Q4 FY25</span>
+        <span class="ctitle">2025-07-30 · 매출 $76.4B(+18%), Azure +39%, Azure 연 $75B 돌파</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="call-body">
+        <div class="call-kv">
+          <div><span class="k">매출</span><span class="v">$76,441M (+18% YoY)</span></div>
+          <div><span class="k">영업이익</span><span class="v">$34,323M (OPM 44.9%)</span></div>
+          <div><span class="k">GAAP EPS</span><span class="v">$3.65</span></div>
+          <div><span class="k">Azure</span><span class="v">+39% (cc)</span></div>
+          <div><span class="k">커머셜 RPO</span><span class="v">$368B (+37%)</span></div>
+          <div><span class="k">Capex(리스포함)</span><span class="v">$24.2B</span></div>
+        </div>
+        <ul class="call-pts">
+          <li><strong>Azure FY25 연간 $75B 돌파(+34%).</strong> MS Cloud $46.7B(+25% cc).</li>
+          <li>Nadella: "지난 12개월 동안 2GW 신규 용량 가동. 모든 Azure 리전 AI-first·액체냉각 지원."</li>
+          <li>Hood: 상반기까지 용량 제약 지속. Q1 FY26 capex "$30B 초과", FY26 capex 증가율은 FY25 대비 둔화 전망(※ 이후 뒤집힘).</li>
+          <li>$368B 계약 백로그 인도 필요. capex/매출 교차 시점은 비공개.</li>
+        </ul>
+        <div class="src">출처: Microsoft IR / Motley Fool Q4 FY25 트랜스크립트(2025-07-30) · <a href="https://www.fool.com/earnings/call-transcripts/2025/08/05/microsoft-msft-q4-2025-earnings-call-transcript/" target="_blank">링크</a></div>
+        <a class="transcript-btn" href="transcripts/msft-q4-fy2025.html" target="_blank">📄 전문 보기</a>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+// 컨콜 토글
+function toggleCall(el){
+  const body = el.nextElementSibling;
+  body.classList.toggle('open');
+  const chev = el.querySelector('.chev');
+  chev.style.transform = body.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0)';
+}
+
+// 네비 스크롤 액티브
+const navLinks = document.querySelectorAll('.nav-inner a');
+const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href')));
+function onScroll(){
+  let idx = 0;
+  sections.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top <= 120) idx = i; });
+  navLinks.forEach((a,i)=>a.classList.toggle('active', i===idx));
+}
+window.addEventListener('scroll', onScroll);
+navLinks.forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();
+  const t = document.querySelector(a.getAttribute('href'));
+  if(t) window.scrollTo({top:t.offsetTop-60, behavior:'smooth'});
+}));
+
+// ===== Chart.js =====
+const Q = ['Q4 FY23','Q1 FY24','Q2 FY24','Q3 FY24','Q4 FY24','Q1 FY25','Q2 FY25','Q3 FY25','Q4 FY25','Q1 FY26','Q2 FY26','Q3 FY26'];
+const blue = '#0067b8', green='#107c10', gray='#6b7280', purple='#7c3aed', orange='#d97706';
+const baseOpts = {responsive:true, plugins:{legend:{labels:{font:{size:11}}}}, scales:{x:{ticks:{font:{size:10}}}}};
+
+// ① 매출·영업이익
+new Chart(document.getElementById('chartRevOp'), {
+  type:'bar',
+  data:{labels:Q, datasets:[
+    {label:'매출', data:[56189,56517,62020,61858,64727,65585,69632,70066,76441,77673,81273,82886], backgroundColor:blue},
+    {label:'영업이익', data:[24254,26895,27032,27581,27925,30552,31653,32000,34323,37961,38275,38398], backgroundColor:green}
+  ]},
+  options:{...baseOpts, scales:{...baseOpts.scales, y:{ticks:{callback:v=>(v/1000)+'B'}}}}
+});
+
+// ② OPM·NPM
+new Chart(document.getElementById('chartMargin'), {
+  type:'line',
+  data:{labels:Q, datasets:[
+    {label:'OPM %', data:[43.2,47.6,43.6,44.6,43.1,46.6,45.5,45.7,44.9,48.9,47.1,46.3], borderColor:blue, backgroundColor:blue, tension:.3},
+    {label:'NPM %', data:[35.7,39.4,35.3,35.5,34.0,37.6,34.6,36.9,35.6,35.7,47.3,38.3], borderColor:orange, backgroundColor:orange, tension:.3, borderDash:[5,4]}
+  ]},
+  options:{...baseOpts, scales:{...baseOpts.scales, y:{ticks:{callback:v=>v+'%'}, suggestedMin:30, suggestedMax:50}}}
+});
+
+// ③ 세그먼트
+new Chart(document.getElementById('chartSeg'), {
+  type:'bar',
+  data:{labels:Q, datasets:[
+    {label:'Productivity & BP', data:[18.3,18.6,19.2,19.6,20.3,28.3,29.4,29.9,33.1,33.0,34.1,35.0], backgroundColor:blue},
+    {label:'Intelligent Cloud', data:[24.0,24.3,25.9,26.7,28.5,24.1,25.5,26.8,29.9,30.9,32.9,34.7], backgroundColor:green},
+    {label:'More Personal Computing', data:[13.9,13.7,16.9,15.6,15.9,13.2,14.7,13.4,13.5,13.8,14.3,13.2], backgroundColor:gray}
+  ]},
+  options:{...baseOpts, scales:{...baseOpts.scales, x:{stacked:true,ticks:{font:{size:10}}}, y:{stacked:true, ticks:{callback:v=>v+'B'}}}}
+});
+
+// ④ Azure 성장률 + MS Cloud
+new Chart(document.getElementById('chartAzure'), {
+  data:{labels:Q, datasets:[
+    {type:'line', label:'Azure 성장률 YoY (%)', data:[26,29,30,31,29,33,31,33,39,40,39,40], borderColor:green, backgroundColor:green, yAxisID:'y', tension:.3},
+    {type:'bar', label:'MS Cloud 매출 ($B)', data:[30.3,31.8,33.7,35.1,36.8,38.9,40.9,42.4,46.7,49.1,51.5,54.5], backgroundColor:'rgba(0,103,184,.5)', yAxisID:'y1'}
+  ]},
+  options:{...baseOpts, scales:{...baseOpts.scales,
+    y:{position:'left', ticks:{callback:v=>v+'%'}, suggestedMin:20, suggestedMax:45, title:{display:true,text:'Azure %'}},
+    y1:{position:'right', ticks:{callback:v=>v+'B'}, grid:{drawOnChartArea:false}, title:{display:true,text:'MS Cloud $B'}}
+  }}
+});
+
+// ⑤ 주가
+new Chart(document.getElementById('chartStock'), {
+  type:'line',
+  data:{labels:['24-06','24-08','24-10','24-12','25-02','25-04','25-06','25-08','25-10','25-12','26-02','26-04','26-06'],
+    datasets:[{label:'MSFT 주가 (USD, 근사)', data:[440,411,401,417,393,391,493,503,514,481,392,407,400], borderColor:blue, backgroundColor:blue, tension:.3, fill:false}]},
+  options:{...baseOpts, scales:{...baseOpts.scales, y:{ticks:{callback:v=>'$'+v}}}}
+});
+
+// ⑥ RPO
+new Chart(document.getElementById('chartRPO'), {
+  type:'bar',
+  data:{labels:['Q4 FY24','Q1 FY25','Q2 FY25','Q3 FY25','Q4 FY25','Q1 FY26','Q2 FY26','Q3 FY26'],
+    datasets:[{label:'커머셜 RPO ($B)', data:[269,259,298,315,368,392,625,627], backgroundColor:purple}]},
+  options:{...baseOpts, scales:{...baseOpts.scales, y:{ticks:{callback:v=>v+'B'}}}}
+});
+
+// ⑦ Capex
+new Chart(document.getElementById('chartCapex'), {
+  type:'bar',
+  data:{labels:Q, datasets:[
+    {label:'현금 Capex (~Q4 FY25, $M)', data:[8943,9917,9735,10952,13873,14923,15804,16745,17079,null,null,null], backgroundColor:blue},
+    {label:'총 Capex 리스포함 (FY26, $M)', data:[null,null,null,null,null,null,null,null,null,34900,37500,31900], backgroundColor:orange}
+  ]},
+  options:{...baseOpts, scales:{...baseOpts.scales, y:{ticks:{callback:v=>(v/1000)+'B'}}}}
+});
+
+// ===== 하이라이트 툴바 =====
+let cc='yellow', em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+const HLKEY='hl-'+location.pathname;
+function saveHL(){const d=[];document.querySelectorAll('mark[data-hlid]').forEach(m=>d.push({id:m.dataset.hlid,color:m.dataset.color,text:m.textContent}));localStorage.setItem(HLKEY,JSON.stringify(d));}
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();m.dataset.color=cc;r.surroundContents(m);s.removeAllRanges();saveHL();}catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();saveHL();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft FY2026 2분기(Q2 FY26) 어닝콜</title>
+<style>
+  :root{--ink:#13171e;--paper:#f9f9f7;--text:#1a1f29;--muted:#6b7280;--line:#e6e9ee;--accent:#0067b8;
+    --hl-yellow:rgba(255,220,0,.45);--hl-green:rgba(72,199,116,.38);--hl-red:rgba(255,100,100,.35);
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.8;-webkit-font-smoothing:antialiased;}
+  header{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-info{flex:1;}
+  .hdr-info h1{font-size:16px;font-weight:800;margin:0;}
+  .hdr-info p{font-size:12px;color:#9aa6b7;margin:2px 0 0;font-family:var(--mono);}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 24px 120px;}
+  .transcript{font-size:14px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word;}
+  .memo-section{position:fixed;bottom:70px;right:24px;width:280px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:12px;z-index:50;}
+  .memo-section h4{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--ink);}
+  .memo-section textarea{width:100%;height:100px;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;font-family:var(--sans);resize:vertical;line-height:1.5;}
+  .memo-section textarea:focus{outline:2px solid var(--accent);border-color:transparent;}
+  .memo-status{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+  .memo-status.saved{color:#1f7a4d;}
+  .hl-toolbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:var(--ink);border-radius:40px;padding:8px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+  .hl-btn{width:24px;height:24px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;}
+  .hl-btn:hover{transform:scale(1.15);} .hl-btn.active{border-color:#fff;}
+  .hl-btn.yellow{background:#ffd600;} .hl-btn.green{background:#3ecf72;} .hl-btn.red{background:#ff6464;}
+  .hl-erase{background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 9px;border-radius:20px;cursor:pointer;font-family:var(--sans);}
+  .hl-erase:hover{border-color:#aaa;color:#fff;}
+  .hl-divider{width:1px;height:18px;background:#333;}
+  .hl-label{font-size:11px;color:#888;font-family:var(--mono);}
+  .hl-yellow{background:var(--hl-yellow);border-radius:2px;}
+  .hl-green{background:var(--hl-green);border-radius:2px;}
+  .hl-red{background:var(--hl-red);border-radius:2px;}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../microsoft.html">← Microsoft 리포트</a>
+  <div class="hdr-info">
+    <h1>Microsoft FY2026 2분기 어닝콜 (Q2 FY26)</h1>
+    <p>2026-01-28 (분기말 2025-12-31) · Motley Fool 전문 기반 한국어 정리</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="transcript" id="transcript">※ 안내: 본 페이지는 Microsoft FY2026 2분기 어닝콜(2026-01-28)을 The Motley Fool 공개 전문과 IR 보도자료를 토대로 컨퍼런스 콜 톤에 맞춰 한국어로 충실히 정리한 것입니다. 일부는 발언 취지를 살린 요약이며, 핵심 수치·전력/Capex 관련 발언은 원문에 근거합니다. 수치 가공·날조는 없습니다. 통화 USD. 출처 링크는 하단 참조.
+
+══════════════════════════════════════════
+[실적 요약]
+══════════════════════════════════════════
+- 총매출 $81.3B (상수환율 +17%)
+- 영업이익 +21% (상수환율), 영업이익률 약 47%
+- 비GAAP 희석 EPS $4.14 (+24% cc, OpenAI 영향 조정 기준)
+  ※ GAAP 순이익 $38.5B / GAAP EPS $5.16은 영업외 일회성 요인 추정 이상치
+- Microsoft Cloud 매출 $51.5B (+26%) — 사상 처음 $50B 돌파
+- Intelligent Cloud $32.9B (+29%)
+- Azure 및 기타 클라우드 성장 +39% (상수환율 +38%)
+- 커머셜 RPO $625B (+110%), 가중평균 잔여기간 약 2.5년
+  · OpenAI 계약이 약 45%(~$281B), 나머지 55%는 다변화된 고객군에서 +28% 성장
+- 커머셜 부킹 +23% (OpenAI·Anthropic 등 대형 다년 약정)
+- 분기 Capex(금융리스 포함) $37.5B — 약 2/3가 단명 자산(GPU/CPU), 금융리스 $6.7B
+- 전사 총이익률 68%(AI 인프라 투자로 소폭 하락)
+
+══════════════════════════════════════════
+[CEO Satya Nadella — 준비 발언]
+══════════════════════════════════════════
+★ 전력·효율 핵심 지표:
+"우리가 최적화하는 핵심 지표는 와트당·달러당 토큰(tokens per watt per dollar)입니다. 이는 결국 가동률을 높이고 총소유비용(TCO)을 낮추는 문제로 귀결됩니다."
+OpenAI 추론에서 처리량 50% 향상을 인용.
+
+★ 데이터센터 용량:
+"이번 분기에만 거의 1기가와트(1GW)의 총용량을 추가했습니다."
+Fairwater 'AI 슈퍼팩토리' 비전: Atlanta와 Wisconsin을 'AI WAN'으로 연결하고, 2층 구조·액체냉각으로 GPU 밀도를 높여 단일 캠퍼스 규모를 극대화.
+
+AI 채택:
+- Microsoft 365 Copilot 유료 좌석 1,500만 석(+160% YoY)
+- GitHub Copilot 유료 구독 470만(+75% YoY)
+- Fabric ARR $2B 초과(+60% YoY)
+
+══════════════════════════════════════════
+[CFO Amy Hood — 준비 발언]
+══════════════════════════════════════════
+"Microsoft Cloud 매출이 $51.5B로 처음으로 $50B를 돌파했습니다. Azure는 상수환율 +38%."
+
+★ Capex·공급 제약:
+"자본지출은 $37.5B였으며, 약 2/3는 단명 자산(주로 GPU·CPU)에 투입됐습니다. 금융리스는 $6.7B로, 주로 데이터센터용입니다."
+"고객 수요가 우리 공급을 계속 초과하고 있습니다(customer demand continues to exceed our supply)."
+
+★ 비용 경고:
+"메모리 가격 상승이 자본지출에 영향을 주고 시장 변동성을 키울 수 있습니다."
+
+가이던스:
+Q3 FY26 Azure 상수환율 +37~38%. Q3 capex는 직전 분기 대비 (sequentially) 감소 전망. Q3 영업이익률은 지속적 AI 투자로 전년 대비 소폭 하락.
+
+게임: Gaming 매출 -9%, Xbox 콘텐츠·서비스 -5%로 "기대 이하".
+
+══════════════════════════════════════════
+[Q&A 하이라이트]
+══════════════════════════════════════════
+■ 용량/공급 관련 (UBS Karl Keirstead 등)
+Hood: "우리는 가능한 한 빠르게 용량을 추가하기 위해 최선을 다하고 있습니다." Fairwater는 다년에 걸친 인도(multiyear deliveries)임을 강조.
+
+■ RPO 집중도
+경영진: RPO $625B 중 OpenAI가 ~45%(~$281B)이며, OpenAI를 제외한 나머지 백로그도 +28% 성장 중임을 강조(다변화 진행).
+
+■ 마진
+Hood: AI 인프라 투자로 클라우드 GPM은 하방 압력이나, 자체 실리콘·소프트웨어 효율로 일부 상쇄.
+
+══════════════════════════════════════════
+[데스크 주 — 전력·데이터센터 관점]
+══════════════════════════════════════════
+· "tokens per watt per dollar"가 경영진의 명시적 최적화 지표로 등장 — 전력당 산출(효율)이 곧 마진/경쟁력의 핵심임을 공식화.
+· "수요가 공급 초과" 기조 지속. Q3 capex는 일시 감소 가이던스였으나(실제 Q3 $31.9B), CY2026 연간 ~$190B로 결국 상향(다음 분기 발표).
+· RPO $625B 급증의 ~45%가 OpenAI 단일 약정 → 집중 리스크와 가시성의 양면.
+
+[출처]
+· Motley Fool Q2 FY26 전문: https://www.fool.com/earnings/call-transcripts/2026/01/28/microsoft-msft-q2-2026-earnings-call-transcript/
+· Microsoft IR 보도자료(8-K Ex-99.1): https://www.sec.gov/Archives/edgar/data/789019/000119312526027198/msft-ex99_1.htm</div>
+</div>
+<div class="memo-section">
+  <h4>📝 메모</h4>
+  <textarea id="memoTA" placeholder="이 전문에서 중요한 내용 메모..."></textarea>
+  <div class="memo-status" id="memoStatus"></div>
+</div>
+<div class="hl-toolbar">
+  <span class="hl-label">마커</span>
+  <div class="hl-divider"></div>
+  <button class="hl-btn yellow active" id="hlY"></button>
+  <button class="hl-btn green" id="hlG"></button>
+  <button class="hl-btn red" id="hlR"></button>
+  <div class="hl-divider"></div>
+  <button class="hl-erase" id="hlE">지우기</button>
+</div>
+<script>
+const KEY = 'memo-' + location.pathname;
+const ta = document.getElementById('memoTA');
+const st = document.getElementById('memoStatus');
+const saved = localStorage.getItem(KEY);
+if(saved) ta.value = saved;
+let timer;
+ta.addEventListener('input', () => {
+  st.textContent = '저장 중...'; st.className = 'memo-status';
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.setItem(KEY, ta.value);
+    st.textContent = '✓ 저장됨'; st.className = 'memo-status saved';
+  }, 600);
+});
+let cc='yellow', em=false;
+const hb={yellow:document.getElementById('hlY'),green:document.getElementById('hlG'),red:document.getElementById('hlR')};
+const he=document.getElementById('hlE');
+function sc(c){em=false;cc=c;Object.keys(hb).forEach(k=>hb[k].classList.toggle('active',k===c));he.style.background='none';he.style.color='#aaa';}
+hb.yellow.onclick=()=>sc('yellow');hb.green.onclick=()=>sc('green');hb.red.onclick=()=>sc('red');
+he.onclick=()=>{em=!em;if(em){Object.values(hb).forEach(b=>b.classList.remove('active'));he.style.background='#333';he.style.color='#fff';}else sc(cc);};
+const HLKEY = 'hl-' + location.pathname;
+function saveHL(){const d=[];document.querySelectorAll('mark[data-hlid]').forEach(m=>d.push({id:m.dataset.hlid,color:m.dataset.color,text:m.textContent}));localStorage.setItem(HLKEY,JSON.stringify(d));}
+document.body.addEventListener('mousedown',e=>{if(em)e.preventDefault();});
+document.body.addEventListener('mouseup',e=>{
+  if(em)return;
+  const s=window.getSelection();if(!s||s.isCollapsed)return;
+  const r=s.getRangeAt(0);if(!r||r.toString().trim()==='')return;
+  try{const m=document.createElement('mark');m.className='hl-'+cc;m.dataset.hlid=Date.now();m.dataset.color=cc;r.surroundContents(m);s.removeAllRanges();saveHL();}catch(e){s.removeAllRanges();}
+});
+document.body.addEventListener('click',e=>{
+  if(!em)return;
+  let el=e.target;
+  while(el&&el.tagName!=='BODY'){if(el.tagName==='MARK'){const p=el.parentNode;while(el.firstChild)p.insertBefore(el.firstChild,el);p.removeChild(el);p.normalize();saveHL();return;}el=el.parentElement;}
+});
+</script>
+</body>
+</html>
