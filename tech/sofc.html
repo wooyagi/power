@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SOFC 작동 원리 — 애니메이션</title>
+<style>
+  :root{--bg:#ffffff;--panel:#f4f7fa;--txt:#16191f;--txt2:#5e6470;--bord:#dfe3ea;--accent:#185fa5;}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+    transition:background .25s,color .25s}
+  .wrap{max-width:1140px;margin:0 auto;padding:28px 22px 36px}
+  h1{font-size:30px;font-weight:700;margin:0 0 4px;letter-spacing:-.5px}
+  .sub{font-size:16px;color:var(--txt2);margin:0 0 20px}
+  .bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:0 0 14px}
+  .btn{appearance:none;border:1.5px solid var(--bord);background:transparent;color:var(--txt);
+    font:inherit;font-size:15px;padding:9px 16px;border-radius:10px;cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--panel)} .btn:active{transform:scale(.97)}
+  .btn b{font-weight:600}
+  label.lab{font-size:15px;color:var(--txt2)}
+  input[type=range]{flex:1;min-width:200px;accent-color:var(--accent);height:6px}
+  .rd{font-size:15px;font-weight:600;min-width:78px}
+  canvas{width:100%;display:block;border-radius:16px;border:1px solid var(--bord)}
+  .legend{display:flex;gap:22px;flex-wrap:wrap;margin:14px 4px 0;font-size:14px;color:var(--txt2)}
+  .legend i{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+  .stat{background:var(--panel);border-radius:12px;padding:14px 18px}
+  .stat .k{font-size:14px;color:var(--txt2)} .stat .v{font-size:30px;font-weight:700;margin-top:2px}
+  .cap{margin:18px 4px 0;font-size:16px;color:var(--txt);line-height:1.6}
+  .note{margin:10px 4px 0;font-size:13px;color:var(--txt2)}
+  [data-theme=dark]{--bg:#0e1116;--panel:#171b22;--txt:#eef1f6;--txt2:#9aa3b2;--bord:#2a2f38;--accent:#5b9be0}
+</style>
+</head>
+<body>
+<div class="wrap" id="root">
+  <h1>고체산화물 연료전지 (SOFC) 작동 원리</h1>
+  <p class="sub">산소이온은 안으로, 전자는 바깥으로 — 전자의 흐름이 곧 전기입니다.</p>
+
+  <div class="bar">
+    <button class="btn" id="pp"><b id="pps">⏸ 일시정지</b></button>
+    <button class="btn" id="rs">↺ 처음으로</button>
+    <label class="lab">연료 흐름</label>
+    <input type="range" id="fuel" min="0.5" max="2" step="0.1" value="1.2"/>
+    <span class="rd" id="fuelo">1.2 L/분</span>
+    <button class="btn" id="th">🌙 어둡게</button>
+    <button class="btn" id="fs">⛶ 전체화면</button>
+  </div>
+
+  <canvas id="cv"></canvas>
+
+  <div class="legend">
+    <span><i style="background:#54c04a"></i>수소 (H₂)</span>
+    <span><i style="background:#3b8fe6"></i>산소 (O₂)</span>
+    <span><i style="background:#e25588"></i>산소이온 (O²⁻)</span>
+    <span><i style="background:#f5a623"></i>전자 (e⁻)</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="k">출력 전압</div><div class="v"><span id="sv">0.86</span> V</div></div>
+    <div class="stat"><div class="k">전류</div><div class="v"><span id="si">9</span> A</div></div>
+    <div class="stat"><div class="k">전력</div><div class="v"><span id="sw">7.5</span> W</div></div>
+  </div>
+
+  <p class="cap">공기극(아래)에서 산소가 전자를 받아 <b>산소이온(O²⁻)</b>이 되고 → 전해질을 통과해 위로 올라가 → 연료극에서 <b>수소</b>를 만나 물·열이 되며 → 내놓은 <b>전자</b>는 전해질을 못 지나가 <b>바깥 회로로 돌아 전기</b>가 됩니다.</p>
+  <p class="note">※ 전압·전류·전력은 개념 이해용 예시값입니다 (P = V × I 로 단순화).</p>
+</div>
+
+<script>
+(function(){
+  var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  var dpr=Math.max(1,window.devicePixelRatio||1);
+  var THEMES={
+    light:{panel:'#f4f7fa',txt:'#16191f',txt2:'#5e6470',
+      an:'#e6f1fb',el:'#eef0f3',ca:'#fbe7e3',anT:'#0c447c',elT:'#44484f',caT:'#8a3a1d',
+      anB:'#185fa5',elB:'#9aa0aa',caB:'#c2502a',wire:'#7c8390',ring:'rgba(0,0,0,.18)'},
+    dark:{panel:'#171b22',txt:'#eef1f6',txt2:'#9aa3b2',
+      an:'#103459',el:'#20242c',ca:'#46180b',anT:'#bcd7f5',elT:'#cfd5df',caT:'#f3b59a',
+      anB:'#4f86c6',elB:'#4a4f59',caB:'#d2705a',wire:'#9aa0aa',ring:'rgba(255,255,255,.5)'}
+  };
+  var mode='light',T=THEMES.light;
+  var COL={h2:'#54c04a',o2:'#3b8fe6',ion:'#e25588',e:'#f5a623',w:'#7fb6e8'};
+  var W=1000,Hc=440,L={},F={};
+  function layout(){
+    F=Math.max(13,Math.round(Hc*0.045));
+    L.cellL=Math.round(W*0.07);L.cellR=Math.round(W-W*0.16-70);L.extX=L.cellR+Math.round(W*0.075);
+    L.anT=Hc*0.17;L.anB=Hc*0.37;L.anY=(L.anT+L.anB)/2;
+    L.elT=Hc*0.37;L.elB=Hc*0.51;
+    L.caT=Hc*0.51;L.caB=Hc*0.71;L.caY=(L.caT+L.caB)/2;
+    L.mid=(L.anY+L.caY)/2;L.cx=(L.cellL+L.cellR)/2;
+  }
+  function resize(){W=cv.clientWidth||1000;Hc=Math.min(480,Math.max(360,Math.round(W*0.44)));
+    cv.style.height=Hc+'px';cv.width=W*dpr;cv.height=Hc*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);layout();}
+  window.addEventListener('resize',resize);
+  function lerp(a,b,t){return a+(b-a)*t;}
+  var types={
+    h2:{n:6,sp:.28,make:function(){return{lane:lerp(L.anT+10,L.anB-10,Math.random())};},pos:function(p,t){return{x:lerp(2,L.cellR-24,t),y:p.lane};}},
+    o2:{n:6,sp:.28,make:function(){return{lane:lerp(L.caT+10,L.caB-10,Math.random())};},pos:function(p,t){return{x:lerp(2,L.cellR-24,t),y:p.lane};}},
+    ion:{n:8,sp:.5,make:function(){return{lane:lerp(L.cellL+30,L.cellR-30,Math.random())};},pos:function(p,t){return{x:p.lane,y:lerp(L.caY,L.anY,t)};}},
+    e:{n:10,sp:.95,make:function(){return{};},pos:function(p,t){
+      var pts=[[L.cellR,L.anY],[L.extX,L.anY],[L.extX,L.caY],[L.cellR,L.caY]],seg=[],tot=0,i;
+      for(i=0;i<pts.length-1;i++){var d=Math.hypot(pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]);seg.push(d);tot+=d;}
+      var dd=t*tot,j=0;while(j<seg.length&&dd>seg[j]){dd-=seg[j];j++;}if(j>=seg.length)j=seg.length-1;
+      var f=seg[j]?dd/seg[j]:0;return{x:lerp(pts[j][0],pts[j+1][0],f),y:lerp(pts[j][1],pts[j+1][1],f)};}},
+    w:{n:4,sp:.5,make:function(){return{};},pos:function(p,t){return{x:lerp(L.cellL+58,8,t),y:lerp(L.anT+4,16,t)};}}
+  };
+  var P={};for(var k in types)P[k]=[];
+  function setCounts(flow){for(var k in types){var want=Math.max(1,Math.round(types[k].n*flow)),a=P[k];
+    while(a.length<want){var o=types[k].make();o.t=Math.random();a.push(o);}while(a.length>want)a.pop();}}
+  function dot(x,y,r,c){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=c;ctx.fill();ctx.lineWidth=1;ctx.strokeStyle=T.ring;ctx.stroke();}
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function tx(s,x,y,sz,c,al,b){ctx.fillStyle=c;ctx.textAlign=al||'center';ctx.textBaseline='middle';
+    ctx.font=(b?'700 ':'400 ')+sz+"px -apple-system,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,sans-serif";ctx.fillText(s,x,y);}
+  var running=true,last=0,flow=1.2,PW=7.5;
+  function draw(){
+    ctx.clearRect(0,0,W,Hc);
+    rr(0,0,W,Hc,16);ctx.fillStyle=T.panel;ctx.fill();
+    var cw=L.cellR-L.cellL;
+    rr(L.cellL,L.anT,cw,L.anB-L.anT,7);ctx.fillStyle=T.an;ctx.fill();ctx.lineWidth=1.6;ctx.strokeStyle=T.anB;ctx.stroke();
+    ctx.fillStyle=T.el;ctx.fillRect(L.cellL,L.elT,cw,L.elB-L.elT);ctx.strokeStyle=T.elB;ctx.strokeRect(L.cellL,L.elT,cw,L.elB-L.elT);
+    rr(L.cellL,L.caT,cw,L.caB-L.caT,7);ctx.fillStyle=T.ca;ctx.fill();ctx.strokeStyle=T.caB;ctx.stroke();
+    tx('연료극 (Anode)',L.cellL+12,L.anY,F,T.anT,'left',true);
+    tx('전해질 — O²⁻만 통과',L.cellL+12,(L.elT+L.elB)/2,F-2,T.elT,'left');
+    tx('공기극 (Cathode)',L.cellL+12,L.caY,F,T.caT,'left',true);
+    tx('2H₂ + 2O²⁻ → 2H₂O + 4e⁻',L.cx,Hc*0.07,F,T.txt,'center',true);
+    tx('O₂ + 4e⁻ → 2O²⁻',L.cx,Hc*0.93,F,T.txt,'center',true);
+    tx('연료(수소·천연가스) 공급',6,L.anT-15,F-3,T.txt2,'left');
+    tx('공기(O₂) 공급',6,L.caB+15,F-3,T.txt2,'left');
+    tx('H₂O · 열 배출',L.cellL+58,Hc*0.10,F-3,T.txt2,'center');
+    ctx.strokeStyle=T.wire;ctx.lineWidth=2.4;ctx.beginPath();
+    ctx.moveTo(L.cellR,L.anY);ctx.lineTo(L.extX,L.anY);ctx.lineTo(L.extX,L.caY);ctx.lineTo(L.cellR,L.caY);ctx.stroke();
+    var pf=Math.max(0,Math.min(1,(PW-2)/12)),br=11+pf*9;
+    ctx.save();ctx.shadowColor='rgba(245,166,35,.9)';ctx.shadowBlur=8+pf*26;
+    ctx.beginPath();ctx.arc(L.extX,L.mid,br,0,7);ctx.fillStyle='rgba(245,166,35,'+(0.35+0.65*pf)+')';ctx.fill();ctx.restore();
+    ctx.lineWidth=1.6;ctx.strokeStyle='#c98a14';ctx.beginPath();ctx.arc(L.extX,L.mid,br,0,7);ctx.stroke();
+    tx('전기',L.extX,L.mid+br+14,F-3,'#c98a14','center',true);
+    tx('전자(e⁻) → 전기',L.extX,L.anY-18,F-4,'#b9810f','center',true);
+    for(var k in P){var ty=types[k],c=COL[k],r=(k==='e')?5.5:6.5;for(var i=0;i<P[k].length;i++){var p=P[k][i],q=ty.pos(p,p.t);dot(q.x,q.y,r,c);}}
+  }
+  function frame(ts){if(!last)last=ts;var dt=Math.min(.05,(ts-last)/1000);last=ts;
+    if(running)for(var k in P){var sp=types[k].sp*(0.55+0.55*flow);for(var i=0;i<P[k].length;i++){var p=P[k][i];p.t+=dt*sp;if(p.t>=1){p.t-=1;var o=types[k].make();for(var kk in o)p[kk]=o[kk];}}}
+    draw();requestAnimationFrame(frame);}
+  function stats(){var I=Math.round(7.3*flow*10)/10,V=0.86;PW=Math.round(V*I*10)/10;
+    document.getElementById('si').textContent=I;document.getElementById('sw').textContent=PW;document.getElementById('sv').textContent=V.toFixed(2);}
+  document.getElementById('fuel').addEventListener('input',function(e){flow=+e.target.value;document.getElementById('fuelo').textContent=flow.toFixed(1)+' L/분';setCounts(flow);stats();});
+  document.getElementById('pp').addEventListener('click',function(){running=!running;document.getElementById('pps').textContent=running?'⏸ 일시정지':'▶ 재생';});
+  document.getElementById('rs').addEventListener('click',function(){for(var k in P){for(var i=0;i<P[k].length;i++)P[k][i].t=Math.random();}});
+  document.getElementById('th').addEventListener('click',function(){mode=(mode==='light')?'dark':'light';T=THEMES[mode];
+    document.getElementById('root').parentNode.parentNode.setAttribute('data-theme',mode);document.body.setAttribute('data-theme',mode);
+    this.textContent=(mode==='light')?'🌙 어둡게':'☀ 밝게';});
+  document.getElementById('fs').addEventListener('click',function(){var el=document.documentElement;if(!document.fullscreenElement){(el.requestFullscreen||el.webkitRequestFullscreen).call(el);}else{document.exitFullscreen();}});
+  resize();setCounts(flow);stats();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

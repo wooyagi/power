@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BESS 작동 원리 — 충전·방전</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --txt:#1A1A1A; --mut:#6B6B6B; --bord:#E2E2DC;
+    --teal:#1D9E75; --teal-d:#0F6E56;
+    --amber:#EF9F27; --amber-d:#854F0B; --amber-bg:#FAEEDA;
+    --blue:#378ADD; --blue-d:#185FA5; --blue-bg:#E6F1FB;
+    --surf:#F5F4EF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:#FFFFFF; color:var(--txt);
+    font-family:'Noto Sans KR',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px; margin:0 auto; padding:28px 24px 40px;}
+  h1{font-size:30px; font-weight:800; margin:0 0 4px;}
+  .sub{font-size:16px; color:var(--mut); font-weight:500; margin:0 0 20px;}
+  #banner{display:flex; align-items:center; gap:12px; padding:16px 20px;
+    border-radius:12px; font-size:20px; font-weight:800; margin:0 0 18px;
+    background:var(--surf); color:var(--mut);}
+  #banner .ar{font-size:24px; font-weight:800; line-height:1;}
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px;}
+  .card{background:var(--surf); border-radius:12px; padding:16px 18px;}
+  .card .lbl{font-size:15px; color:var(--mut); font-weight:700;}
+  .card .val{font-size:30px; font-weight:800; margin-top:2px;}
+  canvas{width:100%; display:block;}
+  .slider-row{display:flex; align-items:center; gap:16px; margin:18px 0 6px;}
+  .slider-row .end{font-size:15px; font-weight:700; white-space:nowrap;}
+  input[type=range]{flex:1; height:8px; -webkit-appearance:none; appearance:none;
+    background:linear-gradient(90deg,var(--blue-bg),var(--surf),var(--amber-bg));
+    border-radius:6px; outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:26px; height:26px;
+    border-radius:50%; background:#fff; border:3px solid var(--txt); cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:26px; height:26px; border-radius:50%;
+    background:#fff; border:3px solid var(--txt); cursor:pointer;}
+  .btns{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  button{font-family:inherit; font-size:16px; font-weight:700; color:var(--txt);
+    background:#fff; border:2px solid var(--bord); border-radius:10px;
+    padding:10px 18px; cursor:pointer;}
+  button:hover{background:var(--surf);}
+  .hint{font-size:15px; color:var(--mut); font-weight:500; margin-left:auto;}
+  @media(max-width:640px){ h1{font-size:24px;} .hint{margin-left:0; width:100%;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>BESS 작동 원리 — 충전·방전</h1>
+  <p class="sub">수요 슬라이더를 움직여 보세요. 가운데(100MW)가 기저발전과 같은 균형점입니다.</p>
+
+  <div id="banner"><span id="ar" class="ar">—</span><span id="tx">균형 — 수요와 기저발전이 같음</span></div>
+
+  <div class="cards">
+    <div class="card"><div class="lbl">배터리 잔량</div><div id="m-soc" class="val">60%</div></div>
+    <div class="card"><div class="lbl">BESS 출력</div><div id="m-out" class="val">0 MW</div></div>
+    <div class="card"><div class="lbl">기저발전</div><div class="val">100 MW</div></div>
+  </div>
+
+  <canvas id="sys"></canvas>
+
+  <div class="slider-row">
+    <span class="end" style="color:var(--blue-d);">← 수요 적음 (충전)</span>
+    <input id="dem" type="range" min="60" max="140" step="1" value="100" />
+    <span class="end" style="color:var(--amber-d);">수요 많음 (방전) →</span>
+  </div>
+  <div class="btns">
+    <button id="auto">▶ 자동 시연</button>
+    <button id="reset">↺ 가운데로</button>
+    <span class="hint">발표용 · 핵심: 수요가 기저발전을 넘는 순간을 BESS가 밀리초 단위로 메웁니다.</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var TXT='#1A1A1A', MUT='#6B6B6B', BORD='#E2E2DC';
+  var TEAL='#1D9E75', AMBER='#EF9F27', BLUE='#378ADD';
+  var dpr=Math.max(1,window.devicePixelRatio||1);
+  var sys=document.getElementById('sys'), sctx=sys.getContext('2d'), W=0, SH=280;
+  function resize(){W=sys.clientWidth||640; sys.width=W*dpr; sys.height=SH*dpr; sys.style.height=SH+'px'; sctx.setTransform(dpr,0,0,dpr,0,0);}
+  window.addEventListener('resize',resize); resize();
+
+  var BASE=100, soc=60;
+  var demSlider=document.getElementById('dem');
+  var target=100, demand=100, bess=0, phase=0, autoOn=false, autoT=0;
+
+  function rrect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+  function box(x,y,w,h,label,sub,col){
+    sctx.fillStyle=col;sctx.globalAlpha=0.12;rrect(sctx,x-w/2,y-h/2,w,h,10);sctx.fill();sctx.globalAlpha=1;
+    sctx.strokeStyle=col;sctx.lineWidth=2;rrect(sctx,x-w/2,y-h/2,w,h,10);sctx.stroke();
+    sctx.fillStyle=TXT;sctx.font='800 17px "Noto Sans KR",sans-serif';sctx.textAlign='center';sctx.textBaseline='middle';
+    sctx.fillText(label,x,y-(sub?9:0));
+    if(sub){sctx.fillStyle=MUT;sctx.font='700 14px "Noto Sans KR",sans-serif';sctx.fillText(sub,x,y+11);}
+  }
+  function chevrons(x,y0,y1,dir,col){
+    var span=y1-y0,count=4,gap=span/count,size=11;
+    for(var i=0;i<count;i++){
+      var b=((phase*0.9+i*gap)%span), yy=dir>0?(y1-b):(y0+b);
+      sctx.strokeStyle=col;sctx.lineWidth=4.5;sctx.lineCap='round';sctx.beginPath();
+      if(dir>0){sctx.moveTo(x-size,yy+size);sctx.lineTo(x,yy);sctx.lineTo(x+size,yy+size);}
+      else{sctx.moveTo(x-size,yy-size);sctx.lineTo(x,yy);sctx.lineTo(x+size,yy-size);}
+      sctx.stroke();
+    }
+  }
+  function draw(){
+    sctx.clearRect(0,0,W,SH);
+    var srcX=84,loadX=W-84,busY=58,batX=W/2,batTopY=146,batBotY=250,bw=92;
+    sctx.strokeStyle=BORD;sctx.lineWidth=2.5;
+    sctx.beginPath();sctx.moveTo(srcX,busY);sctx.lineTo(loadX,busY);sctx.stroke();
+    sctx.beginPath();sctx.moveTo(batX,busY);sctx.lineTo(batX,batTopY);sctx.stroke();
+    sctx.fillStyle=TEAL;
+    for(var i=0;i<8;i++){var p=((phase*0.6+i*((loadX-srcX)/8))%(loadX-srcX));sctx.beginPath();sctx.arc(srcX+p,busY,3.5,0,7);sctx.fill();}
+    var mag=Math.abs(bess);
+    if(bess>1.5)chevrons(batX,busY,batTopY,1,AMBER);
+    else if(bess<-1.5)chevrons(batX,busY,batTopY,-1,BLUE);
+    box(srcX,busY,132,50,'발전기','100 MW 일정',TEAL);
+    box(loadX,busY,132,50,'데이터센터',Math.round(demand)+' MW',MUT);
+    var bh=batBotY-batTopY,bx=batX-bw/2,by=batTopY;
+    sctx.strokeStyle=MUT;sctx.lineWidth=3;rrect(sctx,bx,by,bw,bh,12);sctx.stroke();
+    sctx.fillStyle=MUT;rrect(sctx,bx+bw/2-13,by-9,26,9,3);sctx.fill();
+    var fc=bess>1.5?AMBER:(bess<-1.5?BLUE:TEAL),fillH=(bh-12)*(soc/100);
+    sctx.fillStyle=fc;sctx.globalAlpha=0.9;rrect(sctx,bx+6,by+6+(bh-12-fillH),bw-12,fillH,7);sctx.fill();sctx.globalAlpha=1;
+    sctx.fillStyle=TXT;sctx.font='800 22px "Noto Sans KR",sans-serif';sctx.textAlign='center';sctx.textBaseline='middle';
+    sctx.fillText(Math.round(soc)+'%',batX,by+bh/2);
+    var st=bess>1.5?'방전 중 ↑ 부족분 공급':(bess<-1.5?'충전 중 ↓ 잉여 저장':'대기 (균형)');
+    sctx.fillStyle=fc;sctx.font='800 16px "Noto Sans KR",sans-serif';
+    sctx.fillText('BESS · '+st,batX,batBotY+22);
+    if(mag>1.5){sctx.fillStyle=bess>0?AMBER:BLUE;sctx.font='800 15px "Noto Sans KR",sans-serif';sctx.textAlign='center';
+      sctx.fillText((bess>0?'+':'')+Math.round(bess)+' MW',(batX+loadX)/2,busY-18);}
+  }
+  function banner(){
+    var b=document.getElementById('banner'),ar=document.getElementById('ar'),tx=document.getElementById('tx');
+    if(bess>1.5){b.style.background='#FAEEDA';b.style.color='#854F0B';ar.textContent='↑';tx.textContent='방전 중 — 수요가 발전을 넘어, 배터리가 부족분을 즉시 공급';}
+    else if(bess<-1.5){b.style.background='#E6F1FB';b.style.color='#185FA5';ar.textContent='↓';tx.textContent='충전 중 — 발전이 수요보다 많아, 남는 전기를 배터리에 저장';}
+    else{b.style.background='#F5F4EF';b.style.color='#6B6B6B';ar.textContent='—';tx.textContent='균형 — 수요와 기저발전이 같아 배터리는 대기';}
+  }
+  demSlider.addEventListener('input',function(){target=+this.value;if(autoOn){autoOn=false;document.getElementById('auto').textContent='▶ 자동 시연';}});
+  document.getElementById('reset').addEventListener('click',function(){target=100;demSlider.value=100;});
+  document.getElementById('auto').addEventListener('click',function(){autoOn=!autoOn;this.textContent=autoOn?'⏸ 자동 시연 정지':'▶ 자동 시연';});
+  var last=performance.now();
+  function loop(now){
+    var dt=Math.min(50,now-last);last=now;phase+=dt*0.06;
+    if(autoOn){autoT+=dt*0.001;target=100+Math.sin(autoT*1.1)*34;demSlider.value=Math.round(target);}
+    demand+=(target-demand)*0.12; bess=demand-BASE; soc+=(-bess)*0.00018*dt;
+    if(soc>95)soc=95;if(soc<25)soc=25;
+    var o=Math.round(bess);
+    document.getElementById('m-soc').textContent=Math.round(soc)+'%';
+    var mo=document.getElementById('m-out');mo.textContent=(o>0?'+':'')+o+' MW';
+    mo.style.color=o>1?'#854F0B':(o<-1?'#185FA5':TXT);
+    banner();draw();requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
