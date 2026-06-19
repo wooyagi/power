@@ -1,160 +1,635 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BESS 작동 원리 — 충전·방전</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기저발전 + BESS — 데이터센터 전력 공급</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
-    --txt:#1A1A1A; --mut:#6B6B6B; --bord:#E2E2DC;
-    --teal:#1D9E75; --teal-d:#0F6E56;
-    --amber:#EF9F27; --amber-d:#854F0B; --amber-bg:#FAEEDA;
-    --blue:#378ADD; --blue-d:#185FA5; --blue-bg:#E6F1FB;
-    --surf:#F5F4EF;
+    --bg:#0B1220;          /* deep slate navy — control room */
+    --panel:#101B2D;
+    --panel-2:#0E1726;
+    --line:#1E2D45;        /* faint grid / conductor */
+    --bus:#36507E;
+    --text:#D6E0F0;
+    --muted:#7A8AA8;
+    --base:#5B8DEF;        /* 기저발전 — steel electric blue */
+    --discharge:#F5A623;   /* BESS 방전 — amber, energy released */
+    --charge:#2ED3A0;      /* BESS 충전 — teal, energy stored */
+    --demand:#F2F6FF;      /* 데이터센터 수요 — bright white line */
+    --alarm:#FF5C6C;       /* 공급 부족 */
+    --soc:#2ED3A0;
   }
   *{box-sizing:border-box;}
-  body{margin:0; background:#FFFFFF; color:var(--txt);
-    font-family:'Noto Sans KR',system-ui,-apple-system,sans-serif;
-    -webkit-font-smoothing:antialiased;}
-  .wrap{max-width:960px; margin:0 auto; padding:28px 24px 40px;}
-  h1{font-size:30px; font-weight:800; margin:0 0 4px;}
-  .sub{font-size:16px; color:var(--mut); font-weight:500; margin:0 0 20px;}
-  #banner{display:flex; align-items:center; gap:12px; padding:16px 20px;
-    border-radius:12px; font-size:20px; font-weight:800; margin:0 0 18px;
-    background:var(--surf); color:var(--mut);}
-  #banner .ar{font-size:24px; font-weight:800; line-height:1;}
-  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px;}
-  .card{background:var(--surf); border-radius:12px; padding:16px 18px;}
-  .card .lbl{font-size:15px; color:var(--mut); font-weight:700;}
-  .card .val{font-size:30px; font-weight:800; margin-top:2px;}
-  canvas{width:100%; display:block;}
-  .slider-row{display:flex; align-items:center; gap:16px; margin:18px 0 6px;}
-  .slider-row .end{font-size:15px; font-weight:700; white-space:nowrap;}
-  input[type=range]{flex:1; height:8px; -webkit-appearance:none; appearance:none;
-    background:linear-gradient(90deg,var(--blue-bg),var(--surf),var(--amber-bg));
-    border-radius:6px; outline:none;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:26px; height:26px;
-    border-radius:50%; background:#fff; border:3px solid var(--txt); cursor:pointer;}
-  input[type=range]::-moz-range-thumb{width:26px; height:26px; border-radius:50%;
-    background:#fff; border:3px solid var(--txt); cursor:pointer;}
-  .btns{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px;}
-  button{font-family:inherit; font-size:16px; font-weight:700; color:var(--txt);
-    background:#fff; border:2px solid var(--bord); border-radius:10px;
-    padding:10px 18px; cursor:pointer;}
-  button:hover{background:var(--surf);}
-  .hint{font-size:15px; color:var(--mut); font-weight:500; margin-left:auto;}
-  @media(max-width:640px){ h1{font-size:24px;} .hint{margin-left:0; width:100%;} }
+  html,body{margin:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 70% -10%, #12203a 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    padding:clamp(16px,3.5vw,40px);
+  }
+  .mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;}
+  .wrap{max-width:1060px;margin:0 auto;}
+
+  header{margin-bottom:18px;}
+  .eyebrow{
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--base);font-weight:700;margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--base);display:inline-block;}
+  h1{
+    font-size:clamp(22px,4.2vw,34px);font-weight:800;line-height:1.18;margin:0 0 8px;
+    letter-spacing:-0.02em;
+  }
+  .sub{color:var(--muted);font-size:clamp(13px,2.2vw,16px);max-width:62ch;margin:0;}
+
+  /* ---- stage: one-line dispatch diagram ---- */
+  .card{
+    background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);
+    border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+  .stage{padding:14px clamp(10px,2vw,22px) 4px;margin-top:20px;}
+  .stage svg{width:100%;height:auto;display:block;}
+
+  /* workload phase banner */
+  .phasebar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:12px 16px;margin:2px clamp(10px,2vw,22px) 0;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
+  }
+  .phasebar .pdot{width:11px;height:11px;border-radius:50%;flex:none;transition:background .3s,box-shadow .3s;}
+  .phasebar .pname{font-weight:800;font-size:15px;letter-spacing:-0.01em;}
+  .phasebar .ptag{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid var(--line);}
+  .phasebar .phint{margin-left:auto;color:var(--muted);font-size:12.5px;}
+  @media(max-width:560px){.phasebar .phint{display:none;}}
+
+  .legend{
+    display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;
+    padding:12px clamp(12px,2vw,22px) 16px;font-size:13px;color:var(--muted);
+  }
+  .legend .k{display:inline-flex;align-items:center;gap:8px;}
+  .swatch{width:14px;height:14px;border-radius:4px;flex:none;}
+  .swatch.line{width:18px;height:3px;border-radius:2px;}
+
+  /* ---- trend strip chart ---- */
+  .trend{margin-top:18px;padding:16px clamp(12px,2vw,20px) 12px;}
+  .trend-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+  .trend-title{font-size:14px;font-weight:700;letter-spacing:-0.01em;}
+  .trend-title small{color:var(--muted);font-weight:500;margin-left:6px;}
+  .chart-shell{position:relative;}
+  canvas{width:100%;display:block;border-radius:8px;}
+  .yaxis-note{position:absolute;left:8px;top:6px;font-size:11px;color:var(--muted);}
+
+  /* ---- telemetry tiles ---- */
+  .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:18px;}
+  .tile{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
+    padding:14px 14px 12px;min-width:0;
+  }
+  .tile .lab{font-size:11.5px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;
+    display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .tile .val{font-size:clamp(16px,2.3vw,22px);font-weight:700;letter-spacing:-0.01em;}
+  .tile .val .u{font-size:.6em;color:var(--muted);margin-left:3px;font-weight:600;}
+  .tile .sub2{font-size:11px;color:var(--muted);margin-top:5px;}
+  .tile.status .val.ok{color:var(--charge);}
+  .tile.status .val.bad{color:var(--alarm);}
+  .tile.vol .val.lo{color:var(--charge);}
+  .tile.vol .val.mid{color:var(--discharge);}
+  .tile.vol .val.hi{color:var(--alarm);}
+  @media(max-width:900px){.tiles{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:560px){.tiles{grid-template-columns:repeat(2,1fr);}.tiles .tile.status{grid-column:span 2;}}
+
+  /* ---- controls ---- */
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:20px;}
+  button{
+    font-family:inherit;font-size:14px;font-weight:600;color:var(--text);
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:10px 16px;cursor:pointer;transition:border-color .15s,background .15s,color .15s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  button:hover{border-color:var(--bus);}
+  button:focus-visible{outline:2px solid var(--base);outline-offset:2px;}
+  #playBtn{min-width:120px;justify-content:center;}
+  .toggle{position:relative;}
+  .toggle[aria-pressed="true"]{border-color:var(--charge);color:#bff4e3;background:rgba(46,211,160,.10);}
+  .toggle[aria-pressed="false"]{border-color:var(--alarm);color:#ffd2d6;background:rgba(255,92,108,.10);}
+  .toggle .tdot{width:9px;height:9px;border-radius:50%;}
+  .toggle[aria-pressed="true"] .tdot{background:var(--charge);box-shadow:0 0 8px var(--charge);}
+  .toggle[aria-pressed="false"] .tdot{background:var(--alarm);box-shadow:0 0 8px var(--alarm);}
+  .speed{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px;}
+  .speed input{accent-color:var(--base);width:110px;}
+
+  footer{margin-top:22px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:14px;}
+  footer b{color:var(--text);font-weight:700;}
+
+  @media (prefers-reduced-motion: reduce){
+    .flicker{animation:none !important;}
+  }
+  @keyframes flick{0%,100%{opacity:1}50%{opacity:.28}}
+  .flicker{animation:flick .42s steps(2,end) infinite;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>BESS 작동 원리 — 충전·방전</h1>
-  <p class="sub">수요 슬라이더를 움직여 보세요. 가운데(100MW)가 기저발전과 같은 균형점입니다.</p>
 
-  <div id="banner"><span id="ar" class="ar">—</span><span id="tx">균형 — 수요와 기저발전이 같음</span></div>
+  <header>
+    <div class="eyebrow">데이터센터 전력 · 동작 원리</div>
+    <h1>기저발전 + BESS, 데이터센터에 전력을 어떻게 공급하나</h1>
+    <p class="sub">AI 데이터센터 부하는 두 얼굴을 가집니다. <b style="color:var(--discharge)">학습</b>은 장시간 고부하 속에서 연산↔통신이 만드는 <b style="color:var(--discharge)">반복적 전력 스윙</b>을, <b style="color:var(--demand)">추론</b>은 요청이 몰릴 때 <b style="color:var(--demand)">짧고 불규칙한 피크</b>를 만듭니다. 일정한 기저발전(100MW)이 못 따라가는 그 차이를 BESS가 메워 항상 <b>수요 = 공급</b>을 맞춥니다.</p>
+  </header>
 
-  <div class="cards">
-    <div class="card"><div class="lbl">배터리 잔량</div><div id="m-soc" class="val">60%</div></div>
-    <div class="card"><div class="lbl">BESS 출력</div><div id="m-out" class="val">0 MW</div></div>
-    <div class="card"><div class="lbl">기저발전</div><div class="val">100 MW</div></div>
+  <!-- ===== HERO: one-line dispatch diagram ===== -->
+  <section class="card stage" aria-label="단선도 — 전력 흐름">
+    <div class="phasebar" aria-live="polite">
+      <span class="pdot" id="phDot" style="background:var(--muted)"></span>
+      <span class="pname">현재 작업: <span id="phName">—</span></span>
+      <span class="ptag" id="phTag">—</span>
+      <span class="phint" id="phHint">학습(장시간 고부하·반복 스윙) ↔ 추론(요청 폭주 시 짧고 불규칙한 피크)이 번갈아 나타납니다</span>
+    </div>
+    <svg viewBox="0 0 1000 360" role="img" aria-label="기저발전과 BESS가 모선을 거쳐 데이터센터로 전력을 공급하는 단선도">
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- conductors -->
+      <line x1="236" y1="150" x2="520" y2="150" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/>
+      <line x1="520" y1="150" x2="804" y2="150" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/>
+      <line x1="520" y1="150" x2="520" y2="266" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/>
+      <!-- busbar node -->
+      <circle cx="520" cy="150" r="7" fill="var(--bus)"/>
+      <text x="520" y="128" text-anchor="middle" fill="var(--muted)" font-size="13" font-weight="600">모선 (Bus)</text>
+
+      <!-- particle layer -->
+      <g id="flow"></g>
+
+      <!-- ===== Plant (기저발전) ===== -->
+      <g>
+        <rect x="56" y="104" width="180" height="92" rx="12" fill="#0E1A2E" stroke="var(--base)" stroke-width="1.5"/>
+        <!-- simple turbine/plant glyph -->
+        <g transform="translate(82,150)" stroke="var(--base)" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <circle cx="0" cy="0" r="12"/>
+          <line x1="0" y1="0" x2="0" y2="-12"/><line x1="0" y1="0" x2="10" y2="6"/><line x1="0" y1="0" x2="-10" y2="6"/>
+        </g>
+        <text x="118" y="142" fill="var(--text)" font-size="16" font-weight="800">기저발전</text>
+        <text x="118" y="166" fill="var(--base)" font-size="15" font-weight="700" class="mono">100 MW</text>
+        <text x="118" y="184" fill="var(--muted)" font-size="11">일정 출력 · 펌(firm)</text>
+      </g>
+
+      <!-- ===== Data center ===== -->
+      <g id="dcGroup">
+        <rect id="dcBox" x="804" y="100" width="172" height="100" rx="12" fill="#0E1A2E" stroke="var(--demand)" stroke-width="1.5"/>
+        <!-- server rack glyph -->
+        <g transform="translate(826,118)" stroke="var(--demand)" stroke-width="1.8" fill="none">
+          <rect x="0" y="0" width="34" height="14" rx="2"/><circle cx="28" cy="7" r="1.6" fill="var(--charge)" stroke="none"/>
+          <rect x="0" y="20" width="34" height="14" rx="2"/><circle cx="28" cy="27" r="1.6" fill="var(--charge)" stroke="none"/>
+          <rect x="0" y="40" width="34" height="14" rx="2"/><circle cx="28" cy="47" r="1.6" fill="var(--discharge)" stroke="none"/>
+        </g>
+        <text x="888" y="132" fill="var(--text)" font-size="16" font-weight="800">데이터센터</text>
+        <text x="888" y="156" fill="var(--demand)" font-size="11">AI 부하 · 가변</text>
+        <text id="dcMW" x="888" y="182" fill="var(--demand)" font-size="16" font-weight="700" class="mono">— MW</text>
+      </g>
+
+      <!-- ===== BESS battery ===== -->
+      <g>
+        <rect x="424" y="266" width="192" height="78" rx="12" fill="#0E1A2E" stroke="var(--charge)" stroke-width="1.5"/>
+        <!-- battery cell -->
+        <g transform="translate(444,286)">
+          <rect x="0" y="0" width="46" height="40" rx="4" fill="none" stroke="var(--charge)" stroke-width="2"/>
+          <rect x="46" y="13" width="5" height="14" rx="2" fill="var(--charge)"/>
+          <clipPath id="battClip"><rect x="3" y="3" width="40" height="34" rx="2"/></clipPath>
+          <rect id="battFill" x="3" y="3" width="40" height="34" fill="var(--soc)" clip-path="url(#battClip)" opacity="0.9"/>
+        </g>
+        <text x="506" y="298" fill="var(--text)" font-size="16" font-weight="800">BESS</text>
+        <text x="506" y="320" fill="var(--muted)" font-size="11">잔량(SoC)</text>
+        <text id="socTxt" x="506" y="338" fill="var(--soc)" font-size="15" font-weight="700" class="mono">— %</text>
+        <text id="bessState" x="606" y="240" text-anchor="end" fill="var(--muted)" font-size="13" font-weight="700" class="mono">대기</text>
+      </g>
+    </svg>
+
+    <div class="legend">
+      <span class="k"><span class="swatch" style="background:var(--base)"></span>기저발전 출력</span>
+      <span class="k"><span class="swatch" style="background:var(--discharge)"></span>BESS 방전(부족분 공급)</span>
+      <span class="k"><span class="swatch" style="background:var(--charge)"></span>BESS 충전(잉여 저장)</span>
+      <span class="k"><span class="swatch line" style="background:var(--demand)"></span>데이터센터 수요</span>
+    </div>
+  </section>
+
+  <!-- ===== Trend strip chart ===== -->
+  <section class="card trend" aria-label="실시간 전력 트렌드">
+    <div class="trend-head">
+      <div class="trend-title">실시간 전력 트렌드<small>최근 약 30초 · 좌→우 스크롤</small></div>
+    </div>
+    <div class="chart-shell">
+      <canvas id="chart" height="220" aria-label="기저발전 위로 데이터센터 수요가 출렁이고 그 차이를 BESS가 메우는 트렌드 차트"></canvas>
+    </div>
+  </section>
+
+  <!-- ===== Telemetry ===== -->
+  <section class="tiles" aria-label="실시간 계측">
+    <div class="tile"><div class="lab"><span class="dot" style="background:var(--demand)"></span>데이터센터 수요</div><div class="val mono" id="tDemand">—<span class="u">MW</span></div><div class="sub2" id="tPeak">피크 — MW</div></div>
+    <div class="tile"><div class="lab"><span class="dot" style="background:var(--base)"></span>기저발전</div><div class="val mono">100<span class="u">MW</span></div><div class="sub2">일정 · 펌</div></div>
+    <div class="tile"><div class="lab"><span class="dot" id="bessDot" style="background:var(--muted)"></span>BESS</div><div class="val mono" id="tBess">대기</div><div class="sub2" id="tBsub">밀리초 응답</div></div>
+    <div class="tile"><div class="lab"><span class="dot" style="background:var(--soc)"></span>배터리 잔량</div><div class="val mono" id="tSoc">—<span class="u">%</span></div><div class="sub2" id="tSocSub">&nbsp;</div></div>
+    <div class="tile vol"><div class="lab"><span class="dot" id="volDot" style="background:var(--muted)"></span>순간 변동폭</div><div class="val mono mid" id="tVol">—<span class="u">MW</span></div><div class="sub2" id="tVolSub">최근 1초 P2P</div></div>
+    <div class="tile status"><div class="lab">공급 상태</div><div class="val mono ok" id="tStatus">—</div><div class="sub2">&nbsp;</div></div>
+  </section>
+
+  <!-- ===== Controls ===== -->
+  <div class="controls">
+    <button id="playBtn" aria-label="재생/일시정지">⏸ 일시정지</button>
+    <button id="bessToggle" class="toggle" aria-pressed="true"><span class="tdot"></span><span id="bessLabel">BESS 가동 중</span></button>
+    <label class="speed">속도 <input id="speed" type="range" min="0.5" max="2.5" step="0.1" value="1.4"><span id="speedVal" class="mono">1.4×</span></label>
   </div>
 
-  <canvas id="sys"></canvas>
+  <footer>
+    발표용 · 핵심: <b style="color:var(--discharge)">학습</b>은 고부하 플래토 위 반복 스윙을, <b style="color:var(--demand)">추론</b>은 짧고 불규칙한 피크를 만듭니다. 기저발전은 100MW로 일정하므로, <b>BESS</b>가 넘는 분을 밀리초 단위로 <b style="color:var(--discharge)">방전</b>해 메우고(피크 셰이빙·스윙 흡수), 밑돌 때 <b style="color:var(--charge)">충전</b>합니다. <b>BESS 정지</b>로 두면 두 구간 모두에서 공급 부족(블랙아웃 위험)이 드러납니다 — 토글로 확인해 보세요.
+  </footer>
 
-  <div class="slider-row">
-    <span class="end" style="color:var(--blue-d);">← 수요 적음 (충전)</span>
-    <input id="dem" type="range" min="60" max="140" step="1" value="100" />
-    <span class="end" style="color:var(--amber-d);">수요 많음 (방전) →</span>
-  </div>
-  <div class="btns">
-    <button id="auto">▶ 자동 시연</button>
-    <button id="reset">↺ 가운데로</button>
-    <span class="hint">발표용 · 핵심: 수요가 기저발전을 넘는 순간을 BESS가 밀리초 단위로 메웁니다.</span>
-  </div>
 </div>
 
 <script>
-(function(){
-  var TXT='#1A1A1A', MUT='#6B6B6B', BORD='#E2E2DC';
-  var TEAL='#1D9E75', AMBER='#EF9F27', BLUE='#378ADD';
-  var dpr=Math.max(1,window.devicePixelRatio||1);
-  var sys=document.getElementById('sys'), sctx=sys.getContext('2d'), W=0, SH=280;
-  function resize(){W=sys.clientWidth||640; sys.width=W*dpr; sys.height=SH*dpr; sys.style.height=SH+'px'; sctx.setTransform(dpr,0,0,dpr,0,0);}
-  window.addEventListener('resize',resize); resize();
+(() => {
+  "use strict";
+  const BASELOAD = 100;            // MW, firm
+  const CAP = 480;                 // MWh, display capacity (sized to ride out peaks)
+  const CYCLE = 34;                // workload regime cycle length (T-units)
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var BASE=100, soc=60;
-  var demSlider=document.getElementById('dem');
-  var target=100, demand=100, bess=0, phase=0, autoOn=false, autoT=0;
+  // ---------- state ----------
+  let T = 0;                       // logical clock
+  let energy = CAP * 0.62;         // MWh
+  let playing = true;
+  let bessOn = true;
+  let speed = 1.4;
+  let last = performance.now();
+  let baseSmooth = 70;             // low-passed envelope -> visible ramps
+  let infSpike = 0;                // inference burst envelope (decaying)
+  let rollPeak = 100;              // rolling peak demand
+  let p2pWin = [];                 // recent demand window for volatility
+  let volEMA = 0;
 
-  function rrect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-  function box(x,y,w,h,label,sub,col){
-    sctx.fillStyle=col;sctx.globalAlpha=0.12;rrect(sctx,x-w/2,y-h/2,w,h,10);sctx.fill();sctx.globalAlpha=1;
-    sctx.strokeStyle=col;sctx.lineWidth=2;rrect(sctx,x-w/2,y-h/2,w,h,10);sctx.stroke();
-    sctx.fillStyle=TXT;sctx.font='800 17px "Noto Sans KR",sans-serif';sctx.textAlign='center';sctx.textBaseline='middle';
-    sctx.fillText(label,x,y-(sub?9:0));
-    if(sub){sctx.fillStyle=MUT;sctx.font='700 14px "Noto Sans KR",sans-serif';sctx.fillText(sub,x,y+11);}
+  // ---------- AI datacenter workload: two regimes ----------
+  //  · 학습: 장시간 고부하 플래토 + 연산↔통신이 만드는 규칙적 반복 스윙 (+ 가끔 체크포인트 딥)
+  //  · 추론: 낮은 베이스라인 + 요청이 몰릴 때 터지는 짧고 불규칙한 피크
+  function phaseAt(tp){
+    if(tp < 17) return {kind:"train", name:"분산 학습",  tag:"장시간 고부하 · 반복 스윙", col:"var(--discharge)"};
+    return             {kind:"infer", name:"추론 서비스", tag:"요청 폭주 · 짧고 불규칙한 피크", col:"var(--base)"};
   }
-  function chevrons(x,y0,y1,dir,col){
-    var span=y1-y0,count=4,gap=span/count,size=11;
-    for(var i=0;i<count;i++){
-      var b=((phase*0.9+i*gap)%span), yy=dir>0?(y1-b):(y0+b);
-      sctx.strokeStyle=col;sctx.lineWidth=4.5;sctx.lineCap='round';sctx.beginPath();
-      if(dir>0){sctx.moveTo(x-size,yy+size);sctx.lineTo(x,yy);sctx.lineTo(x+size,yy+size);}
-      else{sctx.moveTo(x-size,yy-size);sctx.lineTo(x,yy);sctx.lineTo(x+size,yy-size);}
-      sctx.stroke();
+  let noise = 0;
+  // build demand with regime-specific texture; updates baseSmooth internally
+  function stepDemand(ph, sdt){
+    const target = ph.kind==="train" ? 122 : 64;
+    baseSmooth += (target - baseSmooth) * 0.045 * (sdt/0.022);
+    let d = baseSmooth + noise;
+
+    if(ph.kind==="train"){
+      // repetitive compute(high)↔all-reduce(low) swing — smoothed square, period ~1.6 T
+      d += 20 * Math.tanh(3*Math.sin(T*(2*Math.PI/1.6)));
+      // rare, brief checkpoint dip
+      d -= 60 * Math.pow(Math.max(0, Math.sin(T*0.46 + 0.7)), 26);
+    } else {
+      // irregular short bursts: random Poisson-like retrigger, fast decay
+      infSpike *= Math.pow(0.02, sdt);
+      if(Math.random() < sdt*1.7){ infSpike = Math.max(infSpike, 34 + Math.random()*58); }
+      d += infSpike + 4*Math.sin(T*3.1);
+    }
+    return Math.max(38, Math.min(182, d));
+  }
+
+  // =========================================================
+  //  PARTICLE FLOW on the one-line diagram
+  // =========================================================
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const flow = document.getElementById("flow");
+  const SEG = {
+    P:{x0:236,y0:150,x1:520,y1:150,len:284, color:"var(--base)"},   // plant -> bus
+    D:{x0:520,y0:150,x1:804,y1:150,len:284, color:"var(--demand)"}, // bus -> datacenter
+    B:{x0:520,y0:150,x1:520,y1:266,len:116},                        // bus <-> battery
+  };
+  const PX_PER_SEC = 150;
+  const RATEK = 0.060;             // particles per second per MW
+  let parts = [];
+  let acc = {P:0, D:0, B:0};
+
+  function spawn(seg, mode){
+    const c = document.createElementNS(SVGNS,"circle");
+    c.setAttribute("r", seg==="D" ? 3.2 : 3);
+    let col = SEG[seg].color;
+    if(seg==="B") col = mode==="charge" ? "var(--charge)" : "var(--discharge)";
+    c.setAttribute("fill", col);
+    c.setAttribute("filter","url(#glow)");
+    c.setAttribute("opacity","0.95");
+    flow.appendChild(c);
+    parts.push({el:c, seg, mode, u:0, sp:PX_PER_SEC/SEG[seg].len});
+  }
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function place(p){
+    const s = SEG[p.seg];
+    let u = p.u;
+    let x,y;
+    if(p.seg==="B" && p.mode==="discharge"){ // battery -> bus (upward)
+      x = lerp(s.x1, s.x0, u); y = lerp(s.y1, s.y0, u);
+    } else {
+      x = lerp(s.x0, s.x1, u); y = lerp(s.y0, s.y1, u);
+    }
+    p.el.setAttribute("cx", x.toFixed(1));
+    p.el.setAttribute("cy", y.toFixed(1));
+  }
+  function emit(seg, power, mode, dt){
+    if(power <= 0) return;
+    acc[seg] += power * RATEK * dt * (reduceMotion ? 0.5 : 1);
+    while(acc[seg] >= 1){ spawn(seg, mode); acc[seg] -= 1; }
+  }
+
+  // =========================================================
+  //  STRIP CHART
+  // =========================================================
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+  let W=0, H=0, dpr=1;
+  const Y_MAX = 190;
+  let buf = [];               // ring buffer of samples
+  let N = 600;
+
+  function resize(){
+    const cssW = canvas.clientWidth;
+    H = 220;
+    dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas.width = Math.round(cssW*dpr);
+    canvas.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    W = cssW;
+    N = Math.max(280, Math.round(cssW));   // ~1 sample per px
+  }
+  window.addEventListener("resize", resize);
+
+  function yOf(v){ return H - (v/Y_MAX)*H; }
+
+  const css = getComputedStyle(document.documentElement);
+  const C = k => css.getPropertyValue(k).trim();
+
+  function drawChart(){
+    ctx.clearRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle = C('--line'); ctx.lineWidth = 1; ctx.fillStyle = C('--muted');
+    ctx.font = '11px "JetBrains Mono", monospace'; ctx.textBaseline="middle";
+    [50,100,150].forEach(v=>{
+      const y = yOf(v);
+      ctx.globalAlpha = v===100 ? 0.9 : 0.4;
+      ctx.beginPath();
+      if(v===100){ ctx.setLineDash([6,6]); ctx.strokeStyle=C('--base'); }
+      else { ctx.setLineDash([]); ctx.strokeStyle=C('--line'); }
+      ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+      ctx.globalAlpha=1; ctx.fillStyle = v===100 ? C('--base') : C('--muted');
+      ctx.fillText(v, 6, y-9);
+    });
+    ctx.setLineDash([]);
+    if(buf.length<2) return;
+
+    const n = buf.length;
+    const dx = W/(N-1);
+    const x0 = W - (n-1)*dx;       // right-aligned scrolling
+    const xAt = i => x0 + i*dx;
+    const yBase = yOf(BASELOAD);
+
+    // baseload band (always generated)
+    ctx.fillStyle = C('--base'); ctx.globalAlpha = 0.16;
+    ctx.fillRect(Math.max(0,x0), yBase, W-Math.max(0,x0), H-yBase);
+    ctx.globalAlpha = 1;
+
+    // gap fills (charge/discharge or shortfall)
+    for(let i=0;i<n;i++){
+      const s = buf[i];
+      const x = xAt(i); if(x<0) continue;
+      if(s.d > BASELOAD){
+        const top = yOf(s.d);
+        if(s.bess){ ctx.fillStyle=C('--discharge'); ctx.globalAlpha=0.85; }
+        else      { ctx.fillStyle=C('--alarm');     ctx.globalAlpha=0.80; }
+        ctx.fillRect(x, top, Math.ceil(dx)+0.5, yBase-top);
+      } else if(s.d < BASELOAD){
+        const bot = yOf(s.d);
+        ctx.globalAlpha = s.bess ? 0.7 : 0.18;
+        ctx.fillStyle = C('--charge');
+        ctx.fillRect(x, yBase, Math.ceil(dx)+0.5, bot-yBase);
+      }
+    }
+    ctx.globalAlpha=1;
+
+    // served line (what datacenter actually gets)
+    if(!bessOn){
+      ctx.strokeStyle = C('--demand'); ctx.lineWidth=2; ctx.beginPath();
+      for(let i=0;i<n;i++){ const x=xAt(i); const y=yOf(Math.min(buf[i].d,BASELOAD));
+        i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke();
+    }
+    // demand line
+    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = bessOn ? C('--demand') : C('--alarm');
+    if(!bessOn) ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    for(let i=0;i<n;i++){ const x=xAt(i); const y=yOf(buf[i].d); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // leading dot
+    const lx = xAt(n-1), ly = yOf(buf[n-1].d);
+    ctx.fillStyle = bessOn ? C('--demand') : C('--alarm');
+    ctx.beginPath(); ctx.arc(lx,ly,3.4,0,7); ctx.fill();
+
+    // rolling peak demand annotation
+    if(rollPeak > BASELOAD + 8){
+      const yp = yOf(rollPeak);
+      ctx.setLineDash([2,5]); ctx.strokeStyle = C('--discharge'); ctx.globalAlpha=0.8; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(0,yp); ctx.lineTo(W,yp); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha=1;
+      ctx.fillStyle = C('--discharge'); ctx.font='600 11px "JetBrains Mono", monospace'; ctx.textBaseline="bottom";
+      ctx.fillText("피크 "+rollPeak.toFixed(0), 6, yp-3);
+      ctx.textBaseline="middle";
     }
   }
-  function draw(){
-    sctx.clearRect(0,0,W,SH);
-    var srcX=84,loadX=W-84,busY=58,batX=W/2,batTopY=146,batBotY=250,bw=92;
-    sctx.strokeStyle=BORD;sctx.lineWidth=2.5;
-    sctx.beginPath();sctx.moveTo(srcX,busY);sctx.lineTo(loadX,busY);sctx.stroke();
-    sctx.beginPath();sctx.moveTo(batX,busY);sctx.lineTo(batX,batTopY);sctx.stroke();
-    sctx.fillStyle=TEAL;
-    for(var i=0;i<8;i++){var p=((phase*0.6+i*((loadX-srcX)/8))%(loadX-srcX));sctx.beginPath();sctx.arc(srcX+p,busY,3.5,0,7);sctx.fill();}
-    var mag=Math.abs(bess);
-    if(bess>1.5)chevrons(batX,busY,batTopY,1,AMBER);
-    else if(bess<-1.5)chevrons(batX,busY,batTopY,-1,BLUE);
-    box(srcX,busY,132,50,'발전기','100 MW 일정',TEAL);
-    box(loadX,busY,132,50,'데이터센터',Math.round(demand)+' MW',MUT);
-    var bh=batBotY-batTopY,bx=batX-bw/2,by=batTopY;
-    sctx.strokeStyle=MUT;sctx.lineWidth=3;rrect(sctx,bx,by,bw,bh,12);sctx.stroke();
-    sctx.fillStyle=MUT;rrect(sctx,bx+bw/2-13,by-9,26,9,3);sctx.fill();
-    var fc=bess>1.5?AMBER:(bess<-1.5?BLUE:TEAL),fillH=(bh-12)*(soc/100);
-    sctx.fillStyle=fc;sctx.globalAlpha=0.9;rrect(sctx,bx+6,by+6+(bh-12-fillH),bw-12,fillH,7);sctx.fill();sctx.globalAlpha=1;
-    sctx.fillStyle=TXT;sctx.font='800 22px "Noto Sans KR",sans-serif';sctx.textAlign='center';sctx.textBaseline='middle';
-    sctx.fillText(Math.round(soc)+'%',batX,by+bh/2);
-    var st=bess>1.5?'방전 중 ↑ 부족분 공급':(bess<-1.5?'충전 중 ↓ 잉여 저장':'대기 (균형)');
-    sctx.fillStyle=fc;sctx.font='800 16px "Noto Sans KR",sans-serif';
-    sctx.fillText('BESS · '+st,batX,batBotY+22);
-    if(mag>1.5){sctx.fillStyle=bess>0?AMBER:BLUE;sctx.font='800 15px "Noto Sans KR",sans-serif';sctx.textAlign='center';
-      sctx.fillText((bess>0?'+':'')+Math.round(bess)+' MW',(batX+loadX)/2,busY-18);}
+
+  // =========================================================
+  //  DOM refs
+  // =========================================================
+  const battFill = document.getElementById("battFill");
+  const socTxt   = document.getElementById("socTxt");
+  const bessState= document.getElementById("bessState");
+  const dcMW     = document.getElementById("dcMW");
+  const dcBox    = document.getElementById("dcBox");
+  const tDemand  = document.getElementById("tDemand");
+  const tBess    = document.getElementById("tBess");
+  const tSoc     = document.getElementById("tSoc");
+  const tStatus  = document.getElementById("tStatus");
+  const bessDot  = document.getElementById("bessDot");
+  const phDot=document.getElementById("phDot"), phName=document.getElementById("phName"),
+        phTag=document.getElementById("phTag");
+  const tPeak=document.getElementById("tPeak"), tBsub=document.getElementById("tBsub"),
+        tSocSub=document.getElementById("tSocSub"), tVol=document.getElementById("tVol"),
+        tVolSub=document.getElementById("tVolSub"), volDot=document.getElementById("volDot");
+
+  function setTile(el,html){ el.innerHTML=html; }
+
+  // =========================================================
+  //  MAIN LOOP
+  // =========================================================
+  function frame(now){
+    let dt = (now-last)/1000; last = now;
+    if(dt>0.1) dt=0.1;                     // clamp tab-switch jumps
+    const sdt = dt*speed;
+
+    if(playing){
+      // wander the noise term a touch
+      noise += (Math.random()-0.5)*1.2*sdt*6;
+      noise = Math.max(-5, Math.min(5, noise*0.95));
+      T += sdt;
+
+      // --- workload regime + regime-specific demand texture ---
+      const ph = phaseAt(((T%CYCLE)+CYCLE)%CYCLE);
+      const demand = stepDemand(ph, sdt);
+      const gap = demand - BASELOAD;        // + need discharge, - surplus
+
+      // battery integration (only cycles when BESS on)
+      let mode="idle", bessMW=0, shortfall=0, served=demand;
+      if(bessOn){
+        if(gap>0){ // discharge — shaves the peak
+          mode="discharge"; bessMW=gap;
+          energy -= gap*sdt*0.5;
+          if(energy<0){ shortfall=-energy/(sdt*0.5||1); energy=0; served=demand-shortfall; }
+        } else if(gap<0){ // charge (round-trip loss)
+          mode="charge"; bessMW=-gap;
+          energy += (-gap)*sdt*0.5*0.92;
+        }
+        energy += (CAP*0.6 - energy)*0.0006;   // gentle dispatch target → stays mid-band
+        energy = Math.max(0, Math.min(CAP, energy));
+      } else {
+        served = Math.min(demand, BASELOAD);
+        shortfall = Math.max(0, demand-BASELOAD);
+      }
+      const soc = energy/CAP*100;
+
+      // --- volatility (peak-to-peak over ~1s window) + rolling peak ---
+      p2pWin.push(demand); if(p2pWin.length>70) p2pWin.shift();
+      let pMin=Infinity,pMax=-Infinity; for(const v of p2pWin){ if(v<pMin)pMin=v; if(v>pMax)pMax=v; }
+      const p2p = pMax-pMin;
+      volEMA += (p2p - volEMA)*0.15;
+      rollPeak = Math.max(demand, rollPeak*0.9992);   // slow-decay rolling peak
+
+      // emit particles
+      emit("P", BASELOAD, null, dt);
+      emit("D", served,  null, dt);
+      if(bessOn && bessMW>0.5) emit("B", bessMW, mode, dt);
+
+      // ---- battery / soc readouts ----
+      battFill.setAttribute("y", (3 + 34*(1-soc/100)).toFixed(1));
+      battFill.setAttribute("height", (34*soc/100).toFixed(1));
+      socTxt.textContent = soc.toFixed(0)+" %";
+      tSoc.innerHTML = soc.toFixed(0)+'<span class="u">%</span>';
+      tSocSub.textContent = (mode==="discharge") ? "방전 중 ↓" : (mode==="charge") ? "충전 중 ↑" : "유지";
+      dcMW.textContent = served.toFixed(0)+" MW";
+      tDemand.innerHTML = demand.toFixed(0)+'<span class="u">MW</span>';
+      tPeak.textContent = "피크 "+rollPeak.toFixed(0)+" MW";
+
+      // ---- phase banner ----
+      phName.textContent = ph.name;
+      phTag.textContent = ph.tag;
+      phTag.style.color = ph.col; phTag.style.borderColor = ph.col;
+      phDot.style.background = ph.col; phDot.style.boxShadow = "0 0 9px "+ph.col;
+
+      // ---- volatility tile ----
+      const vc = volEMA>30 ? "hi" : volEMA>14 ? "mid" : "lo";
+      tVol.className = "val mono "+vc;
+      tVol.innerHTML = "±"+(volEMA/2).toFixed(0)+'<span class="u">MW</span>';
+      volDot.style.background = vc==="hi"?"var(--alarm)":vc==="mid"?"var(--discharge)":"var(--charge)";
+      tVolSub.textContent = ph.kind==="train" ? "학습 · 반복 스윙" : (infSpike>10 ? "추론 · 요청 피크" : "추론 · 대기");
+
+      // ---- BESS readout ----
+      if(!bessOn){
+        bessState.textContent="정지"; bessState.setAttribute("fill","var(--muted)");
+        tBess.textContent="정지"; tBess.style.color="var(--muted)"; bessDot.style.background="var(--muted)";
+        tBsub.textContent="미가동";
+      } else if(mode==="discharge"){
+        bessState.textContent="▲ 방전 "+gap.toFixed(0)+"MW"; bessState.setAttribute("fill","var(--discharge)");
+        tBess.innerHTML='▲ '+gap.toFixed(0)+'<span class="u">MW 방전</span>'; tBess.style.color="var(--discharge)"; bessDot.style.background="var(--discharge)";
+        tBsub.textContent="피크 셰이빙";
+      } else if(mode==="charge"){
+        bessState.textContent="▼ 충전 "+(-gap).toFixed(0)+"MW"; bessState.setAttribute("fill","var(--charge)");
+        tBess.innerHTML='▼ '+(-gap).toFixed(0)+'<span class="u">MW 충전</span>'; tBess.style.color="var(--charge)"; bessDot.style.background="var(--charge)";
+        tBsub.textContent="잉여 저장";
+      } else {
+        bessState.textContent="대기"; bessState.setAttribute("fill","var(--muted)");
+        tBess.textContent="대기"; tBess.style.color="var(--muted)"; bessDot.style.background="var(--muted)";
+        tBsub.textContent="밀리초 응답";
+      }
+
+      // ---- status ----
+      if(shortfall>0.5){
+        tStatus.className="val mono bad"; tStatus.textContent="부족 −"+shortfall.toFixed(0)+"MW";
+        if(!dcBox.classList.contains("flicker")) dcBox.classList.add("flicker");
+        dcBox.setAttribute("stroke","var(--alarm)");
+      } else {
+        tStatus.className="val mono ok"; tStatus.textContent="정상 공급";
+        dcBox.classList.remove("flicker");
+        dcBox.setAttribute("stroke","var(--demand)");
+      }
+
+      // ---- chart buffer ----
+      buf.push({d:demand, bess:bessOn});
+      if(buf.length>N) buf.splice(0, buf.length-N);
+    }
+
+    // advance particles every frame (even paused → settle)
+    for(let i=parts.length-1;i>=0;i--){
+      const p=parts[i];
+      if(playing) p.u += p.sp*sdt;
+      if(p.u>=1){ p.el.remove(); parts.splice(i,1); continue; }
+      p.el.setAttribute("opacity", (0.95*(1-Math.abs(p.u-0.5)*0.5)).toFixed(2));
+      place(p);
+    }
+
+    drawChart();
+    requestAnimationFrame(frame);
   }
-  function banner(){
-    var b=document.getElementById('banner'),ar=document.getElementById('ar'),tx=document.getElementById('tx');
-    if(bess>1.5){b.style.background='#FAEEDA';b.style.color='#854F0B';ar.textContent='↑';tx.textContent='방전 중 — 수요가 발전을 넘어, 배터리가 부족분을 즉시 공급';}
-    else if(bess<-1.5){b.style.background='#E6F1FB';b.style.color='#185FA5';ar.textContent='↓';tx.textContent='충전 중 — 발전이 수요보다 많아, 남는 전기를 배터리에 저장';}
-    else{b.style.background='#F5F4EF';b.style.color='#6B6B6B';ar.textContent='—';tx.textContent='균형 — 수요와 기저발전이 같아 배터리는 대기';}
-  }
-  demSlider.addEventListener('input',function(){target=+this.value;if(autoOn){autoOn=false;document.getElementById('auto').textContent='▶ 자동 시연';}});
-  document.getElementById('reset').addEventListener('click',function(){target=100;demSlider.value=100;});
-  document.getElementById('auto').addEventListener('click',function(){autoOn=!autoOn;this.textContent=autoOn?'⏸ 자동 시연 정지':'▶ 자동 시연';});
-  var last=performance.now();
-  function loop(now){
-    var dt=Math.min(50,now-last);last=now;phase+=dt*0.06;
-    if(autoOn){autoT+=dt*0.001;target=100+Math.sin(autoT*1.1)*34;demSlider.value=Math.round(target);}
-    demand+=(target-demand)*0.12; bess=demand-BASE; soc+=(-bess)*0.00018*dt;
-    if(soc>95)soc=95;if(soc<25)soc=25;
-    var o=Math.round(bess);
-    document.getElementById('m-soc').textContent=Math.round(soc)+'%';
-    var mo=document.getElementById('m-out');mo.textContent=(o>0?'+':'')+o+' MW';
-    mo.style.color=o>1?'#854F0B':(o<-1?'#185FA5':TXT);
-    banner();draw();requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
+
+  // =========================================================
+  //  Controls
+  // =========================================================
+  const playBtn = document.getElementById("playBtn");
+  playBtn.addEventListener("click", ()=>{
+    playing=!playing;
+    playBtn.textContent = playing ? "⏸ 일시정지" : "▶ 재생";
+  });
+  const toggle = document.getElementById("bessToggle");
+  const bessLabel = document.getElementById("bessLabel");
+  toggle.addEventListener("click", ()=>{
+    bessOn=!bessOn;
+    toggle.setAttribute("aria-pressed", String(bessOn));
+    bessLabel.textContent = bessOn ? "BESS 가동 중" : "BESS 정지";
+    if(!bessOn){ // clear battery flow particles
+      parts.filter(p=>p.seg==="B").forEach(p=>p.el.remove());
+      parts = parts.filter(p=>p.seg!=="B");
+    }
+  });
+  const speedEl = document.getElementById("speed");
+  const speedVal= document.getElementById("speedVal");
+  speedEl.addEventListener("input", ()=>{ speed=parseFloat(speedEl.value); speedVal.textContent=speed.toFixed(1)+"×"; });
+
+  // boot
+  function boot(){ resize(); requestAnimationFrame(t=>{ last=t; requestAnimationFrame(frame); }); }
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(boot); setTimeout(boot,800); }
+  else boot();
 })();
 </script>
 </body>
