@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTM · 온사이트 발전 → 데이터센터 직결</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;background:#FFFFFF;color:#16365C;display:flex;flex-direction:column;align-items:center;padding:32px}
+  h1{font-size:26px;font-weight:800;margin-bottom:6px;text-align:center}
+  .sub{font-size:15px;color:#5A6B7E;margin-bottom:22px;font-weight:500;text-align:center;max-width:1000px}
+  .stage{width:100%;max-width:1000px}
+  .wrap{width:100%;max-width:1000px}
+  .sect{font-size:18px;font-weight:800;margin:30px 0 14px}
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .mcard{border-radius:14px;padding:16px 18px}
+  .mA{background:#EAF1FB;border:1.5px solid #B5D4F4}
+  .mB{background:#F4F6F9;border:1.5px solid #C9D2DC}
+  .mt{font-size:17px;font-weight:800;margin-bottom:8px}
+  .mA .mt{color:#1F4E79}.mB .mt{color:#16365C}
+  .md{font-size:14px;color:#3A4656;margin-bottom:6px;font-weight:500;line-height:1.5}
+  .mf{font-size:12.5px;color:#7A8898}
+  .ghdr{display:inline-block;color:#fff;font-weight:800;font-size:15px;padding:8px 18px;border-radius:20px;margin:18px 0 14px}
+  .green{background:#1E8A5B}.orange{background:#C77B2A}
+  .dgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+  .ccard{border-radius:16px;padding:18px 18px;text-align:center}
+  .ccard.g{background:#EDF7F1;border:1.5px solid #C3E4D1}
+  .ccard.o{background:#FBF2E5;border:1.5px solid #EBD2AD}
+  .ct{font-size:20px;font-weight:800;color:#1F4E79;margin-bottom:10px}
+  .ca{font-size:14px;color:#5A6B7E;margin-bottom:6px}
+  .cc{font-size:19px;font-weight:800;color:#C2691A;margin-bottom:12px}
+  .badge{display:inline-block;background:#1F3A5F;color:#fff;font-size:13px;font-weight:700;padding:5px 16px;border-radius:16px;margin-bottom:12px}
+  .cf{font-size:12.5px;color:#7A8898;line-height:1.5}
+  .note{margin-top:18px;font-size:13.5px;color:#5A6B7E;font-weight:500;text-align:center}
+  .toggle{display:flex;gap:10px;justify-content:center;margin:4px 0 6px}
+  .toggle button{font-family:inherit;font-size:14px;font-weight:700;padding:9px 20px;border-radius:22px;border:1.5px solid #C9D2DC;background:#fff;color:#5A6B7E;cursor:pointer}
+  .toggle button.on{background:#1F3A5F;border-color:#1F3A5F;color:#fff}
+  .modestatus{text-align:center;font-size:13.5px;font-weight:600;color:#1F4E79;margin-bottom:10px;min-height:18px}
+  #scene .arrowA,#scene .tiepkt{display:none}
+  #scene.modeA .arrowA{display:block}
+  #scene.modeA .tiepkt{display:block}
+  #scene #blade-open{display:none}
+  #scene.modeB #blade-open{display:block}
+  #scene.modeB #blade-closed{display:none}
+  #scene #tie{stroke-dasharray:6 6}
+  #scene.modeA #tie{stroke:#185FA5;opacity:1}
+  #scene.modeB #tie{stroke:#C2C8D0;opacity:.5;animation:none}
+  #scene #grid{transition:opacity .3s}
+  #scene.modeB #grid{opacity:.3}
+  @media (prefers-reduced-motion:no-preference){
+    .ex{animation:ex 2.6s ease-in infinite}
+    .fan{transform-box:fill-box;transform-origin:center;animation:spin 2.4s linear infinite}
+    .led{animation:blink 1.6s ease-in-out infinite}
+    .glow{transform-box:fill-box;transform-origin:center;animation:pulse 2.8s ease-in-out infinite}
+    .chg{animation:blink 1.3s ease-in-out infinite}
+    .bus{stroke-dasharray:9 7;animation:flow 0.8s linear infinite}
+    #scene.modeA #tie{animation:flow 1.3s linear infinite}
+  }
+  @keyframes flow{to{stroke-dashoffset:-32}}
+  @keyframes ex{0%{opacity:0;transform:translateY(0) scale(.6)}25%{opacity:.5}100%{opacity:0;transform:translateY(-26px) scale(1.4)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+  @keyframes pulse{0%,100%{opacity:.14;transform:scale(1)}50%{opacity:.36;transform:scale(1.15)}}
+</style>
+</head>
+<body>
+  <h1>BTM 구조 : 계량기 안쪽에서 전력을 직접 생산·저장·사용</h1>
+  <div class="sub">발전원(연료전지·가스엔진·가스터빈·SMR)을 계량기 안쪽에서 공통 버스에 병렬로 연결해 데이터센터에 직접 공급 — BESS는 보조(저장)</div>
+
+  <div class="toggle">
+    <button id="btnA" class="on" onclick="setMode('A')">모드 A · 계통 병렬</button>
+    <button id="btnB" onclick="setMode('B')">모드 B · 오프그리드(독립)</button>
+  </div>
+  <div class="modestatus" id="statusTxt">Mode A · 계통 병렬 — 부족분은 계통 수전, 잉여는 역송</div>
+
+  <div id="scene" class="modeA" style="width:100%;max-width:1000px">
+  <svg class="stage" viewBox="0 0 720 372" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>BTM 온사이트 발전원이 공통 버스에 병렬 연결되어 데이터센터로 직접 공급되는 애니메이션</title>
+
+    <rect x="30" y="56" width="540" height="292" rx="16" fill="none" stroke="#8C97A4" stroke-width="1.2" stroke-dasharray="7 6"/>
+    <text x="44" y="46" font-size="13" font-weight="700" fill="#16365C">BTM 경계 · 계량기 안쪽 (on-site 발전 → 데이터센터 직결)</text>
+
+    <!-- common busbar -->
+    <line x1="88" y1="256" x2="436" y2="256" stroke="#6B7480" stroke-width="2.6" opacity="0.5"/>
+    <line class="bus" x1="88" y1="256" x2="436" y2="256" stroke="#1D9E75" stroke-width="2.6" stroke-linecap="round"/>
+    <g fill="#16365C"><circle cx="104" cy="256" r="3.2"/><circle cx="192" cy="256" r="3.2"/><circle cx="280" cy="256" r="3.2"/><circle cx="368" cy="256" r="3.2"/></g>
+    <line x1="104" y1="214" x2="104" y2="256" stroke="#1E8A5B" stroke-width="2"/>
+    <line x1="192" y1="214" x2="192" y2="256" stroke="#C77B2A" stroke-width="2"/>
+    <line x1="280" y1="214" x2="280" y2="256" stroke="#B07314" stroke-width="2"/>
+    <line x1="368" y1="214" x2="368" y2="256" stroke="#2E8B8B" stroke-width="2"/>
+    <text x="132" y="276" text-anchor="middle" font-size="10.5" fill="#8A94A0">공통 버스 (병렬)</text>
+
+    <!-- source labels -->
+    <text x="104" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#1E7A52">연료전지</text>
+    <text x="192" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#B85C12">가스엔진</text>
+    <text x="280" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#9A6410">가스터빈</text>
+    <text x="368" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#216F6F">SMR</text>
+
+    <!-- 연료전지 SOFC -->
+    <circle class="glow" cx="104" cy="192" r="25" fill="#1D9E75" opacity="0.16"/>
+    <g fill="#C9E8D6" stroke="#1E8A5B" stroke-width="1">
+      <rect x="82" y="170" width="11" height="44" rx="2"/><rect x="95" y="170" width="11" height="44" rx="2"/><rect x="108" y="170" width="11" height="44" rx="2"/><rect x="121" y="170" width="11" height="44" rx="2"/>
+    </g>
+    <g fill="#1E8A5B"><rect x="85" y="177" width="5" height="3"/><rect x="98" y="177" width="5" height="3"/><rect x="111" y="177" width="5" height="3"/><rect x="124" y="177" width="5" height="3"/></g>
+
+    <!-- 가스엔진 RICE -->
+    <rect x="162" y="180" width="60" height="34" rx="3" fill="#F6D9B8" stroke="#C77B2A" stroke-width="1"/>
+    <rect x="170" y="188" width="44" height="5" fill="#C77B2A" opacity="0.3"/>
+    <rect x="170" y="198" width="44" height="5" fill="#C77B2A" opacity="0.3"/>
+    <rect x="210" y="164" width="11" height="18" fill="#9AA3AD" stroke="#6B7480" stroke-width="0.8"/>
+    <ellipse class="ex" cx="215" cy="162" rx="6" ry="4" fill="#C9CDD2"/>
+
+    <!-- 가스터빈 -->
+    <rect x="250" y="186" width="60" height="28" rx="14" fill="#F8E2C0" stroke="#9A6410" stroke-width="1"/>
+    <circle cx="266" cy="200" r="8" fill="none" stroke="#9A6410" stroke-width="1.4"/>
+    <g stroke="#9A6410" stroke-width="1.2"><line x1="266" y1="194" x2="266" y2="206"/><line x1="260" y1="200" x2="272" y2="200"/><line x1="262" y1="196" x2="270" y2="204"/><line x1="262" y1="204" x2="270" y2="196"/></g>
+    <rect x="298" y="168" width="11" height="18" fill="#9AA3AD" stroke="#6B7480" stroke-width="0.8"/>
+    <ellipse class="ex" cx="303" cy="166" rx="6" ry="4" fill="#C9CDD2" style="animation-delay:1.1s"/>
+
+    <!-- SMR (소형모듈원자로) -->
+    <rect x="350" y="190" width="36" height="24" rx="2" fill="#CFE9E9" stroke="#2E8B8B" stroke-width="1.1"/>
+    <path d="M350,190 a18 18 0 0 1 36 0 Z" fill="#CFE9E9" stroke="#2E8B8B" stroke-width="1.1"/>
+    <circle cx="368" cy="184" r="6.5" fill="none" stroke="#2E8B8B" stroke-width="1.4"/>
+    <circle cx="368" cy="184" r="2" fill="#2E8B8B"/>
+    <rect x="350" y="204" width="36" height="5" fill="#2E8B8B" opacity="0.22"/>
+
+    <!-- parallel injection packets: each source down to bus then to DC -->
+    <circle r="3.4" fill="#1D9E75"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" path="M104,216 L104,256 L436,256"/></circle>
+    <circle r="3.4" fill="#EF9F27"><animateMotion dur="2.4s" begin="-0.5s" repeatCount="indefinite" path="M192,216 L192,256 L436,256"/></circle>
+    <circle r="3.4" fill="#D6951F"><animateMotion dur="2.4s" begin="-1.0s" repeatCount="indefinite" path="M280,216 L280,256 L436,256"/></circle>
+    <circle r="3.4" fill="#2E8B8B"><animateMotion dur="2.4s" begin="-1.5s" repeatCount="indefinite" path="M368,216 L368,256 L436,256"/></circle>
+    <circle r="3.4" fill="#1D9E75"><animateMotion dur="2.4s" begin="-1.2s" repeatCount="indefinite" path="M104,216 L104,256 L436,256"/></circle>
+    <circle r="3.4" fill="#D6951F"><animateMotion dur="2.4s" begin="-2.2s" repeatCount="indefinite" path="M280,216 L280,256 L436,256"/></circle>
+
+    <!-- BESS (auxiliary storage, dashed, bidirectional) -->
+    <line x1="250" y1="256" x2="250" y2="270" stroke="#185FA5" stroke-width="1.6" stroke-dasharray="4 4"/>
+    <path d="M246,261 l4,-5 l4,5 Z" fill="#185FA5"/>
+    <path d="M246,265 l4,5 l4,-5 Z" fill="#185FA5"/>
+    <rect x="212" y="270" width="76" height="30" rx="4" fill="#E8F0FA" stroke="#185FA5" stroke-width="1.3" stroke-dasharray="5 4"/>
+    <g stroke="#185FA5" stroke-width="0.8" opacity="0.6"><line x1="231" y1="270" x2="231" y2="300"/><line x1="250" y1="270" x2="250" y2="300"/><line x1="269" y1="270" x2="269" y2="300"/></g>
+    <g fill="#1D9E75"><rect class="chg" x="218" y="292" width="9" height="4"/><rect class="chg" x="236" y="292" width="9" height="4" style="animation-delay:.3s"/><rect class="chg" x="255" y="292" width="9" height="4" style="animation-delay:.6s"/><rect class="chg" x="273" y="292" width="8" height="4" style="animation-delay:.9s"/></g>
+    <text x="250" y="312" text-anchor="middle" font-size="11.5" font-weight="700" fill="#185FA5">BESS</text>
+    <text x="250" y="331" text-anchor="middle" font-size="10" fill="#7A8898">순간 변동 흡수 · 피크 대응 · 예비 전력</text>
+
+    <!-- data center -->
+    <circle class="glow" cx="492" cy="216" r="36" fill="#378ADD" opacity="0.14"/>
+    <rect x="436" y="170" width="112" height="86" rx="4" fill="#33597F" stroke="#1F3A5F" stroke-width="1"/>
+    <rect x="436" y="170" width="112" height="12" rx="2" fill="#1F3A5F"/>
+    <g stroke="#274A6B" stroke-width="6"><line x1="447" y1="188" x2="447" y2="254"/><line x1="463" y1="188" x2="463" y2="254"/><line x1="479" y1="188" x2="479" y2="254"/><line x1="495" y1="188" x2="495" y2="254"/><line x1="511" y1="188" x2="511" y2="254"/><line x1="527" y1="188" x2="527" y2="254"/><line x1="540" y1="188" x2="540" y2="254"/></g>
+    <g><rect class="led" x="443" y="240" width="7" height="5" rx="1" fill="#5DCAA5"/><rect class="led" x="455" y="240" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:.4s"/><rect class="led" x="467" y="240" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.8s"/><rect class="led" x="479" y="240" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.2s"/><rect class="led" x="491" y="240" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:1s"/><rect class="led" x="503" y="240" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.6s"/><rect class="led" x="515" y="240" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:.3s"/><rect class="led" x="527" y="240" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.9s"/></g>
+    <g class="fan"><circle cx="463" cy="164" r="10" fill="#1F3A5F"/><g stroke="#85B7EB" stroke-width="2.2" stroke-linecap="round"><line x1="463" y1="164" x2="463" y2="157"/><line x1="463" y1="164" x2="469" y2="168"/><line x1="463" y1="164" x2="457" y2="168"/></g></g>
+    <g class="fan" style="animation-delay:-1s"><circle cx="521" cy="164" r="10" fill="#1F3A5F"/><g stroke="#85B7EB" stroke-width="2.2" stroke-linecap="round"><line x1="521" y1="164" x2="521" y2="157"/><line x1="521" y1="164" x2="527" y2="168"/><line x1="521" y1="164" x2="515" y2="168"/></g></g>
+    <text x="492" y="284" text-anchor="middle" font-size="13" font-weight="700" fill="#16365C">AI 데이터센터</text>
+
+    <!-- grid tie / meter / switch (mode-aware) -->
+    <text id="tieLabel" x="435" y="112" text-anchor="middle" font-size="11" fill="#7A8898">그리드 연결 · 부족분 보충 / 잉여분 송출</text>
+    <polyline id="tie" points="412,256 412,128 556,128" fill="none" stroke="#185FA5" stroke-width="1.8"/>
+    <path class="arrowA" d="M430,123 l-9,5 l9,5 Z" fill="#185FA5"/>
+    <path class="arrowA" d="M538,123 l9,5 l-9,5 Z" fill="#185FA5"/>
+    <circle class="tiepkt" r="3.2" fill="#378ADD"><animateMotion dur="2.6s" repeatCount="indefinite" path="M598,128 L412,128 L412,254"/></circle>
+    <circle class="tiepkt" r="3.2" fill="#85B7EB"><animateMotion dur="2.6s" begin="-1.3s" repeatCount="indefinite" path="M412,254 L412,128 L598,128"/></circle>
+    <circle cx="470" cy="128" r="3.2" fill="#fff" stroke="#6B7480" stroke-width="1.2"/>
+    <circle cx="487" cy="128" r="3.2" fill="#fff" stroke="#6B7480" stroke-width="1.2"/>
+    <line id="blade-closed" x1="470" y1="128" x2="487" y2="128" stroke="#185FA5" stroke-width="2.4"/>
+    <line id="blade-open" x1="470" y1="128" x2="485" y2="116" stroke="#C0392B" stroke-width="2.4"/>
+    <g id="grid">
+      <rect x="556" y="114" width="26" height="28" rx="3" fill="#EEF1F4" stroke="#6B7480" stroke-width="1"/>
+      <circle cx="569" cy="128" r="6" fill="none" stroke="#6B7480" stroke-width="1"/>
+      <text x="569" y="160" text-anchor="middle" font-size="10.5" fill="#6B7480">계량기</text>
+      <line x1="582" y1="128" x2="612" y2="128" stroke="#9AA7B4" stroke-width="1.6" stroke-dasharray="6 6"/>
+      <g stroke="#6B7480" stroke-width="1" fill="none"><line x1="614" y1="308" x2="624" y2="130"/><line x1="648" y1="308" x2="638" y2="130"/><line x1="608" y1="132" x2="654" y2="132"/><line x1="618" y1="200" x2="644" y2="250"/><line x1="644" y1="200" x2="618" y2="250"/></g>
+      <text x="631" y="326" text-anchor="middle" font-size="11.5" fill="#6B7480">계통(그리드)</text>
+    </g>
+  </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="sect">계통 연계 여부에 따라 두 가지 모드</div>
+    <div class="modes">
+      <div class="mcard mA">
+        <div class="mt">모드 A · 계통 병렬 (Grid-parallel)</div>
+        <div class="md">평소 on-site 자급, 부족분은 그리드 보충하고 잉여분은 그리드 판매</div>
+        <div class="mf">예) Equinix–Bloom(19개 DC, &gt;100MW) 등 기존 콜로케이션 (계통 병렬형)</div>
+      </div>
+      <div class="mcard mB">
+        <div class="mt">모드 B · 독립 (Off-grid / Islanded)</div>
+        <div class="md">계통 완전 분리 — 100% 자체발전 + BESS 자급자족 → 접속 지연 회피, 신뢰도는 자체 책임</div>
+        <div class="mf">예) 현재 대형 AI 데이터센터 전력계약 다수가 이 모드 (아래 사례 전부 해당)</div>
+      </div>
+    </div>
+
+    <div class="sect">BTM 채택 사례 — 용량 · 계통 연계 모드 <span style="font-size:13px;font-weight:500;color:#7A8898">(2026년 기준 팩트체크)</span></div>
+
+    <span class="ghdr green">연료전지 (SOFC) · Bloom Energy</span>
+    <div class="dgrid2">
+      <div class="ccard g">
+        <div class="ct">Oracle × Bloom Energy</div>
+        <div class="ca">SOFC · 온사이트 1차전원</div>
+        <div class="cc">최대 2.8GW MSA · 초기 1.2GW</div>
+        <div class="badge">Mode B · 독립</div>
+        <div class="cf">Project Jupiter 2.45GW · 단일 마이크로그리드 · 계통 독립 운전 (가스터빈·디젤 대체)</div>
+      </div>
+      <div class="ccard g">
+        <div class="ct">AEP × Bloom Energy</div>
+        <div class="ca">SOFC · 유틸리티 코로케이션</div>
+        <div class="cc">최대 1GW 공급 · 초기 100MW</div>
+        <div class="badge">Mode B · 독립</div>
+        <div class="cf">데이터센터 off-grid 공급 (유틸리티 주도)</div>
+      </div>
+    </div>
+
+    <span class="ghdr orange">가스 발전 (엔진 RICE · 가스터빈)</span>
+    <div class="dgrid2">
+      <div class="ccard o">
+        <div class="ct">美 데이터센터 × Wärtsilä</div>
+        <div class="ca">가스엔진(RICE) · 18V50SG / 50SG</div>
+        <div class="cc">온사이트 282 ~ 790MW (사이트별)</div>
+        <div class="badge">Mode B · 독립</div>
+        <div class="cf">미국 데이터센터 5건 누적 2.4GW+ · 텍사스 790MW 포함 · 향후 계통 역송·밸런싱 가능</div>
+      </div>
+      <div class="ccard o">
+        <div class="ct">Microsoft × Chevron × Engine No.1</div>
+        <div class="ca">가스터빈 CCGT · GE Vernova 7HA (7기)</div>
+        <div class="cc">초기 2.5GW · 확장 시 최대 5GW</div>
+        <div class="badge">Mode B · 독립(BTM)</div>
+        <div class="cf">West Texas(Pecos) $7B · ’27 가동 시작 · 초기 계통 비경유 · 독점협상 단계(미확정)</div>
+      </div>
+    </div>
+
+    <div class="note">발전원(연료전지·가스엔진·가스터빈·SMR)은 공통 버스에 <b>병렬</b>로 직접 주입, BESS는 <b>보조(충·방전)</b>. SMR은 아직 대형 BTM 실계약은 없는 차세대 옵션. 현재 대형 계약 대부분이 Mode B(독립).</div>
+  </div>
+
+<script>
+function setMode(m){
+  var s=document.getElementById('scene');
+  s.className = (m==='A'?'modeA':'modeB');
+  document.getElementById('btnA').classList.toggle('on', m==='A');
+  document.getElementById('btnB').classList.toggle('on', m==='B');
+  document.getElementById('statusTxt').textContent = (m==='A')
+    ? 'Mode A · 계통 병렬 — 부족분은 계통 수전, 잉여는 역송'
+    : 'Mode B · 오프그리드(독립) — 계통 분리(차단), 100% 자체발전 + BESS';
+  var tl=document.getElementById('tieLabel');
+  if(tl) tl.textContent = (m==='A') ? '그리드 연결 · 부족분 보충 / 잉여분 송출' : '계통 분리 · 차단(오프그리드)';
+}
+setMode('A');
+</script>
+</body>
+</html>
