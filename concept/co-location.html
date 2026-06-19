@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co-location 구조 : 같은 부지 · 직결(BTM) vs 그리드 경유(FTM)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;background:#FFFFFF;color:#16365C;display:flex;flex-direction:column;align-items:center;padding:32px}
+  h1{font-size:25px;font-weight:800;margin-bottom:6px;text-align:center}
+  .sub{font-size:15px;color:#5A6B7E;margin-bottom:22px;font-weight:500;text-align:center;max-width:1000px}
+  .stage{width:100%;max-width:1000px}
+  .wrap{width:100%;max-width:1000px}
+  .sect{font-size:18px;font-weight:800;margin:30px 0 14px}
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+  .mcard{border-radius:14px;padding:16px 18px}
+  .mO{background:#FBF1E4;border:1.5px solid #E8C9A0}
+  .mB{background:#EAF1FB;border:1.5px solid #B5D4F4}
+  .mt{font-size:17px;font-weight:800;margin-bottom:8px}
+  .mO .mt{color:#B85C12}.mB .mt{color:#1F4E79}
+  .ml{font-size:13.5px;color:#3A4656;margin:4px 0;font-weight:500;line-height:1.5}
+  .mr{font-size:13px;color:#C0392B;font-weight:600;margin-top:6px}
+  .mg{font-size:13px;color:#1E7A52;font-weight:600;margin-top:6px}
+  .ghdr{display:inline-block;color:#fff;font-weight:800;font-size:15px;padding:8px 18px;border-radius:20px;margin:18px 0 14px}
+  .orange{background:#C77B2A}.blue{background:#2E5E94}
+  .dgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+  .ccard{border-radius:16px;padding:18px 18px;text-align:center}
+  .ccard.o{background:#FBF2E5;border:1.5px solid #EBD2AD}
+  .ccard.b{background:#EAF2FB;border:1.5px solid #C3DAF1}
+  .ct{font-size:19px;font-weight:800;color:#1F4E79;margin-bottom:10px}
+  .ca{font-size:14px;color:#5A6B7E;margin-bottom:8px}
+  .cc{font-size:16px;font-weight:800;color:#C2691A;margin-bottom:6px;line-height:1.5}
+  .cf{font-size:12.5px;color:#7A8898;line-height:1.5;margin-top:6px}
+  .toggle{display:flex;gap:10px;justify-content:center;margin:4px 0 6px}
+  .toggle button{font-family:inherit;font-size:14px;font-weight:700;padding:9px 20px;border-radius:22px;border:1.5px solid #C9D2DC;background:#fff;color:#5A6B7E;cursor:pointer}
+  .toggle button.on{background:#1F3A5F;border-color:#1F3A5F;color:#fff}
+  .modestatus{text-align:center;font-size:13.5px;font-weight:600;color:#1F4E79;margin-bottom:10px;min-height:18px}
+  .note{margin-top:18px;font-size:13.5px;color:#5A6B7E;font-weight:500;text-align:center}
+  #scene .pktB,#scene .pktF{display:none}
+  #scene.btm .pktB{display:block}
+  #scene.ftm .pktF{display:block}
+  #scene.btm #direct{stroke:#E8731C;opacity:1}
+  #scene.ftm #direct{stroke:#C3C9D0;opacity:.4}
+  #scene.btm #darrow,#scene.btm #dlabel{opacity:1}
+  #scene.ftm #darrow,#scene.ftm #dlabel{opacity:.35}
+  #scene.btm .arch{stroke:#8AA0BC;opacity:.72}
+  #scene.ftm .arch{stroke:#2E5E94;opacity:1}
+  #scene.btm #archlineR{opacity:0}
+  #scene.btm .metr{opacity:.9}
+  #scene.btm .flab{opacity:.65}
+  #scene.ftm .metr,#scene.ftm .flab{opacity:1}
+  #scene .metrR,#scene .flabR,#scene .arch{transition:opacity .3s}
+  #scene.btm .metrR,#scene.btm .flabR{opacity:0}
+  #scene #btmTag{opacity:0;transition:opacity .3s}
+  #scene.btm #btmTag{opacity:1}
+  #scene #direct,#scene #archline{transition:opacity .3s}
+  @media (prefers-reduced-motion:no-preference){
+    .ex{animation:ex 2.8s ease-in infinite}
+    .fan{transform-box:fill-box;transform-origin:center;animation:spin 2.4s linear infinite}
+    .led{animation:blink 1.6s ease-in-out infinite}
+    .glow{transform-box:fill-box;transform-origin:center;animation:pulse 2.8s ease-in-out infinite}
+    #scene.btm #direct{animation:flow .9s linear infinite}
+    #scene.ftm .arch{animation:flow 1.2s linear infinite}
+  }
+  @keyframes flow{to{stroke-dashoffset:-34}}
+  @keyframes ex{0%{opacity:0;transform:translateY(0) scale(.5)}25%{opacity:.55}100%{opacity:0;transform:translateY(-30px) scale(1.4)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+  @keyframes pulse{0%,100%{opacity:.12;transform:scale(1)}50%{opacity:.32;transform:scale(1.15)}}
+  #tscene .tpktB,#tscene .tpktF{display:none}
+  #tscene.tb .tpktB{display:block}
+  #tscene.ta .tpktF{display:block}
+  #tscene #tdirect,#tscene #tdarrow,#tscene #tbLabel,#tscene #tgridDC,#tscene #tplantGrid{transition:opacity .4s}
+  #tscene.ta #tdirect,#tscene.ta #tdarrow,#tscene.ta #tbLabel{opacity:0}
+  #tscene.tb #tgridDC{stroke:#C3C9D0;opacity:.3}
+  #tscene.ta #tgridDC{stroke:#2E5E94;opacity:1}
+  #tscene.tb #tplantGrid{stroke:#AAB2BC;opacity:.75}
+  #tscene.ta #tplantGrid{stroke:#2E5E94;opacity:1}
+  #tscene #taLabel{opacity:0}
+  #tscene.ta #taLabel{opacity:1}
+  #tscene #tbGrid{opacity:0;transition:opacity .4s}
+  #tscene.tb #tbGrid{opacity:1}
+  #tscene #tfailX{opacity:0}
+  #tscene.tb #tfailX{opacity:1}
+  #tscene #tokV{opacity:0}
+  #tscene.ta #tokV{opacity:1}
+  @media (prefers-reduced-motion:no-preference){
+    #tscene.tb #tdirect{animation:flow .9s linear infinite}
+    #tscene.ta #tplantGrid,#tscene.ta #tgridDC{animation:flow 1.2s linear infinite}
+  }
+</style>
+</head>
+<body>
+  <h1>Co-location : 발전원·데이터센터 같은 부지 — 직결(BTM) vs 그리드 경유(FTM)</h1>
+  <div class="sub">코로케이션 = 발전원과 DC가 같은 부지. 차이는 계량기(그리드)를 거치느냐 — 버튼으로 전력 흐름을 비교</div>
+
+  <div class="toggle">
+    <button id="btnB" class="on" onclick="setMode('btm')">Hybrid BTM · 직접공급+그리드 병렬</button>
+    <button id="btnF" onclick="setMode('ftm')">FTM형 · 그리드 경유</button>
+  </div>
+  <div class="modestatus" id="statusTxt">Hybrid BTM형 — 발전원 → DC 직접공급 + 그리드 병렬 연결 (부족분 수전·잉여 역송)</div>
+
+  <div id="scene" class="btm" style="width:100%;max-width:1000px">
+  <svg class="stage" viewBox="0 0 720 400" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>코로케이션에서 직결(BTM)과 그리드 경유(FTM) 전력 흐름 비교 애니메이션</title>
+
+    <!-- FTM arch (behind grid node) -->
+    <polyline id="archlineL" class="arch" points="153,224 153,84 366,84" fill="none" stroke="#2E5E94" stroke-width="2.4" stroke-dasharray="9 7" stroke-linejoin="round"/>
+    <polyline id="archlineR" class="arch" points="366,84 475,84 475,224" fill="none" stroke="#2E5E94" stroke-width="2.4" stroke-dasharray="9 7" stroke-linejoin="round"/>
+    <circle class="pktF" r="3.4" fill="#2E5E94"><animateMotion dur="3s" begin="0s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+    <circle class="pktF" r="3.4" fill="#3E72AC"><animateMotion dur="3s" begin="-0.75s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+    <circle class="pktF" r="3.4" fill="#2E5E94"><animateMotion dur="3s" begin="-1.5s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+    <circle class="pktF" r="3.4" fill="#3E72AC"><animateMotion dur="3s" begin="-2.25s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+    <text class="flab" x="120" y="118" text-anchor="middle" font-size="11" font-weight="600" fill="#2E5E94">송출</text>
+    <text class="flab flabR" x="508" y="118" text-anchor="middle" font-size="11" font-weight="600" fill="#2E5E94">수전</text>
+
+    <!-- grid node -->
+    <rect x="300" y="48" width="132" height="50" rx="8" fill="#EEF1F5" stroke="#6B7480" stroke-width="1.1"/>
+    <g stroke="#5A6B7E" stroke-width="1.2" fill="none">
+      <line x1="318" y1="88" x2="326" y2="60"/><line x1="338" y1="88" x2="330" y2="60"/>
+      <line x1="312" y1="66" x2="344" y2="66"/><line x1="328" y1="60" x2="328" y2="66"/>
+      <line x1="322" y1="74" x2="334" y2="84"/><line x1="334" y1="74" x2="322" y2="84"/>
+      <line x1="315" y1="66" x2="315" y2="71"/><line x1="341" y1="66" x2="341" y2="71"/>
+    </g>
+    <text x="390" y="80" text-anchor="middle" font-size="15" font-weight="700" fill="#44505E">그리드</text>
+
+    <!-- campus boundary -->
+    <rect x="56" y="150" width="520" height="196" rx="14" fill="none" stroke="#2E8B57" stroke-width="1.4" stroke-dasharray="7 6"/>
+    <text x="316" y="172" text-anchor="middle" font-size="13" font-weight="700" fill="#1E7A52">같은 부지 (Campus · 코로케이션)</text>
+
+    <!-- meters at campus/grid boundary -->
+    <g class="metr"><circle cx="153" cy="150" r="6.5" fill="#fff" stroke="#6B7480" stroke-width="1.1"/><circle cx="153" cy="150" r="2.2" fill="#6B7480"/></g>
+    <g class="metr metrR"><circle cx="475" cy="150" r="6.5" fill="#fff" stroke="#6B7480" stroke-width="1.1"/><circle cx="475" cy="150" r="2.2" fill="#6B7480"/><text x="492" y="146" font-size="10.5" fill="#6B7480">계량기</text></g>
+
+    <!-- 발전원 (원전·가스) -->
+    <circle class="glow" cx="150" cy="262" r="32" fill="#E8731C" opacity="0.12"/>
+    <!-- 굴뚝 stack -->
+    <rect x="96" y="234" width="6" height="56" fill="#C9CED4" stroke="#6B7480" stroke-width="0.8"/>
+    <rect x="96" y="238" width="6" height="4" fill="#C0392B"/>
+    <ellipse class="ex" cx="99" cy="232" rx="5" ry="3.5" fill="#D8DCE0" style="animation-delay:.6s"/>
+    <!-- 터빈 홀 turbine hall -->
+    <polygon points="104,258 134,258 119,247" fill="#B8BEC5" stroke="#6B7480" stroke-width="0.8"/>
+    <rect x="104" y="258" width="30" height="32" fill="#D2D6DB" stroke="#6B7480" stroke-width="0.9"/>
+    <g fill="#7E8893"><rect x="109" y="265" width="6" height="6"/><rect x="119" y="265" width="6" height="6"/><rect x="109" y="276" width="6" height="6"/><rect x="119" y="276" width="6" height="6"/></g>
+    <!-- 냉각탑 cooling tower -->
+    <ellipse cx="153" cy="290" rx="19" ry="3.5" fill="#6B7480" opacity="0.3"/>
+    <path d="M135,290 C127,262 133,236 143,222 L163,222 C173,236 179,262 171,290 Z" fill="#C2C8CF" stroke="#6B7480" stroke-width="1"/>
+    <g stroke="#A6AEB6" stroke-width="0.8" opacity="0.6" fill="none"><path d="M147,224 C139,250 140,272 142,289"/><path d="M153,224 L153,289"/><path d="M159,224 C167,250 166,272 164,289"/></g>
+    <ellipse cx="153" cy="222" rx="16" ry="4.5" fill="#8A929B"/>
+    <ellipse cx="153" cy="222" rx="12" ry="3" fill="#6B7480"/>
+    <ellipse class="ex" cx="151" cy="216" rx="9" ry="5.5" fill="#D8DCE0"/>
+    <ellipse class="ex" cx="156" cy="215" rx="8" ry="5" fill="#E2E6EA" style="animation-delay:1s"/>
+    <ellipse class="ex" cx="150" cy="216" rx="7" ry="4.5" fill="#E8ECEF" style="animation-delay:2s"/>
+    <text x="138" y="310" text-anchor="middle" font-size="12.5" font-weight="700" fill="#9A6410">발전원 (원전·가스)</text>
+
+    <!-- 직결 (BTM) line -->
+    <text id="dlabel" x="295" y="252" text-anchor="middle" font-size="11.5" font-weight="700" fill="#E8731C">직접공급 (BTM)</text>
+    <text id="btmTag" x="214" y="116" text-anchor="middle" font-size="11" font-weight="600" fill="#5A7A9E">그리드 병렬 연결</text>
+    <line id="direct" x1="178" y1="266" x2="408" y2="266" stroke="#E8731C" stroke-width="2.8" stroke-dasharray="10 7" stroke-linecap="round"/>
+    <path id="darrow" d="M406,260 l10,6 l-10,6 Z" fill="#E8731C"/>
+    <circle class="pktB" r="3.8" fill="#E8731C"><animateMotion dur="1.7s" begin="0s" repeatCount="indefinite" path="M180,266 L406,266"/></circle>
+    <circle class="pktB" r="3.8" fill="#F2A04A"><animateMotion dur="1.7s" begin="-0.57s" repeatCount="indefinite" path="M180,266 L406,266"/></circle>
+    <circle class="pktB" r="3.8" fill="#E8731C"><animateMotion dur="1.7s" begin="-1.13s" repeatCount="indefinite" path="M180,266 L406,266"/></circle>
+
+    <!-- 데이터센터 -->
+    <circle class="glow" cx="475" cy="252" r="34" fill="#378ADD" opacity="0.13"/>
+    <rect x="418" y="210" width="114" height="80" rx="4" fill="#33597F" stroke="#1F3A5F" stroke-width="1"/>
+    <rect x="418" y="210" width="114" height="11" rx="2" fill="#1F3A5F"/>
+    <g stroke="#274A6B" stroke-width="6"><line x1="429" y1="226" x2="429" y2="286"/><line x1="445" y1="226" x2="445" y2="286"/><line x1="461" y1="226" x2="461" y2="286"/><line x1="477" y1="226" x2="477" y2="286"/><line x1="493" y1="226" x2="493" y2="286"/><line x1="509" y1="226" x2="509" y2="286"/><line x1="524" y1="226" x2="524" y2="286"/></g>
+    <g><rect class="led" x="425" y="274" width="7" height="5" rx="1" fill="#5DCAA5"/><rect class="led" x="437" y="274" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:.4s"/><rect class="led" x="449" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.8s"/><rect class="led" x="461" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.2s"/><rect class="led" x="473" y="274" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:1s"/><rect class="led" x="485" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.6s"/><rect class="led" x="497" y="274" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:.3s"/><rect class="led" x="509" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.9s"/></g>
+    <g class="fan"><circle cx="446" cy="204" r="10" fill="#1F3A5F"/><g stroke="#85B7EB" stroke-width="2.2" stroke-linecap="round"><line x1="446" y1="204" x2="446" y2="197"/><line x1="446" y1="204" x2="452" y2="208"/><line x1="446" y1="204" x2="440" y2="208"/></g></g>
+    <g class="fan" style="animation-delay:-1s"><circle cx="504" cy="204" r="10" fill="#1F3A5F"/><g stroke="#85B7EB" stroke-width="2.2" stroke-linecap="round"><line x1="504" y1="204" x2="504" y2="197"/><line x1="504" y1="204" x2="510" y2="208"/><line x1="504" y1="204" x2="498" y2="208"/></g></g>
+    <text x="475" y="310" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16365C">데이터센터</text>
+  </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="sect">공통 = 같은 부지(코로케이션) · 차이 = 계량기(그리드)를 거치느냐</div>
+    <div class="modes">
+      <div class="mcard mO">
+        <div class="mt">Hybrid BTM형 — 직접공급 + 그리드 병렬</div>
+        <div class="ml">● 발전원 → DC 직접공급 (private wire) · 가장 빠름</div>
+        <div class="ml">● 그리드와 병렬 연결 — 부족분 수전 · 잉여 역송</div>
+        <div class="mr">※ 망비용 회피 논란 → FERC 심사 (Talen–AWS 거부)</div>
+      </div>
+      <div class="mcard mB">
+        <div class="mt">FTM형 — 같은 부지여도 그리드 경유</div>
+        <div class="ml">● 발전은 그리드로 송출 · DC는 그리드에서 수전</div>
+        <div class="ml">● 계량기 통과 → 송전·망요금 부담</div>
+        <div class="mg">● FERC 승인 불필요 · 규제 갈등 적음</div>
+      </div>
+    </div>
+
+    <div class="sect">사례로 보면 <span style="font-size:13px;font-weight:500;color:#7A8898">(2026년 기준 팩트체크)</span></div>
+    <div class="dgrid2">
+      <div class="ccard o">
+        <span class="ghdr orange" style="margin:0 0 12px">BTM형 코로케이션</span>
+        <div class="ct">Microsoft × Chevron × Engine No.1</div>
+        <div class="ca">신규 가스 'power foundry' · 그리드 미경유</div>
+        <div class="cc">BTM형 코로케이션 · MS향 ~2.5GW · 가동 2027</div>
+        <div class="cf">처음부터 직결(BTM) 설계 · 서부 텍사스 $7B · GE Vernova 7HA 7기 · 독점협상 단계(미확정)</div>
+      </div>
+      <div class="ccard b">
+        <span class="ghdr blue" style="margin:0 0 12px">FTM 전환 (BTM→FTM)</span>
+        <div class="ct">Talen × AWS — Susquehanna 원전 (2.5GW)</div>
+        <div class="ca">BTM 직결 최대 960MW 추진 → FERC 기각 (2024.11)</div>
+        <div class="cc">→ FTM 1,920MW PPA 전환 (2025.6 · 17년 $18B)</div>
+        <div class="cf">이미 PJM에 연결·도매판매하던 기존 원전 → 960MW BTM 분리 시 망비용 회피·계통자원 이탈 논란이 핵심. 같은 부지 그대로 연결만 BTM→FTM 변경 (Talen이 AWS 소매공급, PPL 송전)</div>
+      </div>
+    </div>
+
+    <div class="note">리스크 — 계통 신뢰도 저하 및 기존 고객으로의 망비용 전가 논란이 핵심. 같은 부지라도 BTM(직결·우회)은 FERC 심사 대상, FTM(그리드 경유)은 규제 갈등이 적음.</div>
+  </div>
+
+  <div class="wrap">
+    <div class="sect">Talen 케이스 설명 — FERC 전·후 (Susquehanna 원전)</div>
+    <div class="toggle">
+      <button id="tbtnB" class="on" onclick="setTalenManual('tb')">전 · 2024 (BTM 직결 시도)</button>
+      <button id="tbtnA" onclick="setTalenManual('ta')">후 · 2025 (FTM 전환)</button>
+    </div>
+    <div class="modestatus" id="tstatus">전 (2024): 기존 PJM 연결 원전에서 960MW BTM 직결 시도 → FERC 기각</div>
+
+    <div id="tscene" class="tb" style="width:100%;max-width:1000px">
+    <svg class="stage" viewBox="0 0 720 380" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>탈렌 Susquehanna 원전의 FERC 전·후 전력 연결 변화 애니메이션</title>
+
+      <!-- grid path lines (behind grid node) -->
+      <polyline id="tplantGrid" points="153,224 153,84 300,84" fill="none" stroke="#AAB2BC" stroke-width="2.4" stroke-dasharray="9 7" stroke-linejoin="round"/>
+      <polyline id="tgridDC" points="442,84 475,84 475,224" fill="none" stroke="#2E5E94" stroke-width="2.4" stroke-dasharray="9 7" stroke-linejoin="round"/>
+      <circle class="tpktF" r="3.4" fill="#2E5E94"><animateMotion dur="3s" begin="0s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+      <circle class="tpktF" r="3.4" fill="#3E72AC"><animateMotion dur="3s" begin="-1s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+      <circle class="tpktF" r="3.4" fill="#2E5E94"><animateMotion dur="3s" begin="-2s" repeatCount="indefinite" path="M153,224 L153,84 L475,84 L475,224"/></circle>
+      <g id="taLabel"><text x="120" y="118" text-anchor="middle" font-size="11" font-weight="600" fill="#2E5E94">송출</text><text x="505" y="118" text-anchor="middle" font-size="11" font-weight="600" fill="#2E5E94">수전</text></g>
+      <text id="tbGrid" x="226" y="112" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6B7480">원전 → PJM 도매판매</text>
+
+      <!-- grid node (PJM) with transmission tower -->
+      <rect x="296" y="44" width="150" height="50" rx="8" fill="#EEF1F5" stroke="#6B7480" stroke-width="1.1"/>
+      <g stroke="#5A6B7E" stroke-width="1.2" fill="none">
+        <line x1="313" y1="84" x2="320" y2="56"/><line x1="331" y1="84" x2="324" y2="56"/>
+        <line x1="308" y1="62" x2="336" y2="62"/><line x1="322" y1="56" x2="322" y2="62"/>
+        <line x1="316" y1="70" x2="328" y2="80"/><line x1="328" y1="70" x2="316" y2="80"/>
+      </g>
+      <text x="392" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#44505E">그리드 (PJM)</text>
+
+      <!-- campus boundary -->
+      <rect x="56" y="150" width="520" height="196" rx="14" fill="none" stroke="#2E8B57" stroke-width="1.4" stroke-dasharray="7 6"/>
+      <text x="316" y="172" text-anchor="middle" font-size="13" font-weight="700" fill="#1E7A52">같은 부지 (Cumulus 캠퍼스 · 코로케이션)</text>
+
+      <!-- meters -->
+      <g class="tmetr"><circle cx="153" cy="150" r="6.5" fill="#fff" stroke="#6B7480" stroke-width="1.1"/><circle cx="153" cy="150" r="2.2" fill="#6B7480"/></g>
+      <g class="tmetr"><circle cx="475" cy="150" r="6.5" fill="#fff" stroke="#6B7480" stroke-width="1.1"/><circle cx="475" cy="150" r="2.2" fill="#6B7480"/><text x="492" y="146" font-size="10.5" fill="#6B7480">계량기</text></g>
+
+      <!-- Susquehanna 원전 -->
+      <circle class="glow" cx="150" cy="262" r="32" fill="#E8731C" opacity="0.12"/>
+      <rect x="96" y="234" width="6" height="56" fill="#C9CED4" stroke="#6B7480" stroke-width="0.8"/>
+      <rect x="96" y="238" width="6" height="4" fill="#C0392B"/>
+      <ellipse class="ex" cx="99" cy="232" rx="5" ry="3.5" fill="#D8DCE0" style="animation-delay:.6s"/>
+      <polygon points="104,258 134,258 119,247" fill="#B8BEC5" stroke="#6B7480" stroke-width="0.8"/>
+      <rect x="104" y="258" width="30" height="32" fill="#D2D6DB" stroke="#6B7480" stroke-width="0.9"/>
+      <g fill="#7E8893"><rect x="109" y="265" width="6" height="6"/><rect x="119" y="265" width="6" height="6"/><rect x="109" y="276" width="6" height="6"/><rect x="119" y="276" width="6" height="6"/></g>
+      <ellipse cx="153" cy="290" rx="19" ry="3.5" fill="#6B7480" opacity="0.3"/>
+      <path d="M135,290 C127,262 133,236 143,222 L163,222 C173,236 179,262 171,290 Z" fill="#C2C8CF" stroke="#6B7480" stroke-width="1"/>
+      <g stroke="#A6AEB6" stroke-width="0.8" opacity="0.6" fill="none"><path d="M147,224 C139,250 140,272 142,289"/><path d="M153,224 L153,289"/><path d="M159,224 C167,250 166,272 164,289"/></g>
+      <ellipse cx="153" cy="222" rx="16" ry="4.5" fill="#8A929B"/>
+      <ellipse cx="153" cy="222" rx="12" ry="3" fill="#6B7480"/>
+      <ellipse class="ex" cx="151" cy="216" rx="9" ry="5.5" fill="#D8DCE0"/>
+      <ellipse class="ex" cx="156" cy="215" rx="8" ry="5" fill="#E2E6EA" style="animation-delay:1s"/>
+      <ellipse class="ex" cx="150" cy="216" rx="7" ry="4.5" fill="#E8ECEF" style="animation-delay:2s"/>
+      <text x="140" y="308" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16365C">Susquehanna 원전</text>
+      <text x="140" y="324" text-anchor="middle" font-size="10" fill="#7A8898">2.5GW · 기존 PJM 연결</text>
+
+      <!-- BTM direct line (before) -->
+      <text id="tbLabel" x="293" y="250" text-anchor="middle" font-size="11.5" font-weight="700" fill="#E8731C">BTM 직결 시도 ~960MW</text>
+      <line id="tdirect" x1="178" y1="266" x2="406" y2="266" stroke="#E8731C" stroke-width="2.8" stroke-dasharray="10 7" stroke-linecap="round"/>
+      <path id="tdarrow" d="M404,260 l10,6 l-10,6 Z" fill="#E8731C"/>
+      <circle class="tpktB" r="3.8" fill="#E8731C"><animateMotion dur="1.7s" begin="0s" repeatCount="indefinite" path="M180,266 L404,266"/></circle>
+      <circle class="tpktB" r="3.8" fill="#F2A04A"><animateMotion dur="1.7s" begin="-0.57s" repeatCount="indefinite" path="M180,266 L404,266"/></circle>
+      <circle class="tpktB" r="3.8" fill="#E8731C"><animateMotion dur="1.7s" begin="-1.13s" repeatCount="indefinite" path="M180,266 L404,266"/></circle>
+
+      <!-- AWS 데이터센터 -->
+      <circle class="glow" cx="475" cy="252" r="34" fill="#378ADD" opacity="0.13"/>
+      <rect x="418" y="210" width="114" height="80" rx="4" fill="#33597F" stroke="#1F3A5F" stroke-width="1"/>
+      <rect x="418" y="210" width="114" height="11" rx="2" fill="#1F3A5F"/>
+      <g stroke="#274A6B" stroke-width="6"><line x1="429" y1="226" x2="429" y2="286"/><line x1="445" y1="226" x2="445" y2="286"/><line x1="461" y1="226" x2="461" y2="286"/><line x1="477" y1="226" x2="477" y2="286"/><line x1="493" y1="226" x2="493" y2="286"/><line x1="509" y1="226" x2="509" y2="286"/><line x1="524" y1="226" x2="524" y2="286"/></g>
+      <g><rect class="led" x="425" y="274" width="7" height="5" rx="1" fill="#5DCAA5"/><rect class="led" x="437" y="274" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:.4s"/><rect class="led" x="449" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.8s"/><rect class="led" x="461" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.2s"/><rect class="led" x="473" y="274" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:1s"/><rect class="led" x="485" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.6s"/><rect class="led" x="497" y="274" width="7" height="5" rx="1" fill="#F2A623" style="animation-delay:.3s"/><rect class="led" x="509" y="274" width="7" height="5" rx="1" fill="#5DCAA5" style="animation-delay:.9s"/></g>
+      <g class="fan"><circle cx="446" cy="204" r="10" fill="#1F3A5F"/><g stroke="#85B7EB" stroke-width="2.2" stroke-linecap="round"><line x1="446" y1="204" x2="446" y2="197"/><line x1="446" y1="204" x2="452" y2="208"/><line x1="446" y1="204" x2="440" y2="208"/></g></g>
+      <g class="fan" style="animation-delay:-1s"><circle cx="504" cy="204" r="10" fill="#1F3A5F"/><g stroke="#85B7EB" stroke-width="2.2" stroke-linecap="round"><line x1="504" y1="204" x2="504" y2="197"/><line x1="504" y1="204" x2="510" y2="208"/><line x1="504" y1="204" x2="498" y2="208"/></g></g>
+      <text x="475" y="308" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16365C">AWS 데이터센터</text>
+      <text x="475" y="324" text-anchor="middle" font-size="10" fill="#7A8898">Cumulus 캠퍼스</text>
+
+      <!-- FERC outcome badges -->
+      <g id="tfailX">
+        <circle cx="293" cy="266" r="11" fill="#fff" stroke="#C0392B" stroke-width="1.6"/>
+        <line x1="288" y1="261" x2="298" y2="271" stroke="#C0392B" stroke-width="2.4"/>
+        <line x1="298" y1="261" x2="288" y2="271" stroke="#C0392B" stroke-width="2.4"/>
+        <text x="293" y="300" text-anchor="middle" font-size="11.5" font-weight="700" fill="#C0392B">FERC 기각 (2024.11)</text>
+      </g>
+      <g id="tokV">
+        <text x="293" y="262" text-anchor="middle" font-size="12.5" font-weight="800" fill="#1E7A52">FTM 전환 · 1,920MW PPA</text>
+        <text x="293" y="300" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1E7A52">FERC 수용 (2025.6) · $18B</text>
+      </g>
+    </svg>
+    </div>
+
+    <div class="note">같은 부지(Cumulus)는 그대로 — 바뀐 것은 <b>연결 방식</b>뿐. 이미 PJM에 묶여 도매판매하던 기존 원전이라 960MW BTM 직결(그리드 우회)이 망비용·계통자원 논란을 낳아 FERC가 기각, 결국 발전은 전량 그리드 주입하고 DC는 그리드에서 수전하는 FTM(1,920MW)로 전환.</div>
+  </div>
+
+<script>
+function setMode(m){
+  var s=document.getElementById('scene');
+  s.className = m;
+  document.getElementById('btnB').classList.toggle('on', m==='btm');
+  document.getElementById('btnF').classList.toggle('on', m==='ftm');
+  document.getElementById('statusTxt').textContent = (m==='btm')
+    ? 'Hybrid BTM형 — 발전원 → DC 직접공급 + 그리드 병렬 연결 (부족분 수전·잉여 역송)'
+    : 'FTM형 — 발전 그리드 송출 → DC 수전 · 계량기 통과·망요금 · FERC 갈등 적음';
+}
+setMode('btm');
+
+var tphase='tb', tTimer=null;
+function setTalen(p){
+  var s=document.getElementById('tscene'); if(!s) return;
+  tphase=p; s.className=p;
+  document.getElementById('tbtnB').classList.toggle('on', p==='tb');
+  document.getElementById('tbtnA').classList.toggle('on', p==='ta');
+  document.getElementById('tstatus').textContent = (p==='tb')
+    ? '전 (2024): 기존 PJM 연결 원전에서 960MW BTM 직결 시도 → FERC 기각'
+    : '후 (2025): 발전은 전량 그리드 주입, AWS는 그리드에서 1,920MW 수전 (FTM · 17년 $18B)';
+}
+function setTalenManual(p){ if(tTimer){clearInterval(tTimer); tTimer=null;} setTalen(p); }
+setTalen('tb');
+tTimer=setInterval(function(){ setTalen(tphase==='tb'?'ta':'tb'); }, 5000);
+</script>
+</body>
+</html>
