@@ -10,25 +10,25 @@
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
-    --bg:#0B1220;          /* deep slate navy — control room */
-    --panel:#101B2D;
-    --panel-2:#0E1726;
-    --line:#1E2D45;        /* faint grid / conductor */
-    --bus:#36507E;
-    --text:#D6E0F0;
-    --muted:#7A8AA8;
-    --base:#5B8DEF;        /* 기저발전 — steel electric blue */
-    --discharge:#F5A623;   /* BESS 방전 — amber, energy released */
-    --charge:#2ED3A0;      /* BESS 충전 — teal, energy stored */
-    --demand:#F2F6FF;      /* 데이터센터 수요 — bright white line */
-    --alarm:#FF5C6C;       /* 공급 부족 */
-    --soc:#2ED3A0;
+    --bg:#F6F7F9;
+    --panel:#FFFFFF;
+    --panel-2:#F0F2F6;
+    --line:#D8DDE8;
+    --bus:#6B8EC4;
+    --text:#1A1F29;
+    --muted:#6B7280;
+    --base:#2563A8;
+    --discharge:#D9892B;
+    --charge:#1A8A63;
+    --demand:#13171E;
+    --alarm:#C0392B;
+    --soc:#1A8A63;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;}
   body{
     background:
-      radial-gradient(1200px 600px at 70% -10%, #12203a 0%, transparent 60%),
+      radial-gradient(1200px 600px at 70% -10%, #dde6f5 0%, transparent 60%),
       var(--bg);
     color:var(--text);
     font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
@@ -56,7 +56,7 @@
   .card{
     background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);
     border:1px solid var(--line);border-radius:16px;
-    box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 18px 40px -24px rgba(0,0,0,.8);
+    box-shadow:0 1px 0 rgba(255,255,255,.8) inset, 0 4px 16px -4px rgba(0,0,0,.10);
   }
   .stage{padding:14px clamp(10px,2vw,22px) 4px;margin-top:20px;}
   .stage svg{width:100%;height:auto;display:block;}
@@ -179,7 +179,7 @@
 
       <!-- ===== Plant (기저발전) ===== -->
       <g>
-        <rect x="56" y="104" width="180" height="92" rx="12" fill="#0E1A2E" stroke="var(--base)" stroke-width="1.5"/>
+        <rect x="56" y="104" width="180" height="92" rx="12" fill="var(--panel)" stroke="var(--base)" stroke-width="1.5"/>
         <!-- simple turbine/plant glyph -->
         <g transform="translate(82,150)" stroke="var(--base)" stroke-width="2.4" fill="none" stroke-linecap="round">
           <circle cx="0" cy="0" r="12"/>
@@ -192,7 +192,7 @@
 
       <!-- ===== Data center ===== -->
       <g id="dcGroup">
-        <rect id="dcBox" x="804" y="100" width="172" height="100" rx="12" fill="#0E1A2E" stroke="var(--demand)" stroke-width="1.5"/>
+        <rect id="dcBox" x="804" y="100" width="172" height="100" rx="12" fill="var(--panel)" stroke="var(--demand)" stroke-width="1.5"/>
         <!-- server rack glyph -->
         <g transform="translate(826,118)" stroke="var(--demand)" stroke-width="1.8" fill="none">
           <rect x="0" y="0" width="34" height="14" rx="2"/><circle cx="28" cy="7" r="1.6" fill="var(--charge)" stroke="none"/>
@@ -206,7 +206,7 @@
 
       <!-- ===== BESS battery ===== -->
       <g>
-        <rect x="424" y="266" width="192" height="78" rx="12" fill="#0E1A2E" stroke="var(--charge)" stroke-width="1.5"/>
+        <rect x="424" y="266" width="192" height="78" rx="12" fill="var(--panel)" stroke="var(--charge)" stroke-width="1.5"/>
         <!-- battery cell -->
         <g transform="translate(444,286)">
           <rect x="0" y="0" width="46" height="40" rx="4" fill="none" stroke="var(--charge)" stroke-width="2"/>
