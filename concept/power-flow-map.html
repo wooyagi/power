@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 데이터센터 전력 가치사슬 — 돈과 전자의 흐름, 그리고 병목</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --bg:#FFFFFF; --bg2:#F6F8FA; --bg3:#EEF1F4;
+    --line:#E3E7EC; --line2:#CDD5DE;
+    --tx:#1A2129; --tx2:#586572; --tx3:#8B96A2;
+    --elec:#1F6FE0; --money:#15A34A; --btm:#7C3AED; --warn:#E03A30; --ok:#0EA371;
+    --sans:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--tx);font-family:var(--sans);line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:980px;margin:0 auto;padding:48px 24px 72px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);margin:0 0 14px}
+  h1{font-size:34px;font-weight:700;line-height:1.25;letter-spacing:-.01em;margin:0 0 16px}
+  h1 .em{color:var(--elec)}
+  .thesis{font-size:17px;color:var(--tx2);max-width:700px;margin:0}
+  .thesis b{color:var(--tx);font-weight:600}
+  h2{font-size:21px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px}
+  .sec{margin-top:48px}
+  .sec-lead{color:var(--tx2);font-size:15px;margin:0 0 22px;max-width:760px}
+
+  .stage{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:20px 16px 10px;margin-top:30px}
+  svg.flow{display:block;width:100%;height:auto}
+  .ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 8px 4px}
+  .ctl .grp{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ctl .cap{font-size:12.5px;color:var(--tx3);font-family:var(--mono);letter-spacing:.04em}
+  .pip{width:9px;height:9px;border-radius:50%;display:inline-block}
+  button{font-family:var(--sans);font-size:13px;color:var(--tx);background:var(--bg);border:1px solid var(--line2);border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+  button:hover{border-color:var(--tx3);background:var(--bg3)}
+  button.on{background:var(--bg3);border-color:var(--tx2);color:var(--tx)}
+  button:active{transform:scale(.98)}
+  input[type=range]{accent-color:var(--elec);width:140px}
+
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:8px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .card.hl{border-color:rgba(124,58,237,.4)}
+  .card h3{font-size:16px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+  .card .role{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--tx3);text-transform:uppercase;margin:0 0 12px}
+  .card p{font-size:14px;color:var(--tx2);margin:0 0 12px}
+  .card .stat{font-family:var(--mono);font-size:13px;color:var(--tx);background:var(--bg2);border-radius:8px;padding:7px 11px;margin:6px 0;display:flex;justify-content:space-between;gap:12px}
+  .card .stat .k{color:var(--tx2)} .card .stat .v{font-weight:700}
+  .card .agency{margin-top:12px;font-size:12.5px;color:var(--tx2);background:rgba(224,58,48,.07);border:1px solid rgba(224,58,48,.2);border-radius:8px;padding:8px 11px;line-height:1.55}
+  .card .agency .lab{display:block;color:var(--warn);font-weight:700;font-size:11px;font-family:var(--mono);letter-spacing:.04em;margin-bottom:3px}
+  .card .agency b{font-weight:700;color:var(--tx)}
+  .tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--line2);color:var(--tx2)}
+  .tag.elec{color:var(--elec);border-color:rgba(31,111,224,.45)}
+  .tag.btm{color:var(--btm);border-color:rgba(124,58,237,.45)}
+  .tag.warn{color:var(--warn);border-color:rgba(224,58,48,.45)}
+  .bn1 h3 .n,.bn2 h3 .n,.bn3 h3 .n{font-family:var(--mono);background:var(--warn);color:#fff;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+
+  .insight{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--money);border-radius:0 14px 14px 0;padding:22px 26px}
+  .insight p{margin:0;font-size:15.5px;color:var(--tx)}
+  .insight p b{color:var(--money)}
+
+  .refs{margin-top:40px;border-top:1px solid var(--line);padding-top:22px}
+  .refs h2{font-size:15px;color:var(--tx2)}
+  .refs ul{list-style:none;padding:0;margin:10px 0 0;font-size:12.5px;color:var(--tx3);font-family:var(--mono)}
+  .refs li{padding:4px 0}
+  .refs a{color:var(--tx2);text-decoration:none;border-bottom:1px solid var(--line2)}
+  .refs a:hover{color:var(--elec)}
+  footer{margin-top:40px;color:var(--tx3);font-size:12.5px;font-family:var(--mono)}
+
+  .t-title{fill:var(--tx);font-weight:600;font-size:16px;font-family:var(--sans)}
+  .t-sub{fill:var(--tx2);font-size:13px;font-family:var(--sans)}
+  .t-mini{fill:var(--tx2);font-size:12.5px;font-family:var(--sans)}
+  .role{fill:var(--tx3);font-size:12px;font-family:var(--mono);letter-spacing:.02em}
+  .role.b{fill:#7c3aed}
+  .pill-body{fill:#FCEBEA;stroke:#E03A30;stroke-opacity:.55;stroke-width:1;transition:.25s}
+  .pill-badge{fill:var(--warn);transition:.25s}
+  .pill.ok .pill-body{fill:#E7F6EF;stroke:#0EA371;stroke-opacity:.55}
+  .pill.ok .pill-badge{fill:var(--ok)}
+  .pill-num{fill:#fff;font-family:var(--mono);font-size:12px;font-weight:700}
+  .pill-title{fill:var(--tx);font-size:12.5px;font-family:var(--sans);font-weight:600}
+  .pill-ag{fill:#A8231B;font-size:10.5px;font-family:var(--mono);font-weight:700}
+  .pill{cursor:pointer}
+
+  @media (max-width:760px){
+    .wrap{padding:36px 16px 56px}
+    h1{font-size:26px}
+    .grid2,.grid3{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">AI Data-Center Power Value Chain</p>
+  <h1>돈과 전자의 흐름, 그리고 <span class="em">병목</span></h1>
+  <p class="thesis"><b>계약(자금)은 빠르게 약정되지만, 전력(전자)은 느리게 도달한다.</b> 그 시차가 곧 병목이고, 알파의 원천이다. 자금은 L1→L2(PPA 대금)→L3(장비·연료 발주)로 내려가고, 전력은 L3→L2→L1로 올라온다. 병목을 켜고 끄며 전력이 어디서 막히는지 확인해 보라.</p>
+
+  <div class="sec">
+    <h2>전체 흐름도</h2>
+    <p class="sec-lead">오른쪽 초록선은 자금이 L1→L2→L3로 내려가는 길(L2에 PPA 대금이 도착해 IPP가 다시 L3에 발주). 왼쪽 파란선은 전력의 그리드 경유(FTM), 보라 점선은 Layer 2를 휘감아 건너뛰는 BTM. 빨간 알약이 전력이 막히는 지점과 관여 기관이다 — <b>BTM도 ①(규제 승인)은 그대로 받고, 오직 ②(그리드 물리 인프라)만 우회</b>한다.</p>
+    <div class="stage">
+      <svg class="flow" viewBox="0 0 860 752" role="img" aria-label="자금은 L1에서 L2, L3로 내려가고 전력은 L3에서 L2, L1로 올라오며 FTM은 병목 1,2를 BTM은 병목 1,3을 통과하는 도식">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <path id="btm-path-a" d="M300 645 L175 645 Q135 645 135 607 L135 175 Q135 137 175 137 L300 137"
+              fill="none" stroke="var(--btm)" stroke-width="1.4" opacity=".34" stroke-dasharray="6 6" marker-end="url(#ah)"/>
+        <path id="btm-path-b" d="M300 663 L235 663 Q195 663 195 625 L195 190 Q195 146 240 146 L300 146"
+              fill="none" stroke="var(--btm)" stroke-width="1.6" opacity=".6" stroke-dasharray="6 6" marker-end="url(#ah)"/>
+        <line x1="265" y1="608" x2="265" y2="120" stroke="var(--elec)" stroke-width="1.6" opacity=".5"/>
+        <path d="M300 608 L265 608" stroke="var(--elec)" stroke-width="1.2" opacity=".55" fill="none"/>
+        <path d="M265 348 L300 348" stroke="var(--elec)" stroke-width="1.2" opacity=".7" fill="none" marker-end="url(#ah)"/>
+        <path d="M265 120 L300 120" stroke="var(--elec)" stroke-width="1.2" opacity=".7" fill="none" marker-end="url(#ah)"/>
+        <line x1="735" y1="120" x2="735" y2="610" stroke="var(--money)" stroke-width="1.6" opacity=".5"/>
+        <path d="M680 108 L735 108" stroke="var(--money)" stroke-width="1.2" opacity=".55" fill="none"/>
+        <circle cx="735" cy="348" r="3.4" fill="var(--money)"/>
+        <path d="M735 348 L684 348" stroke="var(--money)" stroke-width="1.2" opacity=".7" fill="none" marker-end="url(#ah)"/>
+        <path d="M735 610 L684 610" stroke="var(--money)" stroke-width="1.2" opacity=".7" fill="none" marker-end="url(#ah)"/>
+
+        <text class="role" x="752" y="232">PPA 대금 ↓</text>
+        <text class="role" x="752" y="486">장비·연료 발주 ↓</text>
+        <text class="role b" x="128" y="650" text-anchor="end">완전 독립</text>
+        <text class="role b" x="206" y="690" text-anchor="start">그리드 연계</text>
+
+        <g>
+          <rect x="300" y="64" width="380" height="88" rx="14" fill="#1F6FE0" fill-opacity="0.07" stroke="#1F6FE0" stroke-opacity="0.45" stroke-width="1"/>
+          <text class="t-title" x="490" y="96" text-anchor="middle">Layer 1 · 전력 수요자</text>
+          <text class="t-sub" x="490" y="118" text-anchor="middle">AI 데이터센터 · 장기 PPA 발생</text>
+          <text class="t-mini" x="490" y="138" text-anchor="middle">Amazon · Microsoft · Google · Meta · Oracle</text>
+        </g>
+        <g>
+          <rect x="300" y="296" width="380" height="104" rx="14" fill="#C77A06" fill-opacity="0.08" stroke="#C77A06" stroke-opacity="0.45" stroke-width="1"/>
+          <text class="t-title" x="490" y="324" text-anchor="middle">Layer 2 · 전력 확보 플랫폼</text>
+          <text class="t-sub" x="490" y="346" text-anchor="middle">IPP · 유틸리티 (발전자산 보유 · PPA 판매)</text>
+          <text class="t-mini" x="490" y="370" text-anchor="middle">IPP: Constellation · Talen · Vistra</text>
+          <text class="t-mini" x="490" y="390" text-anchor="middle">유틸리티: Dominion · AEP</text>
+        </g>
+        <g>
+          <rect x="300" y="528" width="380" height="172" rx="14" fill="#0E9488" fill-opacity="0.07" stroke="#0E9488" stroke-opacity="0.45" stroke-width="1"/>
+          <text class="t-title" x="490" y="556" text-anchor="middle">Layer 3 · 기저전력 공급망</text>
+          <text class="t-sub" x="490" y="577" text-anchor="middle">24/7 발전 · 연료 · 저장</text>
+          <text class="t-mini" x="318" y="606" text-anchor="start">원자력·SMR     NuScale · TerraPower · Oklo</text>
+          <text class="t-mini" x="318" y="632" text-anchor="start">연료전지     Bloom Energy · FuelCell Energy</text>
+          <text class="t-mini" x="318" y="658" text-anchor="start">가스엔진·터빈     GE Vernova · Wärtsilä · HD현대</text>
+          <text class="t-mini" x="318" y="684" text-anchor="start">BESS 보완재     Fluence · Tesla Megapack</text>
+        </g>
+
+        <g id="pg-money"></g>
+        <g id="pg-ftm"></g>
+        <g id="pg-btm-a"></g>
+        <g id="pg-btm-b"></g>
+
+        <!-- FTM gates : (1) 접속 승인 + (2) 인프라 -->
+        <line x1="265" y1="224" x2="282" y2="224" stroke="var(--warn)" stroke-width="1.2" opacity=".7"/>
+        <g class="pill" id="pill-f1" onclick="toggleBn('b1')">
+          <rect class="pill-body" x="282" y="203" width="244" height="42" rx="8"/>
+          <circle class="pill-badge" cx="300" cy="224" r="10"/>
+          <text class="pill-num" x="300" y="224" text-anchor="middle" dominant-baseline="central">1</text>
+          <text class="pill-title" x="316" y="217" dominant-baseline="central">계통 접속 대기 + 규제 승인 지연</text>
+          <text class="pill-ag" x="316" y="233" dominant-baseline="central">FERC · PJM · 주 PUC</text>
+        </g>
+        <line x1="265" y1="460" x2="282" y2="460" stroke="var(--warn)" stroke-width="1.2" opacity=".7"/>
+        <g class="pill" id="pill-f2" onclick="toggleBn('b2')">
+          <rect class="pill-body" x="282" y="439" width="212" height="42" rx="8"/>
+          <circle class="pill-badge" cx="300" cy="460" r="10"/>
+          <text class="pill-num" x="300" y="460" text-anchor="middle" dominant-baseline="central">2</text>
+          <text class="pill-title" x="316" y="453" dominant-baseline="central">전력 인프라 · 장비 리드타임</text>
+          <text class="pill-ag" x="316" y="469" dominant-baseline="central">NERC · 유틸리티 · 변압기 OEM</text>
+        </g>
+
+        <!-- BTM ① badge : 그리드 연계만 -->
+        <g id="bn-tb1" onclick="toggleBn('b1')" style="cursor:pointer">
+          <circle id="bnc-tb1" cx="195" cy="214" r="10" fill="var(--warn)"/>
+          <text class="pill-num" x="195" y="214" text-anchor="middle" dominant-baseline="central">1</text>
+        </g>
+        <text class="pill-ag" x="210" y="214" dominant-baseline="central">병목 일부</text>
+        <!-- BTM ③ : 공통(두 모드) -->
+        <line x1="120" y1="465" x2="195" y2="465" stroke="var(--warn)" stroke-width="1.2" opacity=".7"/>
+        <g class="pill" id="pill-t3" onclick="toggleBn('b3')">
+          <rect class="pill-body" x="4" y="444" width="116" height="42" rx="8"/>
+          <circle class="pill-badge" cx="22" cy="465" r="10"/>
+          <text class="pill-num" x="22" y="465" text-anchor="middle" dominant-baseline="central">3</text>
+          <text class="pill-title" x="38" y="458" dominant-baseline="central">입지·수용성</text>
+          <text class="pill-ag" x="38" y="474" dominant-baseline="central">주·지방·환경</text>
+        </g>
+
+        <!-- legend -->
+        <line x1="108" y1="736" x2="134" y2="736" stroke="var(--elec)" stroke-width="3"/>
+        <text class="t-mini" x="140" y="736" dominant-baseline="central">전력 ↑</text>
+        <line x1="206" y1="736" x2="232" y2="736" stroke="var(--money)" stroke-width="3"/>
+        <text class="t-mini" x="238" y="736" dominant-baseline="central">자금 ↓</text>
+        <line x1="300" y1="736" x2="326" y2="736" stroke="var(--btm)" stroke-width="3" opacity="0.4" stroke-dasharray="6 5"/>
+        <text class="t-mini" x="332" y="736" dominant-baseline="central">BTM 완전독립</text>
+        <line x1="470" y1="736" x2="496" y2="736" stroke="var(--btm)" stroke-width="3" stroke-dasharray="6 5"/>
+        <text class="t-mini" x="502" y="736" dominant-baseline="central">BTM 그리드연계</text>
+        <circle cx="652" cy="736" r="7" fill="var(--warn)"/>
+        <text class="t-mini" x="664" y="736" dominant-baseline="central">병목</text>
+      </svg>
+      <p style="font-size:12.5px;color:var(--tx3);margin:10px 8px 2px;line-height:1.6">보라 점선 = <b style="color:#7C3AED">BTM (L2 우회)</b> · <b>완전 독립</b>(off-grid) → ③만 · <b>그리드 연계</b>(co-location) → ①(규제) 추가. 둘 다 ②(그리드 건설)는 우회.</p>
+
+      <div class="ctl">
+        <div class="grp">
+          <button id="playbtn" class="on" onclick="togglePlay()">⏸ 일시정지</button>
+          <span class="cap">SPEED</span>
+          <input id="spd" type="range" min="0.4" max="2.2" step="0.1" value="1" oninput="state.speed=+this.value">
+        </div>
+        <div class="grp">
+          <span class="cap">FLOW</span>
+          <button id="mode-both" class="on" onclick="setMode('both')">모두</button>
+          <button id="mode-power" onclick="setMode('power')">전력만</button>
+          <button id="mode-money" onclick="setMode('money')">자금만</button>
+        </div>
+        <div class="grp">
+          <span class="cap">병목</span>
+          <button id="chip-b1" onclick="toggleBn('b1')"><span class="pip" id="d-b1"></span>① 규제 승인</button>
+          <button id="chip-b2" onclick="toggleBn('b2')"><span class="pip" id="d-b2"></span>② 인프라·리드타임</button>
+          <button id="chip-b3" onclick="toggleBn('b3')"><span class="pip" id="d-b3"></span>③ 입지·수용성</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>FTM vs BTM — 두 갈래의 전력 경로</h2>
+    <p class="sec-lead">BTM은 그리드를 우회하지만 규제까지 우회하는 건 아니다. 두 경로 모두 ①(규제 승인)을 받고, BTM은 ②(그리드 물리 인프라)만 피하는 대신 ③(입지·수용성)을 더 강하게 떠안는다.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3><span class="tag elec">FTM</span> 그리드 경유 (Front-of-the-Meter)</h3>
+        <p>발전설비 → 유틸리티 송·변전망 → 그리드 → 데이터센터. 상호접속·송전 승인(①)에 더해, 변압기·송변전 리드타임과 NERC 신뢰도(②)를 모두 통과해야 한다.</p>
+        <p style="color:var(--tx3);font-size:13px">부딪히는 병목: <span class="tag warn">①</span> <span class="tag warn">②</span></p>
+      </div>
+      <div class="card hl">
+        <h3><span class="tag btm">BTM</span> 직접연결 (Behind-the-Meter)</h3>
+        <p>발전설비를 데이터센터 옆에 두고(co-location) 그리드를 거치지 않고 직접 공급. <b>FERC·PJM·주 PUC의 co-location 승인(①)은 그대로 받는다</b> — Talen×AWS가 막힌 게 바로 이 지점. 다만 송변전 건설·변압기 리드타임·상호접속 큐(②)는 우회한다. 대신 인근 입지·환경·수용성(③)을 더 강하게 진다. NERC는 완전 독립(islanded) 시 벌크전력 기준을 비껴가지만, 계통연계 백업을 두면 부분 적용.</p>
+        <p style="color:var(--tx3);font-size:13px">부딪히는 병목: <span class="tag warn">①</span> <span class="tag warn">③</span> &nbsp;(②만 우회)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>병목은 어디서, 누가 관여하나</h2>
+    <p class="sec-lead">돈은 약정됐는데 전자가 못 오는 세 지점. 각 병목마다 관여 기관과 공개 자료 기반 수치를 함께 표기했다.</p>
+    <div class="grid3">
+      <div class="card bn1">
+        <h3><span class="n">1</span> 규제 승인</h3>
+        <p class="role">Regulatory approval · FTM+BTM</p>
+        <p>PPA가 체결돼 자금이 약정돼도 접속·송전·co-location 승인 전까지 전력은 흐르지 않는다. FTM·BTM 모두 통과해야 하는 관문.</p>
+        <div class="stat"><span class="k">FERC, BTM 확장 ISA</span><span class="v">거부('24)</span></div>
+        <div class="stat"><span class="k">그리드 기반 재구조화</span><span class="v">1.9GW ('25.6)</span></div>
+        <div class="stat"><span class="k">PJM co-location 규칙</span><span class="v">'25.12.18</span></div>
+        <div class="agency"><span class="lab">관여 기관</span><b>FERC</b>(연방규제) · <b>PJM 등 RTO/ISO</b>(접속·co-location) · <b>주(州) PUC</b>(요금·승인)</div>
+      </div>
+      <div class="card bn2">
+        <h3><span class="n">2</span> 물리 인프라·리드타임</h3>
+        <p class="role">Time-to-Power · FTM only</p>
+        <p>전력 접속돼도 변압기·송변전 리드타임과 NERC 신뢰도 기준이 수전 시점을 결정. 전기설비는 원가의 10% 미만이지만 병목의 사실상 전부. BTM이 우회하는 유일한 병목.</p>
+        <div class="stat"><span class="k">전력용 변압기 납기</span><span class="v">≈128주</span></div>
+        <div class="stat"><span class="k">GSU 변압기 / 최대</span><span class="v">144주·4–5년</span></div>
+        <div class="stat"><span class="k">상호접속 큐</span><span class="v">3–5년</span></div>
+        <div class="agency"><span class="lab">관여 기관</span><b>NERC</b>(신뢰도 기준) · <b>송배전 유틸리티</b>(접속·증설) · <b>변압기 OEM</b>(Hitachi·Siemens·GE)</div>
+      </div>
+      <div class="card bn3">
+        <h3><span class="n">3</span> 입지·주민수용성</h3>
+        <p class="role">Siting · BTM heavy</p>
+        <p>발전설비 인근 인허가·환경·주민수용성 리스크. 그리드를 피한 BTM이 더 강하게 떠안으며, 스터디를 통과하고도 멈춘 프로젝트가 쌓인다.</p>
+        <div class="stat"><span class="k">PJM 스터디 통과·정체</span><span class="v">≈57GW</span></div>
+        <div class="stat"><span class="k">'26 발표 DC 대비 착공</span><span class="v">12 → 5GW</span></div>
+        <div class="stat"><span class="k">암스테르담·도쿄 연결</span><span class="v">≈10년</span></div>
+        <div class="agency"><span class="lab">관여 기관</span><b>주·지방정부</b>(인허가) · <b>환경규제</b>(EPA·주 환경청) · <b>지역사회</b> · <b>DOE</b>(대형부하 관할 추진)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="insight">
+      <p>투자 함의 — 병목은 자금이 아니라 <b>전자의 흐름</b>에서 생긴다. 따라서 알파는 “병목을 푸는 설비”(변압기·승압기, 빠른 배치형 가스엔진·연료전지, BTM 우회를 가능케 하는 통합 발전)의 <b>수주잔고에 시차를 두고 반영(후반영)</b>된다.</p>
+    </div>
+  </div>
+
+  <style>
+    .rtable-wrap{overflow-x:auto;margin-top:18px}
+    .rtable{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+    .rtable th{text-align:left;font-weight:600;color:var(--tx2);font-size:11px;font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--line2)}
+    .rtable td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--tx2);vertical-align:top;line-height:1.5}
+    .rtable td b{color:var(--tx);font-weight:700}
+    .rtable td:first-child,.rtable td:nth-child(2){white-space:nowrap}
+    .rtable .sub{display:block;font-size:11px;color:var(--tx3);font-family:var(--mono);margin-top:2px;font-weight:400}
+    .insight.cat{border-left-color:var(--elec)}
+    .insight.cat p b{color:var(--elec)}
+  </style>
+
+  <div class="sec">
+    <h2>규제 지형 — 누가 무엇을 승인하나</h2>
+    <p class="sec-lead">쉽게 말하면 — 미국 전력은 <b>연방(FERC)과 주(州)가 나눠서 관리</b>한다. 연방은 ‘주 경계를 넘는 송전 + 발전사↔공급자 도매 거래’를, 주는 ‘가정·기업이 내는 소매 요금 + 발전소 부지’를 맡고, 그 사이를 <b>RTO/ISO</b>가 전력망 운영·접속 순번 관리로 잇는다. <b>ERCOT(텍사스)</b>만 전력망이 섬처럼 떨어져 있어 연방이 못 닿고 주가 도매까지 다 맡는다.</p>
+    <div class="stage">
+      <svg class="flow" viewBox="0 0 860 362" role="img" aria-label="FERC가 NERC와 RTO/ISO를 감독하고 주 PUC와 지방정부가 주 권한을 가지며 ERCOT는 예외인 미국 전력 규제 구조">
+        <defs>
+          <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <text class="role" x="44" y="24">연방 · FEDERAL</text>
+        <text class="role" x="484" y="24">주(州)·지방 · STATE / LOCAL</text>
+        <line x1="440" y1="14" x2="440" y2="232" stroke="var(--line2)" stroke-width="1" stroke-dasharray="3 4" opacity=".8"/>
+        <line x1="402" y1="70" x2="478" y2="70" stroke="var(--warn)" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+        <text class="role" x="440" y="34" text-anchor="middle" fill="#A8231B">권한 다툼</text>
+
+        <rect x="40" y="40" width="360" height="60" rx="12" fill="#1F6FE0" fill-opacity="0.07" stroke="#1F6FE0" stroke-opacity="0.45" stroke-width="1"/>
+        <text class="t-title" x="220" y="65" text-anchor="middle">FERC · 연방에너지규제위</text>
+        <text class="t-sub" x="220" y="85" text-anchor="middle">주 경계 넘는 송전·도매 담당</text>
+
+        <line x1="150" y1="100" x2="132" y2="148" stroke="var(--tx3)" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <line x1="300" y1="100" x2="312" y2="148" stroke="var(--tx3)" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <text class="role" x="44" y="128">감독</text>
+        <text class="role" x="332" y="128">규칙 승인</text>
+
+        <rect x="40" y="150" width="168" height="58" rx="12" fill="#1F6FE0" fill-opacity="0.05" stroke="#1F6FE0" stroke-opacity="0.4" stroke-width="1"/>
+        <text class="t-title" x="124" y="174" text-anchor="middle">NERC</text>
+        <text class="t-sub" x="124" y="193" text-anchor="middle">전력망 안정성 기준</text>
+
+        <rect x="232" y="150" width="168" height="58" rx="12" fill="#1F6FE0" fill-opacity="0.05" stroke="#1F6FE0" stroke-opacity="0.4" stroke-width="1"/>
+        <text class="t-title" x="316" y="174" text-anchor="middle">RTO / ISO</text>
+        <text class="t-sub" x="316" y="193" text-anchor="middle">전력망 운영·접속 순번·경매</text>
+
+        <text class="t-mini" x="40" y="230">PJM · MISO · SPP · CAISO · ISO-NE · NYISO</text>
+
+        <rect x="40" y="250" width="780" height="92" rx="12" fill="#8B96A2" fill-opacity="0.06" stroke="#8B96A2" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="6 5"/>
+        <text class="t-title" x="60" y="276" text-anchor="start">ERCOT · 텍사스 — 예외</text>
+        <text class="role" x="806" y="276" text-anchor="end" fill="#8B96A2">EXCEPTION</text>
+        <circle cx="64" cy="307" r="4" fill="#1F6FE0"/>
+        <text x="76" y="307" font-family="var(--sans)" font-size="13" font-weight="600" fill="var(--tx)" dominant-baseline="central">연방 규제 안 받음</text>
+        <text x="76" y="325" font-family="var(--sans)" font-size="12" fill="var(--tx2)" dominant-baseline="central">전력망이 섬처럼 분리</text>
+        <circle cx="316" cy="307" r="4" fill="#C77A06"/>
+        <text x="328" y="307" font-family="var(--sans)" font-size="13" font-weight="600" fill="var(--tx)" dominant-baseline="central">주(PUCT)가 대신</text>
+        <text x="328" y="325" font-family="var(--sans)" font-size="12" fill="var(--tx2)" dominant-baseline="central">도매·접속까지 주가 규제</text>
+        <circle cx="576" cy="307" r="4" fill="#E03A30"/>
+        <text x="588" y="307" font-family="var(--sans)" font-size="13" font-weight="600" fill="var(--tx)" dominant-baseline="central">단, 무규제 아님</text>
+        <text x="588" y="325" font-family="var(--sans)" font-size="12" fill="var(--tx2)" dominant-baseline="central">SB6'25 · 75MW+ 승인 필요</text>
+
+        <rect x="480" y="40" width="340" height="60" rx="12" fill="#C77A06" fill-opacity="0.08" stroke="#C77A06" stroke-opacity="0.45" stroke-width="1"/>
+        <text class="t-title" x="650" y="65" text-anchor="middle">주(州) PUC · 공익사업위</text>
+        <text class="t-sub" x="650" y="85" text-anchor="middle">소매요금·발전소 부지·대형부하</text>
+
+        <line x1="650" y1="100" x2="650" y2="148" stroke="var(--tx3)" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <text class="role" x="660" y="128">주 권한</text>
+
+        <rect x="480" y="150" width="340" height="58" rx="12" fill="#C77A06" fill-opacity="0.05" stroke="#C77A06" stroke-opacity="0.4" stroke-width="1"/>
+        <text class="t-title" x="650" y="174" text-anchor="middle">주·지방정부</text>
+        <text class="t-sub" x="650" y="193" text-anchor="middle">인허가·환경·주민수용</text>
+      </svg>
+    </div>
+
+    <div class="rtable-wrap">
+      <table class="rtable">
+        <thead><tr><th>기관</th><th>레벨</th><th>무엇을 승인·규제</th><th>투자 포인트</th></tr></thead>
+        <tbody>
+          <tr><td><b>FERC</b></td><td>연방</td><td>주 경계 넘는 송전·도매 요금, RTO/ISO 시장규칙, 접속·co-location 승인, NERC 감독</td><td>단일 결정이 섹터 전체를 좌우 (co-location 명령, 대형부하 ANOPR)</td></tr>
+          <tr><td><b>NERC</b></td><td>연방 위임</td><td>전력망 안정성 기준 의무화·집행</td><td>신뢰도 기준이 Time-to-Power 하한을 결정</td></tr>
+          <tr><td><b>RTO / ISO</b><span class="sub">PJM·MISO·SPP·CAISO·ISO-NE·NYISO</span></td><td>지역</td><td>전력망 운영, 접속 순번(대기열), 용량경매, 시장청산</td><td>큐 길이·경매가격이 곧 병목·가격 신호 (PJM 경매 급등)</td></tr>
+          <tr><td><b>ERCOT</b></td><td>텍사스 예외</td><td>단독계통이라 FERC 도매·송전·접속 관할 밖 — PUCT·ERCOT가 대체 (NERC 신뢰도는 적용)</td><td>연방 오버레이 없어 접속 빠름 → DC 입지 매력. 단 SB6('25)로 주 규제 강화 (≠무규제)</td></tr>
+          <tr><td><b>주(州) PUC</b></td><td>주</td><td>소매요금, 주내 발전/송전 입지, 대형부하 요금·비용배분</td><td>그리드 증설비를 누가 부담? → 요금 반발·유틸 capex/수익 변수</td></tr>
+          <tr><td><b>주·지방정부</b></td><td>지방</td><td>인허가, 용도지역, 환경·수용성</td><td>발전설비 입지·BTM 수용성 = 병목③의 실무 게이트</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight cat" style="margin-top:20px">
+      <p><b>2026 규제 가속</b> — 정부(DOE)가 FERC에 ‘데이터센터 같은 대형 사용자(20MW 초과)를 빨리 연결할 규칙을 만들라’고 요청했고, FERC는 2026.6월 6개 RTO에 <b>show-cause 명령</b>(= “지금 규칙이 타당함을 입증하라, 못 하면 고쳐라”)을 냈다. 접속 대기 단축이 기대되지만, ‘연방이 어디까지 손대느냐’를 두고 주(州) 규제기관(NARUC)과 충돌이 핵심 변수다.</p>
+    </div>
+  </div>
+
+  <div class="refs">
+    <h2>출처</h2>
+    <ul>
+      <li><a href="https://www.utilitydive.com/news/ferc-pjm-colocation-data-center/808368/">FERC → PJM co-location 명령 ('25.12.18) — Utility Dive</a></li>
+      <li><a href="https://www.datacenterdynamics.com/en/news/ferc-upholds-rejection-of-proposed-interconnection-agreement-between-aws-data-center-and-pennsylvania-nuclear-plant/">Talen×AWS BTM co-location ISA 거부 유지 — DCD</a></li>
+      <li><a href="https://www.powermag.com/transformers-in-2026-shortage-scramble-or-self-inflicted-crisis/">변압기 리드타임 128/144주 (Wood Mackenzie Q2'25) — POWER</a></li>
+      <li><a href="https://pv-magazine-usa.com/2026/05/11/u-s-transformer-market-faces-severe-supply-constraints-as-lead-times-extend-to-four-years/">변압기 납기 최대 4년 (PwC) — pv magazine USA</a></li>
+      <li><a href="https://www.techinvestments.io/p/power-bottlenecks-and-the-ai-data">'26 발표 12GW 중 착공 5GW · 큐 3–5년 — Tech Fund</a></li>
+      <li><a href="https://introl.com/blog/ferc-pjm-colocation-ruling-data-center-power-plant-guide-2025">PJM 57GW 스터디 통과·정체 — Introl</a></li>
+      <li><a href="https://www.statista.com/statistics/1651131/data-center-grid-connection-lead-times-by-market/">시장별 그리드 연결 리드타임 ('25, JLL) — Statista</a></li>
+      <li><a href="https://www.powermag.com/ferc-orders-all-six-regional-grid-operators-to-justify-or-rewrite-large-load-tariffs/">FERC, 6개 RTO/ISO에 대형부하 태리프 show-cause ('26.6.18) — POWER</a></li>
+      <li><a href="https://www.ferc.gov/news-events/news/ferc-act-large-load-interconnection-docket-june-2026">대형부하 ANOPR(RM26-4) 6월 처리 예고 — FERC</a></li>
+    </ul>
+  </div>
+
+  <footer>자금: L1→L2(PPA 대금)→L3(장비·연료 발주) · 전력: L3→L2→L1 · FTM=①② · BTM 완전독립=③ / 그리드연계=①③ (둘 다 ② 우회).</footer>
+</div>
+
+<script>
+  const state={playing:true,speed:1,mode:'both',b1:true,b2:true,b3:true};
+  const NS="http://www.w3.org/2000/svg";
+  const css=getComputedStyle(document.documentElement);
+  const C={elec:css.getPropertyValue('--elec').trim(),money:css.getPropertyValue('--money').trim(),btm:css.getPropertyValue('--btm').trim(),warn:css.getPropertyValue('--warn').trim(),ok:css.getPropertyValue('--ok').trim()};
+  const lanes=[
+    {type:'v',x:265,y0:608,y1:120,color:C.elec,n:10,gates:[{y:224,key:'b1'},{y:460,key:'b2'}],grp:'pg-ftm'},
+    {type:'v',x:735,y0:120,y1:610,color:C.money,n:11,gates:[],grp:'pg-money'},
+    {type:'p',pathId:'btm-path-a',xmax:250,color:C.btm,n:6,gates:[{y:465,key:'b3'}],grp:'pg-btm-a'},
+    {type:'p',pathId:'btm-path-b',xmax:250,color:C.btm,n:6,gates:[{y:214,key:'b1'},{y:465,key:'b3'}],grp:'pg-btm-b'}
+  ];
+  const parts=[];
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) state.playing=false;
+  lanes.forEach(L=>{
+    if(L.type==='p'){L.pathEl=document.getElementById(L.pathId); L.len=L.pathEl.getTotalLength();}
+    const g=document.getElementById(L.grp);
+    for(let i=0;i<L.n;i++){const c=document.createElementNS(NS,'circle');c.setAttribute('r',4);c.setAttribute('fill',L.color);g.appendChild(c);parts.push({L,el:c,p:i/L.n});}
+  });
+
+  function step(){
+    for(const pt of parts){
+      const L=pt.L; let dp=0.0023*state.speed;
+      if(L.type==='v'){
+        const y=L.y0+(L.y1-L.y0)*pt.p;
+        for(const g of L.gates){ if(state[g.key] && Math.abs(y-g.y)<17) dp*=0.055; }
+        if(state.playing) pt.p+=dp; if(pt.p>1) pt.p-=1;
+        const yy=L.y0+(L.y1-L.y0)*pt.p;
+        pt.el.setAttribute('cx',L.x); pt.el.setAttribute('cy',yy);
+      }else{
+        const pos=L.pathEl.getPointAtLength(pt.p*L.len);
+        for(const g of L.gates){ if(state[g.key] && Math.abs(pos.y-g.y)<18 && pos.x<L.xmax) dp*=0.055; }
+        if(state.playing) pt.p+=dp; if(pt.p>1) pt.p-=1;
+        const p2=L.pathEl.getPointAtLength(pt.p*L.len);
+        pt.el.setAttribute('cx',p2.x); pt.el.setAttribute('cy',p2.y);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function render(){
+    document.getElementById('pg-ftm').style.display=(state.mode==='money')?'none':'';
+    document.getElementById('pg-btm-a').style.display=(state.mode==='money')?'none':'';
+    document.getElementById('pg-btm-b').style.display=(state.mode==='money')?'none':'';
+    document.getElementById('pg-money').style.display=(state.mode==='power')?'none':'';
+    const map={b1:['pill-f1'],b2:['pill-f2'],b3:['pill-t3']};
+    ['b1','b2','b3'].forEach(k=>{
+      const on=state[k];
+      map[k].forEach(id=>document.getElementById(id).classList.toggle('ok',!on));
+      document.getElementById('chip-'+k).classList.toggle('on',on);
+      document.getElementById('d-'+k).style.background=on?C.warn:C.ok;
+    });
+    document.getElementById('bnc-tb1').setAttribute('fill', state.b1?C.warn:C.ok);
+  }
+  function toggleBn(k){state[k]=!state[k];render();}
+  function setMode(m){state.mode=m;['both','power','money'].forEach(x=>document.getElementById('mode-'+x).classList.toggle('on',x===m));render();}
+  function togglePlay(){state.playing=!state.playing;document.getElementById('playbtn').textContent=state.playing?'⏸ 일시정지':'▶ 재생';}
+  if(reduce) document.getElementById('playbtn').textContent='▶ 재생';
+  render(); step();
+</script>
+</body>
+</html>
