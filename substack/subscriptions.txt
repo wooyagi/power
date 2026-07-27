@@ -1,0 +1,15 @@
+# Substack 구독 목록 — /substack 이 이 목록의 각 피드에서 최신 무료 글을 수집합니다.
+# 형식: "표시명 | 피드URL"  또는  "피드URL"만.  '#' 로 시작하는 줄은 주석입니다.
+#
+# 피드 URL 규칙
+#   - 표준:        https://{slug}.substack.com/feed
+#   - 커스텀 도메인: https://{도메인}/feed   (예: Doomberg = newsletter.doomberg.com)
+#   - 개별 글만 번역하려면: /substack {글 URL}
+#
+# 추가:  /substack add {피드URL}
+#
+# ─── 아래는 예시입니다. 본인이 구독하는 퍼블리케이션으로 교체하세요. ───
+
+Doomberg | https://newsletter.doomberg.com/feed
+Construction Physics | https://www.construction-physics.com/feed
+# yourfavwriter | https://yourfavwriter.substack.com/feed

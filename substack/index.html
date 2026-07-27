@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Substack 번역 — 전력 데스크</title>
+<style>
+  :root{
+    --ink:#13171e; --ink-2:#1c222c; --paper:#f6f7f9; --card:#ffffff;
+    --text:#1a1f29; --muted:#6b7280; --line:#e6e9ee;
+    --accent:#ff6719;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Noto Sans KR","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;}
+
+  /* 헤더 */
+  header{background:var(--ink);color:#fff;border-bottom:1px solid #000;}
+  .hdr{max-width:980px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .back{font-size:12px;color:#9aa6b7;text-decoration:none;font-family:var(--mono);}
+  .back:hover{color:#fff;}
+  .hdr-brand{flex:1;}
+  .hdr-brand h1{font-size:20px;font-weight:800;margin:0;letter-spacing:-.3px;}
+  .hdr-brand p{font-size:12px;color:#9aa6b7;margin:3px 0 0;font-family:var(--mono);}
+  .search-wrap{flex:1;min-width:180px;max-width:280px;}
+  .search-wrap input{width:100%;background:var(--ink-2);border:1px solid #2c3542;color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-family:var(--sans);}
+  .search-wrap input::placeholder{color:#6f7a89}
+  .search-wrap input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+
+  main{max-width:980px;margin:0 auto;padding:24px 24px 80px;}
+
+  /* 안내 배너 */
+  .intro{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin-bottom:24px;}
+  .intro h2{font-size:14px;font-weight:800;color:var(--ink);margin:0 0 6px;}
+  .intro p{font-size:13px;color:#555;line-height:1.65;margin:0;}
+  .intro code{font-family:var(--mono);font-size:12px;background:#fff2ea;color:#c2540f;padding:1px 6px;border-radius:4px;}
+
+  .section-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:20px 0 12px;font-family:var(--mono);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+
+  /* 글 카드 */
+  .post-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:9px;transition:box-shadow .15s,border-color .15s,transform .15s;cursor:pointer;}
+  .post-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.07);transform:translateY(-2px);}
+  .post-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .post-pub{font-size:11px;font-weight:800;color:#fff;background:var(--accent);border-radius:5px;padding:2px 9px;font-family:var(--mono);letter-spacing:.2px;}
+  .post-date{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .post-title{font-size:16px;font-weight:800;color:var(--ink);line-height:1.4;letter-spacing:-.2px;}
+  .post-excerpt{font-size:13px;color:#555;line-height:1.55;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .post-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px;}
+  .post-author{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .post-arrow{font-size:18px;color:var(--muted);transition:transform .15s,color .15s;}
+  .post-card:hover .post-arrow{transform:translateX(3px);color:var(--accent);}
+
+  /* 비어있음 상태 */
+  .empty-state{text-align:center;color:var(--muted);padding:56px 20px;background:var(--card);border:1px dashed var(--line);border-radius:12px;}
+  .empty-state .em-ico{font-size:34px;}
+  .empty-state h3{font-size:15px;color:var(--text);margin:12px 0 6px;font-weight:800;}
+  .empty-state p{font-size:13px;line-height:1.7;margin:0;max-width:460px;margin-inline:auto;}
+  .empty-state code{font-family:var(--mono);font-size:12px;background:#fff2ea;color:#c2540f;padding:1px 6px;border-radius:4px;}
+  .search-empty{display:none;text-align:center;color:var(--muted);padding:50px 20px;font-size:14px;}
+
+  footer{max-width:980px;margin:0 auto;padding:0 24px 50px;color:#9aa1ab;font-size:11px;font-family:var(--mono);line-height:1.6;}
+
+  @media(max-width:560px){.hdr{gap:10px;} .grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <a class="back" href="../">← 전력 데스크</a>
+    <div class="hdr-brand">
+      <h1>Substack 번역</h1>
+      <p>구독 뉴스레터를 리서치 데스크 톤으로 번역</p>
+    </div>
+    <div class="search-wrap">
+      <input id="q" type="search" placeholder="제목·저자·퍼블리케이션 검색">
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="intro">
+    <h2>구독 뉴스레터, 데스크 톤 한국어로</h2>
+    <p>
+      <code>substack/subscriptions.txt</code> 에 적어둔 퍼블리케이션의 공개 RSS 피드에서 최신 글을 가져와
+      투자·산업 함의 중심의 리서치 데스크 톤으로 번역합니다. 각 글은 하이라이트·메모 기능이 있는 전문 페이지로 저장됩니다.
+      새 글 수집·번역은 <code>/substack</code> 명령으로 실행합니다. (계정 직접 로그인은 하지 않으며, 사실관계는 원문을 따릅니다.)
+    </p>
+  </div>
+
+  <p class="section-title">번역된 글</p>
+  <div class="grid" id="grid">
+    <!-- NEW_POST_INSERT -->
+    <!-- /substack 실행 시 이 아래에 최신 글 카드가 삽입됩니다 (최신순으로 위에 쌓임) -->
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <div class="em-ico">📥</div>
+    <h3>아직 번역된 글이 없습니다</h3>
+    <p>
+      <code>substack/subscriptions.txt</code> 에 구독 퍼블리케이션을 추가한 뒤
+      <code>/substack</code> 을 실행하면 최신 무료 글이 번역되어 여기에 쌓입니다.
+      유료·구독자 전용 글은 본문을 붙여넣어 처리할 수 있습니다.
+    </p>
+  </div>
+
+  <div class="search-empty" id="searchEmpty">검색 결과가 없습니다.</div>
+
+</main>
+
+<footer>
+  전력 데스크 · Substack 번역 아카이브 · 번역은 리서치 데스크 톤이며 사실관계·인용은 원문 기준입니다. 인용 전 원문으로 재확인하세요.
+</footer>
+
+<script>
+  const grid = document.getElementById('grid');
+  const cards = () => Array.from(grid.querySelectorAll('.post-card'));
+  const emptyState = document.getElementById('emptyState');
+  const searchEmpty = document.getElementById('searchEmpty');
+
+  // 카드가 하나도 없으면 비어있음 상태 표시
+  function refreshEmpty(){
+    emptyState.style.display = cards().length ? 'none' : 'block';
+  }
+
+  function applySearch(){
+    const term = document.getElementById('q').value.trim().toLowerCase();
+    if(!cards().length){ searchEmpty.style.display='none'; return; }
+    let shown = 0;
+    cards().forEach(card => {
+      const hay = (card.dataset.name || '') + ' ' + card.textContent.toLowerCase();
+      const show = !term || hay.includes(term);
+      card.style.display = show ? '' : 'none';
+      if(show) shown++;
+    });
+    searchEmpty.style.display = shown ? 'none' : 'block';
+  }
+
+  document.getElementById('q').addEventListener('input', applySearch);
+  refreshEmpty();
+</script>
+</body>
+</html>
